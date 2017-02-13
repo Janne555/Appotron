@@ -1,0 +1,139 @@
+{
+	"database": "inventor-v.0.0.1.db",
+	"tables":
+	[
+	{
+		"name": "User",
+		"columns":
+		[
+		{
+			"id": "STRING PRIMARY KEY",
+			"name": "STRING NOT NULL",
+			"deleted": "BOOLEAN NOT NULL"
+		}
+		]
+	},
+	{
+		"name": "Item",
+		"columns":
+		[
+		{
+			"uuid": "STRING PRIMARY KEY",
+			"name": "STRING NOT NULL",
+			"serial_number": "STRING NOT NULL",
+			"location": "INTEGER NOT NULL",
+			"created_on": "TIMESTAMP NOT NULL",
+			"deleted": "BOOLEAN NOT NULL",
+			"FOREIGN": "KEY(location) REFERENCES Location(id)"
+		}
+		]
+	},
+	{
+		"name": "Foodstuff",
+		"columns":
+		[
+		{
+			"uuid": "STRING PRIMARY KEY",
+			"name": "STRING NOT NULL",
+			"serial_number": "STRING NOT NULL",
+			"location": "INTEGER NOT NULL",
+			"expiration": "DATESTAMP NOT NULL",
+			"created_on": "TIMESTAMP NOT NULL",
+			"deleted": "BOOLEAN NOT NULL",
+			"FOREIGN": "KEY(location) REFERENCES Location(id)"
+		}
+		]
+	},
+	{
+		"name": "Book",
+		"columns":
+		[
+		{
+			"uuid": "STRING PRIMARY KEY",
+			"title": "STRING NOT NULL",
+			"author": "STRING",
+			"publisher": "STRING",
+			"publishing_year": "INTEGER",
+			"isbn": "STRING NOT NULL",
+			"location": "INTEGER NOT NULL",
+			"created_on": "TIMESTAMP NOT NULL",
+			"deleted": "BOOLEAN NOT NULL",
+			"FOREIGN": "KEY(location) REFERENCES Location(id)"
+		}
+		]
+	},
+	{
+		"name": "ShoppingList",
+		"columns":
+		[
+		{
+			"id": "INTEGER PRIMARY KEY AUTOINCREMENT",
+			"name": "STRING NOT NULL",
+			"created_on": "TIMESTAMP NOT NULL",
+			"deleted": "BOOLEAN NOT NULL"
+		}
+		]
+	},
+	{
+		"name": "ListItem",
+		"columns":
+		[
+		{
+			"shopping_list": "INTEGER NOT NULL",
+			"serial_number": "STRING NOT NULL",
+			"amount" : "INTEGER NOT NULL",
+			"deleted": "BOOLEAN NOT NULL",
+			"FOREIGN": "KEY(shopping_list) REFERENCES ShoppingList(id)"
+		}
+		]
+	},
+	{
+		"name": "Loan",
+		"columns":
+		[
+		{
+			"user": "STRING NOT NULL",
+			"uuid": "STRING NOT NULL",
+			"created_on": "TIMESTAMP NOT NULL",
+			"returned": "BOOLEAN NOT NULL",
+			"deleted": "BOOLEAN NOT NULL",
+			"FOREIGN": "KEY(user) REFERENCES User(uuid)"
+		}
+		]
+	},
+	{
+		"name": "Description",
+		"columns":
+		[
+		{
+			"uuid": "STRING PRIMARY KEY",
+			"serial_or_isbn": "STRING NOT NULL",
+			"descriptor": "STRING"
+		}
+		]
+	},
+	{
+		"name": "Tag",
+		"columns":
+		[
+		{
+			"uuid": "STRING PRIMARY KEY",
+			"serial_or_isbn": "STRING NOT NULL",
+			"key": "STRING NOT NULL",
+			"value": "STRING"
+		}
+		]
+	},
+	{
+		"name": "Location",
+		"columns":
+		[
+		{
+			"id": "INTEGER PRIMARY KEY AUTOINCREMENT",
+			"name": "STRING UNIQUE NOT NULL",
+			"deleted": "BOOLEAN NOT NULL"
+		}
+		]
+	}
+	]
+}
