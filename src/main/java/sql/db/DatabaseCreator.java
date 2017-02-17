@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,20 +24,24 @@ import java.util.Map;
  *
  * @author Janne
  */
-public class DatabaseInfo {
+public class DatabaseCreator {
+
     private String databaseName;
     private String filename;
+    private Database db;
     private List<Table> tables;
 
-    public DatabaseInfo(String filename) throws FileNotFoundException {
+    public DatabaseCreator(String filename, Database db) throws FileNotFoundException, SQLException {
         this.filename = filename;
+        this.db = db;
         //initiate the list of table objects
         this.tables = new ArrayList<>();
-
-        init();
+        
+        parseJson();
+        createTables();
     }
 
-    private void init() throws FileNotFoundException {
+    private void parseJson() throws FileNotFoundException {
         //create a file object 
         File file = new File(filename);
         //create a reader from file object
@@ -81,16 +87,26 @@ public class DatabaseInfo {
         }
     }
 
-    public String getDatabaseName() {
-        return databaseName;
+    private void createTables() throws SQLException {
+        for (Table t : tables) {
+            createTable(t);
+        }
     }
-
-    public String getFilename() {
-        return filename;
+    
+    private void createTable(Table table) throws SQLException {
+        String sql = "CREATE TABLE " + table.getName() + " (";
+        List<String> columnNames = table.getColumnNames();
+        List<String> commands = table.getCommands();
+        Iterator<String> iterator = commands.iterator();
+        for (String columnName : columnNames) {
+            String command = iterator.next();
+            sql += columnName + " " + command;
+            if (iterator.hasNext()) {
+                sql += ", ";
+            }
+        }
+        sql += ")";
+        db.update(sql);
+        System.out.println("Table " + table.getName() + " created succesfully");
     }
-
-    public List<Table> getTables() {
-        return tables;
-    }
-
 }

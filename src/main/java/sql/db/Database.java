@@ -6,8 +6,11 @@
 package sql.db;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,72 +24,38 @@ import java.util.Map;
  * @author Janne
  */
 public class Database {
-
     private Connection connection;
-    private DatabaseInfo databaseInfo;
 
-    public Database(DatabaseInfo databaseInfo) throws SQLException {
-        try {
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:" + databaseInfo.getDatabaseName());
-            System.out.println("Opened database '" + databaseInfo.getDatabaseName() + "' succesfully");
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
-
-        this.databaseInfo = databaseInfo;
-        init();
+    public Database(String driver, String address) throws SQLException, ClassNotFoundException {
+        Class.forName(driver);
+        this.connection = DriverManager.getConnection(address);
     }
 
-    private void init() throws SQLException {
-        File f = new File(databaseInfo.getDatabaseName());
-        if (f.exists()) {
-            return;
-        }
-        createDatabase();
-    }
-
-    public void createDatabase() throws SQLException {
-        for (Table table : databaseInfo.getTables()) {
-            createTable(table);
-        }
-
-    }
-
-    public void createTable(Table table) throws SQLException {
-        Statement stmt = connection.createStatement();
-        String sql = "CREATE TABLE " + table.getName() + " (";
-        List<String> columnNames = table.getColumnNames();
-        List<String> commands = table.getCommands();
-        Iterator<String> iterator = commands.iterator();
-        for (String columnName : columnNames) {
-            String command = iterator.next();
-            sql += columnName + " " + command;
-            if (iterator.hasNext()) {
-                sql += ", ";
-            }
-        }
-        sql += ")";
-        stmt.executeUpdate(sql);
-        stmt.close();
-        System.out.println("Table " + table.getName() + " created succesfully");
+    public Connection getConnection() {
+        return connection;
     }
 
     public void update(String sql) throws SQLException {
         connection.setAutoCommit(false);
-        Statement stmt = connection.createStatement();
-        stmt.executeUpdate(sql);
-        stmt.close();
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(sql);
+        }
         connection.commit();
     }
 
-    public <T> List<T> queryAndCollect(String query, Collector col) throws SQLException {
+    public <T> List<T> queryAndCollect(String query, Collector<T> col, Object... params) throws SQLException {
         List<T> rows = new ArrayList<>();
-        Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery(query);
-        while (rs.next()) {
-            rows.add((T) col.collect(rs));
+        PreparedStatement stmt = connection.prepareStatement("");
+        for (int i = 0; i < params.length; i++) {
+            stmt.setObject(i + 1, params[i]);
         }
+        
+        ResultSet rs = stmt.executeQuery(query);
+        
+        while (rs.next()) {
+            rows.add(col.collect(rs));
+        }
+        
         rs.close();
         stmt.close();
         return rows;

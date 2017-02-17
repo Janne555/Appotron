@@ -12,6 +12,6 @@ import java.sql.SQLException;
  *
  * @author Janne
  */
-public interface Collector {
-    Object collect(ResultSet rs) throws SQLException;
+public interface Collector<T> {
+    T collect(ResultSet rs) throws SQLException;
 }

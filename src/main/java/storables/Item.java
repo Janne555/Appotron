@@ -87,12 +87,12 @@ public class Item {
     
     @Override
     public String toString() {
-        return uuid + "; "
-                + name + "; "
-                + serial_number + "; "
-                + location + "; "
-                + "; "
-                + descriptions + "; "
+        return uuid + ", "
+                + name + ", "
+                + serial_number + ", "
+                + location + ", "
+                + ", "
+                + descriptions + ", "
                 + tags;
     }
 }

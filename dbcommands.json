@@ -23,8 +23,9 @@
 			"serial_number": "STRING NOT NULL",
 			"location": "INTEGER NOT NULL",
 			"created_on": "TIMESTAMP NOT NULL",
+			"type": "STRING NOT NULL",
 			"deleted": "BOOLEAN NOT NULL",
-			"FOREIGN": "KEY(location) REFERENCES Location(id)"
+			"FOREIGN ": "KEY(location) REFERENCES Location(id)"
 		}
 		]
 	},
@@ -49,7 +50,7 @@
 			"serial_number": "STRING NOT NULL",
 			"amount" : "INTEGER NOT NULL",
 			"deleted": "BOOLEAN NOT NULL",
-			"FOREIGN": "KEY(shopping_list) REFERENCES ShoppingList(id)"
+			"FOREIGN ": "KEY(shopping_list) REFERENCES ShoppingList(id)"
 		}
 		]
 	},
@@ -63,8 +64,8 @@
 			"created_on": "TIMESTAMP NOT NULL",
 			"returned": "BOOLEAN NOT NULL",
 			"deleted": "BOOLEAN NOT NULL",
-			"FOREIGN": "KEY(user) REFERENCES User(uuid)",
-			"FOREIGN": "Key(item_uuid REFERENCES Item(uuid)"
+			"FOREIGN ": "KEY(user) REFERENCES User(uuid)",
+			"FOREIGN ": "Key(item_uuid) REFERENCES Item(uuid)"
 		}
 		]
 	},
@@ -74,7 +75,7 @@
 		[
 		{
 			"uuid": "STRING PRIMARY KEY",
-			"serial_or_isbn": "STRING NOT NULL",
+			"serial_number": "STRING NOT NULL",
 			"descriptor": "STRING"
 		}
 		]
@@ -85,7 +86,7 @@
 		[
 		{
 			"uuid": "STRING PRIMARY KEY",
-			"serial_or_isbn": "STRING NOT NULL",
+			"serial_number": "STRING NOT NULL",
 			"key": "STRING NOT NULL",
 			"value": "STRING"
 		}
@@ -109,7 +110,7 @@
 		{
 			"item_uuid": "STRING NOT NULL",
 			"expiration": "TIMESTAMP NOT NULL",
-			"FOREIGN": "KEY(item_uuid) REFERENCES Item(uuid)"
+			"FOREIGN ": "KEY(item_uuid) REFERENCES Item(uuid)"
 		}
 		]
 	}

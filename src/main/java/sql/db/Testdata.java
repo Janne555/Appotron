@@ -42,56 +42,36 @@ public class Testdata {
                             + o.get("name").getAsString() + ", 'false')";
                     break;
                 case "item":
-                    sql += "Item(uuid, name, serial_number, location, created_on, deleted)"
+                    sql += "Item(uuid, name, serial_number, location, created_on, type, deleted)"
                             + " VALUES("
                             + o.get("uuid").getAsString() + ", "
                             + o.get("name").getAsString() + ", "
                             + o.get("serial_number").getAsString() + ", "
                             + o.get("location").getAsString() + ", "
                             + o.get("created_on").getAsString() + ", "
-                            + "'false')";
-                    break;
-                case "book":
-                    sql += "Book(uuid, title, author, publisher, publishing_year, isbn, location, created_on, deleted)"
-                            + " VALUES("
-                            + o.get("uuid").getAsString() + ", "
-                            + o.get("title").getAsString() + ", "
-                            + o.get("author").getAsString() + ", "
-                            + o.get("publisher").getAsString() + ", "
-                            + o.get("publishing_year").getAsString() + ", "
-                            + o.get("isbn").getAsString() + ", "
-                            + o.get("location").getAsString() + ", "
-                            + o.get("created_on").getAsString() + ", "
-                            + "'false')";
-                    break;
-                case "foodstuff":
-                    sql += "Foodstuff(uuid, name, serial_number, location, expiration, created_on, deleted)"
-                            + " VALUES("
-                            + o.get("uuid").getAsString() + ", "
-                            + o.get("name").getAsString() + ", "
-                            + o.get("serial_number").getAsString() + ", "
-                            + o.get("location").getAsString() + ", "
-                            + o.get("expiration").getAsString() + ", "
-                            + o.get("created_on").getAsString() + ", "
+                            + o.get("main").getAsString() + ", "
                             + "'false')";
                     break;
                 case "tag":
-                    sql += "Tag(uuid, serial_or_isbn, key, value)"
+                    sql += "Tag(uuid, serial_number, key, value)"
                             + " VALUES("
                             + o.get("uuid").getAsString() + ", "
-                            + o.get("serial_or_isbn").getAsString() + ", "
+                            + o.get("serial_number").getAsString() + ", "
                             + o.get("key").getAsString() + ", "
                             + o.get("value").getAsString() + ")";
                     break;
                 case "description":
-                    sql += "Description(uuid, serial_or_isbn, descriptor)"
+                    sql += "Description(uuid, serial_number, descriptor)"
                             + " VALUES("
                             + o.get("uuid").getAsString() + ", "
-                            + o.get("serial_or_isbn").getAsString() + ", "
+                            + o.get("serial_number").getAsString() + ", "
                             + o.get("descriptor").getAsString() + ")";
                     break;
-                default:
-                    throw new AssertionError();
+                case "expiration":
+                    sql += "ExpirationDate(item_uuid, expiration)"
+                            + " VALUES("
+                            + o.get("item_uuid").getAsString() + ", "
+                            + o.get("expiration").getAsString() + ")";
             }
             inserts.add(sql);
         }

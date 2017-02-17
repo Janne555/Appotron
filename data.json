@@ -21,21 +21,21 @@
 	"name": "'laatikosto'"
 },
 {	
-	"main": "item",
+	"main": "'item'",
 	"type": "item",
 	"name": "'kirja'",
 	"uuid": "'3793471d-8943-4f0d-b0a1-f6bfe6b16603'",
 	"serial_number": "'k1rj4'",
-	"created_on": "'2017-02-07 19:39:10.986'",
+	"created_on": "'2017-02-07 19:39:10'",
 	"location": "'1'"
 },
 {
-	"main": "item",
+	"main": "'item'",
 	"type": "item",
 	"name": "'roskapussi'",
 	"uuid": "'9bda8daf-5921-48c7-99ed-ed4a7ca0f511'",
 	"serial_number": "'r05k4pu551'",
-	"created_on": "'2017-01-07 19:39:10.986'",
+	"created_on": "'2017-01-07 19:39:10'",
 	"location": "2"
 },
 {
@@ -66,30 +66,30 @@
 	"value": "'huono'"
 },
 {
-	"main": "item",
+	"main": "'item'",
 	"type": "item",
 	"name": "'kyna'",
 	"uuid": "'7b5da10b-f6b4-4046-9470-00e0712c633e'",
 	"serial_number": "'kyn4'",
-	"created_on": "'2017-02-02 19:39:10.992'",
+	"created_on": "'2017-02-02 19:39:10'",
 	"location": "4"
 },
 {
-	"main": "item",
+	"main": "'item'",
 	"type": "item",
 	"name": "'kyna'",
 	"uuid": "'045810bf-e8d3-452b-8138-85378fccaee6'",
 	"serial_number": "'kyn4'",
-	"created_on": "'2017-02-02 19:39:10.992'",
+	"created_on": "'2017-02-02 19:39:10'",
 	"location": "4"
 },
 {
-	"main": "item",
+	"main": "'item'",
 	"type": "item",
 	"name": "'kyna'",
 	"uuid": "'33e3eaaf-229b-46e6-85ac-281cd6c26eb8'",
 	"serial_number": "'kyn4'",
-	"created_on": "'2016-01-02 19:39:10.992'",
+	"created_on": "'2016-01-02 19:39:10'",
 	"location": "5"
 },
 {
@@ -107,31 +107,31 @@
 	"value": "'punainen'"
 },
 {
-	"main": "item",
-	"type": "book",
+	"main": "'book'",
+	"type": "item",
 	"name": "'raamattu'",
 	"uuid": "'9cbc9018-2072-423e-90f5-37715da120a6'",
 	"serial_number": "'r44m477u'",
 	"location": "1",
-	"created_on": "'2015-02-02 19:39:10.992'"
+	"created_on": "'2015-02-02 19:39:10'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
+	"uuid": "'342a6e67-eafb-4565-ba8f-06f94f2c1210'",
 	"serial_number": "'r44m477u'",
 	"key": "'author'",
 	"value": "'ihminen'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
+	"uuid": "'6582ee68-7bdb-4d32-86d4-fbcbc2113382'",
 	"serial_number": "'r44m477u'",
 	"key": "'publisher'",
 	"value": "'kirkko'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
+	"uuid": "'adcecea3-67e4-497b-8962-fca4f4f16043'",
 	"serial_number": "'r44m477u'",
 	"key": "'publishing_year'",
 	"value": "'1300'"
@@ -144,32 +144,32 @@
 	"value": "'fiktio'"
 },
 {
-	"main": "item",
-	"type": "book",
+	"main": "'book'",
+	"type": "item",
 	"name": "'taru sormusten herrasta'",
 	"uuid": "'89c5fb2e-1b7c-4569-8027-774c3d72f25a'",
 	"serial_number": "'74ry50rmu573nh3rr4574'",
 	"location": "1",
-	"created_on": "'2015-02-04 12-09:39:10.992'"
+	"created_on": "'2015-02-04 09:39:10'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
-	"serial_number": "'r44m477u'",
+	"uuid": "'b9aceb1c-2f5f-4b18-9fa6-aba4f33d92da'",
+	"serial_number": "'74ry50rmu573nh3rr4574'",
 	"key": "'author'",
 	"value": "'j.r.r tolkien'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
-	"serial_number": "'r44m477u'",
+	"uuid": "'d35ac65c-f705-4683-a1c9-0d8307771798'",
+	"serial_number": "'74ry50rmu573nh3rr4574'",
 	"key": "'publisher'",
 	"value": "''"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
-	"serial_number": "'r44m477u'",
+	"uuid": "'5d94dd37-df9e-4bb2-9ef1-25d8cc9af71b'",
+	"serial_number": "'74ry50rmu573nh3rr4574'",
 	"key": "'publishing_year'",
 	"value": "'2000'"
 },
@@ -181,32 +181,32 @@
 	"value": "'fantasia'"
 },
 {
-	"main": "item",
-	"type": "book",
+	"main": "'book'",
+	"type": "item",
 	"name": "'the selfish gene'",
 	"uuid": "'dd26bdce-6d8a-4e84-a693-1c19a3c42894'",
 	"serial_number": "'7h353lf15hg3n3'",
 	"location": "1",
-	"created_on": "'2015-06-02 19:39:10.992'"
+	"created_on": "'2015-06-02 19:39:10'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
-	"serial_number": "'r44m477u'",
+	"uuid": "'02dbfebd-18c9-4d15-865b-fec172e79ddd'",
+	"serial_number": "'7h353lf15hg3n3'",
 	"key": "'author'",
 	"value": "'richard dawkins'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
-	"serial_number": "'r44m477u'",
+	"uuid": "'808b62c6-2781-479e-8fc1-6656c909846b'",
+	"serial_number": "'7h353lf15hg3n3'",
 	"key": "'publisher'",
 	"value": "'oxford'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
-	"serial_number": "'r44m477u'",
+	"uuid": "'5ef82bb2-5320-45d5-ba9b-c9d0d61c1161'",
+	"serial_number": "'7h353lf15hg3n3'",
 	"key": "'publishing_year'",
 	"value": "'1970'"
 },
@@ -218,32 +218,32 @@
 	"value": "'tiede'"
 },
 {
-	"main": "item",
-	"type": "book",
+	"main": "'book'",
+	"type": "item",
 	"name": "'a game of thrones'",
 	"uuid": "'9266c739-b79d-4da4-b339-7c23eea3c00e'",
 	"serial_number": "'4g4m30f7hr0n35'",
 	"location": "1",
-	"created_on": "'2015-01-06 19:39:10.992'"
+	"created_on": "'2015-01-06 19:39:10'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
-	"serial_number": "'r44m477u'",
+	"uuid": "'2f73be9d-fddb-4702-ab48-96dfcb41127a'",
+	"serial_number": "'4g4m30f7hr0n35'",
 	"key": "'author'",
 	"value": "'g.r.r martin'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
-	"serial_number": "'r44m477u'",
+	"uuid": "'948b6328-1092-4b97-bb91-e989f25e998e'",
+	"serial_number": "'4g4m30f7hr0n35'",
 	"key": "'publisher'",
 	"value": "'publishing house'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
-	"serial_number": "'r44m477u'",
+	"uuid": "'611e9d6d-02a0-4981-a204-c9dcfcb2ae2a'",
+	"serial_number": "'4g4m30f7hr0n35'",
 	"key": "'publishing_year'",
 	"value": "'1990'"
 },
@@ -255,32 +255,32 @@
 	"value": "'fantasia'"
 },
 {
-	"main": "item",
-	"type": "book",
-	"name": "'kirjanen'"
+	"main": "'book'",
+	"type": "item",
+	"name": "'kirjanen'",
 	"uuid": "'a3ac3738-2928-4b9f-9499-3cb09be48c08'",
 	"serial_number": "'k1rj4n3n'",
 	"location": "1",
-	"created_on": "'2013-11-22 19:39:10.992'"
+	"created_on": "'2013-11-22 19:39:10'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
-	"serial_number": "'r44m477u'",
+	"uuid": "'658533d1-5c6c-4781-baff-c1e2997d41b8'",
+	"serial_number": "'k1rj4n3n'",
 	"key": "'author'",
 	"value": "'kirjailijanen'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
-	"serial_number": "'r44m477u'",
+	"uuid": "'8fca5e6f-5c9d-4eec-ac5e-8c9f16b5beac'",
+	"serial_number": "'k1rj4n3n'",
 	"key": "'publisher'",
 	"value": "'julkaisijanen'"
 },
 {
 	"type": "tag",
-	"uuid": "'INSERT'",
-	"serial_number": "'r44m477u'",
+	"uuid": "'f148f2fc-5299-43c1-ac78-5b7ed60a8fb3'",
+	"serial_number": "'k1rj4n3n'",
 	"key": "'publishing_year'",
 	"value": "'1999'"
 },
@@ -292,73 +292,73 @@
 	"value": "'testi'"
 },
 {
-	"main": "item",
-	"type": "foodstuff",
+	"main": "'foodstuff'",
+	"type": "item",
 	"uuid": "'d5486bec-c2b5-4f52-9955-43d1252ad0c3'",
 	"name": "'banaani'",
 	"serial_number": "'b4n44n1'",
 	"location": "1",
-	"created_on": "'2017-02-03 23:21:23.266'"
+	"created_on": "'2017-02-03 23:21:23'"
 },
 {
 	"type": "expiration",
 	"item_uuid": "'d5486bec-c2b5-4f52-9955-43d1252ad0c3'",
-	"expiration": "'2017-03-07 23:21:23.266'"
+	"expiration": "'2017-03-07 23:21:23'"
 },
 {
-	"main": "item",
-	"type": "foodstuff",
+	"main": "'foodstuff'",
+	"type": "item",
 	"uuid": "'5ad004c1-cfb0-43a2-896b-64e9919bb38a'",
 	"name": "'ketsuppi'",
 	"serial_number": "'k375upp1'",
 	"location": "2",
-	"created_on": "'2017-02-03 23:21:23.266'"
+	"created_on": "'2017-02-03 23:21:23'"
 },
 {
 	"type": "expiration",
 	"item_uuid": "'5ad004c1-cfb0-43a2-896b-64e9919bb38a'",
-	"expiration": "'2017-10-07 23:21:23.266'"
+	"expiration": "'2017-10-07 23:21:23'"
 },
 {
-	"main": "item",
-	"type": "foodstuff",
+	"main": "'foodstuff'",
+	"type": "item",
 	"uuid": "'d91482a4-9c57-477c-807e-e2656f6afeda'",
 	"name": "'kahvi'",
 	"serial_number": "'k4hv1'",
 	"location": "2",
-	"created_on": "'2017-02-03 23:21:23.266'"
+	"created_on": "'2017-02-03 23:21:23'"
 },
 {
 	"type": "expiration",
 	"item_uuid": "'d91482a4-9c57-477c-807e-e2656f6afeda'",
-	"expiration": "'2018-03-07 23:21:23.266'"
+	"expiration": "'2018-03-07 23:21:23'"
 },
 {
-	"main": "item",
-	"type": "foodstuff",
+	"main": "'foodstuff'",
+	"type": "item",
 	"uuid": "'d982c17e-ccdb-4b9f-bb6b-139c989e4b16'",
 	"name": "'maito'",
 	"serial_number": "'m4170'",
 	"location": "1",
-	"created_on": "'2017-02-03 23:21:23.266'"
+	"created_on": "'2017-02-03 23:21:23'"
 },
 {
 	"type": "expiration",
 	"item_uuid": "'d982c17e-ccdb-4b9f-bb6b-139c989e4b16'",
-	"expiration": "'2017-02-09 23:21:23.266'"
+	"expiration": "'2017-02-09 23:21:23'"
 },
 {
-	"main": "item",
-	"type": "foodstuff",
+	"main": "'foodstuff'",
+	"type": "item",
 	"uuid": "'b1708bb4-bae3-42ca-bb55-a6365f87df68'",
 	"name": "'maito'",
 	"serial_number": "'m4170'",
 	"location": "1",
-	"created_on": "'2017-02-03 23:21:23.266'"
+	"created_on": "'2017-02-03 23:21:23'"
 },
 {
 	"type": "expiration",
 	"item_uuid": "'b1708bb4-bae3-42ca-bb55-a6365f87df68'",
-	"expiration": "'2017-02-09 23:21:23.266'"
+	"expiration": "'2017-02-09 23:21:23'"
 }
 ]}

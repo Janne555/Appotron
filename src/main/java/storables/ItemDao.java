@@ -5,11 +5,17 @@
  */
 package storables;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import sql.db.Database;
 import sql.db.Search;
+import sql.db.Timestamp;
 
 /**
  *
@@ -23,63 +29,54 @@ public class ItemDao {
         this.db = db;
     }
 
-    public void insert(Item item) throws SQLException {
-        String sql = "INSERT INTO Item "
-                + "(uuid, name, serial_number, location, created_on, deleted)"
-                + " VALUES ("
-                + item.getUuid() + ", "
-                + item.getName() + ", "
-                + item.getSerial_number() + ", "
-                + item.getLocationId() + ", "
-                + item.getUuid() + ", ";
-    }
-
     public List<Item> findAll() throws SQLException {
-        String sql = "SELECT * FROM Item LEFT JOIN Location ON Item.location = Location.id";
-        List<Item> items = db.queryAndCollect(sql, rs -> {
-            return new Item(rs.getString("uuid"),
-                    rs.getString("name"),
-                    rs.getString("serial_number"),
-                    rs.getString("location"),
-                    rs.getInt("id"),
-                    rs.getTimestamp("created_on"),
-                    null,
-                    null);
-        });
+        List<Item> result;
+        try (Connection connection = db.getConnection()) {
+            ResultSet rs = connection.createStatement().executeQuery(
+                    "SELECT "
+                    + "Item.uuid, "
+                    + "Item.name, "
+                    + "Item.serial_number, "
+                    + "Item.created_on, "
+                    + "Item.location AS location_id, "
+                    + "Location.name AS location_name "
+                    + "FROM Item LEFT JOIN Location ON Item.location = Location.id "
+                    + "WHERE Item.deleted = 'false' AND Item.type = 'item'");
+            result = new ArrayList<>();
+            while (rs.next()) {
+                Map<String, String> tags = new HashMap<>();
+                List<String> descriptions = new ArrayList<>();
 
-        for (Item i : items) {
-            sql = "SELECT * FROM Description WHERE serial_or_isbn = '" + i.getSerial_number() + "'";
-            db.queryAndCollect(sql, rs -> {
-//                rs.
-                return null;
-            });
+                String uuid = rs.getString("uuid");
+                String name = rs.getString("name");
+                String serial_number = rs.getString("serial_number");
+                Timestamp created_on = new Timestamp(rs.getString("created_on"));
+                String location = rs.getString("location_name");
+                int location_id = rs.getInt("location_id");
+                
+                PreparedStatement statement = connection.prepareStatement(
+                        "SELECT * FROM Tag WHERE serial_number = ?");
+                statement.setString(1, serial_number);
+                ResultSet rs1 = statement.executeQuery();
+                while (rs1.next()) {
+                    try {
+                        tags.put(rs1.getString("key"), rs1.getString("value"));
+                    } catch (SQLException ex) {
+                        System.out.println(ex);
+                    }
+                }
+                
+                statement = connection.prepareStatement(
+                        "SELECT * FROM Description WHERE serial_number = ?");
+                statement.setString(1, serial_number);
+                rs1 = statement.executeQuery();
+                while (rs1.next()) {
+                    descriptions.add(rs1.getString("descriptor"));
+                }
+                
+                result.add(new Item(uuid, name, serial_number, location, location_id, created_on, descriptions, tags));
+            }
         }
-
-        return items;
-    }
-
-    public List<Item> find(String searchTerm, Search search) {
-        List<Item> items = new ArrayList<>();
-        switch (search) {
-            case NAME:
-
-                break;
-            case TAG:
-
-                break;
-
-            case SERIAL:
-
-                break;
-            case UUID:
-
-                break;
-            case CREATED_ON:
-
-                break;
-            default:
-                throw new AssertionError();
-        }
-        return null;
+        return result;
     }
 }

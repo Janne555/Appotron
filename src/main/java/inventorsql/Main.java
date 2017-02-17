@@ -18,9 +18,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import sql.db.Database;
-import sql.db.DatabaseInfo;
+import sql.db.DatabaseCreator;
 import sql.db.Table;
 import sql.db.Testdata;
+import storables.Item;
 import storables.ItemDao;
 
 /**
@@ -34,19 +35,30 @@ public class Main {
      * @throws java.io.FileNotFoundException
      */
     public static void main(String[] args) throws Exception {
-        DatabaseInfo databaseInfo = new DatabaseInfo("dbcommands-v.0.0.1.json");
+        try {
+            File f = new File("inventor.db");
+            f.delete();
+        } catch (Exception ex) {
+        }
 
-        Database database = new Database(databaseInfo);
-        
+        Database database = new Database("org.sqlite.JDBC", "jdbc:sqlite:inventor.db");
+
+        DatabaseCreator creator = new DatabaseCreator("dbcommands.json", database);
+
         Testdata td = new Testdata("data.json");
-        
+
         for (String sql : td.getInserts()) {
+            System.out.println(sql);
+
             database.update(sql);
         }
-        
+
+        for (Item i : new ItemDao(database).findAll()) {
+            System.out.println(i);
+        }
+
 //        for (int i = 0; i < 10; i++) {
 //            System.out.println(uuid());
-//            System.out.println(time());
 //        }
 //        
 //        database.update(sql);
