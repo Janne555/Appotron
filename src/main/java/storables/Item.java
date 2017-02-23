@@ -73,6 +73,14 @@ public class Item {
         return created_on;
     }
 
+    public void setTags(Map<String, String> tags) {
+        this.tags = tags;
+    }
+
+    public void setDescriptions(List<String> descriptions) {
+        this.descriptions = descriptions;
+    }
+    
     public List<String> getDescriptions() {
         return descriptions;
     }

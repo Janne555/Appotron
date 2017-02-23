@@ -5,22 +5,31 @@
  */
 package storables;
 
-import java.util.Calendar;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  *
  * @author Janne
  */
-public class Foodstuff {
+public class Foodstuff extends Item {
+    private Timestamp expirationDate;
 
-    private String uuid;
-    private String name;
-    private String serial_number;
-    private String location;
-    private Calendar expiration;
-    private Calendar created_on;
-    private List<String> descriptions;
-    private Map<String, String> tags;
+    public Foodstuff(String uuid, 
+            String name,
+            String serial_number,
+            String location,
+            int locationId,
+            Timestamp created_on, 
+            List<String> descriptions,
+            Map<String, String> tags,
+            Timestamp expirationDate) {
+        super(uuid, name, serial_number, location, locationId, created_on, descriptions, tags);
+    }
+
+    public Timestamp getExpirationDate() {
+        return expirationDate;
+    }
 }

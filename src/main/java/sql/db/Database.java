@@ -24,28 +24,26 @@ import java.util.Map;
  * @author Janne
  */
 public class Database {
-    private Connection connection;
+    private String address;
 
     public Database(String driver, String address) throws SQLException, ClassNotFoundException {
         Class.forName(driver);
-        this.connection = DriverManager.getConnection(address);
+        this.address = address;
     }
 
-    public Connection getConnection() {
-        return connection;
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(address);
     }
-
+    
     public void update(String sql) throws SQLException {
-        connection.setAutoCommit(false);
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(sql);
+        try (Connection connection = getConnection()) {
+            connection.createStatement().executeUpdate(sql);
         }
-        connection.commit();
     }
 
     public <T> List<T> queryAndCollect(String query, Collector<T> col, Object... params) throws SQLException {
         List<T> rows = new ArrayList<>();
-        PreparedStatement stmt = connection.prepareStatement("");
+        PreparedStatement stmt = getConnection().prepareStatement("");
         for (int i = 0; i < params.length; i++) {
             stmt.setObject(i + 1, params[i]);
         }
@@ -62,7 +60,7 @@ public class Database {
     }
 
     public void query(String query, Command com) throws SQLException {
-        Statement stmt = connection.createStatement();
+        Statement stmt = getConnection().createStatement();
         ResultSet rs = stmt.executeQuery(query);
         while (rs.next()) {
             com.act(rs);
@@ -72,7 +70,7 @@ public class Database {
     }
 
     public List<String> getDescriptions(String serial_or_isbn) throws SQLException {
-        Statement stmt = connection.createStatement();
+        Statement stmt = getConnection().createStatement();
         ResultSet rs = stmt.executeQuery(serial_or_isbn);
         List<String> descriptions = new ArrayList<>();
         while (rs.next()) {
@@ -85,7 +83,7 @@ public class Database {
 
     public int getLocationKey(String value) throws SQLException {
         String sql = "SELECT * FROM Location WHERE name = \"" + value + "\"";
-        Statement stmt = connection.createStatement();
+        Statement stmt = getConnection().createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         if (!rs.next()) {
             return 0;
@@ -98,7 +96,7 @@ public class Database {
 
     public String getLocationValue(int key) throws SQLException {
         String sql = "SELECT * FROM Location WHERE id = " + key;
-        Statement stmt = connection.createStatement();
+        Statement stmt = getConnection().createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         if (!rs.next()) {
             return null;
