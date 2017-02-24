@@ -6,10 +6,19 @@
 package inventorsql;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import sql.db.Database;
 import sql.db.DatabaseCreator;
 import sql.db.Testdata;
 import storables.Item;
+import sql.db.ItemDao;
+import spark.ModelAndView;
+import static spark.Spark.*;
+import spark.template.thymeleaf.ThymeleafTemplateEngine;
+import sql.db.BookDao;
+import sql.db.FoodstuffDao;
 import sql.db.ItemDao;
 
 /**
@@ -40,16 +49,26 @@ public class Main {
 
             database.update(sql);
         }
+        
+        for (Item i : new BookDao(database).findAll()) {
+            System.out.println(i);
+        }
+        
+        System.out.println(new BookDao(database).findOne("9266c739-b79d-4da4-b339-7c23eea3c00e"));
 
-//        for (Item i : new ItemDao(database).findAll()) {
-//            System.out.println(i);
-//        }
-        System.out.println("löydä yksi");
-        Item findOne = new ItemDao(database).findOne("9bda8daf-5921-48c7-99ed-ed4a7ca0f511");
-        System.out.println(findOne);
+        get("/everything", (req, res) -> {
+            HashMap map = new HashMap<>();
+            ItemDao itemDao = new ItemDao(database);
+            if (req.queryParams("uuid") != null) {
+                List<Item> list = new ArrayList<>();
+                list.add(itemDao.findOne(req.queryParams("uuid")));
+                map.put("items", list);
+            } else {
+                map.put("items", itemDao.findAll());
+            }
 
-        System.out.println("löydä yksi");
-        Item asd = new ItemDao(database).findOne("33e3eaaf-229b-46e6-85ac-281cd6c26eb8");
-        System.out.println(asd);
+            return new ModelAndView(map, "list");
+        }, new ThymeleafTemplateEngine());
+
     }
 }

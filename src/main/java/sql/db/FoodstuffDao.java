@@ -11,73 +11,80 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import storables.Foodstuff;
 import storables.Item;
 
 /**
  *
  * @author Janne
  */
-public class ItemDao {
+public class FoodstuffDao {
 
     private Database db;
 
-    public ItemDao(Database db) {
+    public FoodstuffDao(Database db) {
         this.db = db;
     }
 
-    public Item findOne(String uuid) throws SQLException {
+    public Foodstuff findOne(String uuid) throws SQLException {
         try (Connection connection = db.getConnection()) {
-            List<Item> queryAndCollect = db.queryAndCollect("SELECT "
+            List<Foodstuff> queryAndCollect = db.queryAndCollect("SELECT "
                     + "Item.uuid, "
                     + "Item.name, "
                     + "Item.serial_number, "
                     + "Item.created_on, "
                     + "Item.location AS location_id, "
-                    + "Location.name AS location_name "
+                    + "Location.name AS location_name, "
+                    + "ExpirationDate.expiration "
                     + "FROM Item LEFT JOIN Location ON Item.location = Location.id "
-                    + "WHERE Item.deleted = 'false' AND Item.uuid = ?", rs -> {
-                        return new Item(rs.getString("uuid"),
+                    + "LEFT JOIN ExpirationDate ON Item.uuid = ExpirationDate.item_uuid "
+                    + "WHERE Item.deleted = 'false' AND Item.uuid = ? ", rs -> {
+                        return new Foodstuff(rs.getString("uuid"),
                                 rs.getString("name"),
                                 rs.getString("serial_number"),
                                 rs.getString("location_name"),
                                 rs.getInt("location_id"),
                                 new Timestamp(rs.getString("created_on")),
                                 MetaDao.getDescriptions(rs.getString("serial_number"), connection),
-                                MetaDao.getTags(rs.getString("serial_number"), connection));
+                                MetaDao.getTags(rs.getString("serial_number"), connection),
+                                new Timestamp(rs.getString("expiration")));
                     }, uuid);
             return queryAndCollect.get(0);
         }
     }
 
-    public List<Item> findAll() throws SQLException {
+    public List<Foodstuff> findAll() throws SQLException {
         try (Connection connection = db.getConnection()) {
-            List<Item> queryAndCollect = db.queryAndCollect("SELECT "
+            List<Foodstuff> queryAndCollect = db.queryAndCollect("SELECT "
                     + "Item.uuid, "
                     + "Item.name, "
                     + "Item.serial_number, "
                     + "Item.created_on, "
                     + "Item.location AS location_id, "
-                    + "Location.name AS location_name "
+                    + "Location.name AS location_name, "
+                    + "ExpirationDate.expiration "
                     + "FROM Item LEFT JOIN Location ON Item.location = Location.id "
-                    + "WHERE Item.deleted = 'false' AND Item.type = 'item'", rs -> {
-                        return new Item(rs.getString("uuid"),
+                    + "LEFT JOIN ExpirationDate ON Item.uuid = ExpirationDate.item_uuid "
+                    + "WHERE Item.deleted = 'false' AND Item.type = 'foodstuff'", rs -> {
+                        return new Foodstuff(rs.getString("uuid"),
                                 rs.getString("name"),
                                 rs.getString("serial_number"),
                                 rs.getString("location_name"),
                                 rs.getInt("location_id"),
                                 new Timestamp(rs.getString("created_on")),
                                 MetaDao.getDescriptions(rs.getString("serial_number"), connection),
-                                MetaDao.getTags(rs.getString("serial_number"), connection));
+                                MetaDao.getTags(rs.getString("serial_number"), connection),
+                                new Timestamp(rs.getString("expiration")));
                     });
             return queryAndCollect;
         }
     }
 
-    public Item create(Item t) throws SQLException {
+    public Foodstuff create(Foodstuff t) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void update(String key, Item t) throws SQLException {
+    public void update(String key, Foodstuff t) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

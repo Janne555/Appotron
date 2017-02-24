@@ -11,23 +11,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import storables.Book;
 import storables.Item;
 
 /**
  *
  * @author Janne
  */
-public class ItemDao {
+public class BookDao {
 
     private Database db;
 
-    public ItemDao(Database db) {
+    public BookDao(Database db) {
         this.db = db;
     }
 
-    public Item findOne(String uuid) throws SQLException {
+    public Book findOne(String uuid) throws SQLException {
         try (Connection connection = db.getConnection()) {
-            List<Item> queryAndCollect = db.queryAndCollect("SELECT "
+            List<Book> queryAndCollect = db.queryAndCollect("SELECT "
                     + "Item.uuid, "
                     + "Item.name, "
                     + "Item.serial_number, "
@@ -36,7 +37,7 @@ public class ItemDao {
                     + "Location.name AS location_name "
                     + "FROM Item LEFT JOIN Location ON Item.location = Location.id "
                     + "WHERE Item.deleted = 'false' AND Item.uuid = ?", rs -> {
-                        return new Item(rs.getString("uuid"),
+                        return new Book(rs.getString("uuid"),
                                 rs.getString("name"),
                                 rs.getString("serial_number"),
                                 rs.getString("location_name"),
@@ -49,9 +50,9 @@ public class ItemDao {
         }
     }
 
-    public List<Item> findAll() throws SQLException {
+    public List<Book> findAll() throws SQLException {
         try (Connection connection = db.getConnection()) {
-            List<Item> queryAndCollect = db.queryAndCollect("SELECT "
+            List<Book> queryAndCollect = db.queryAndCollect("SELECT "
                     + "Item.uuid, "
                     + "Item.name, "
                     + "Item.serial_number, "
@@ -59,8 +60,8 @@ public class ItemDao {
                     + "Item.location AS location_id, "
                     + "Location.name AS location_name "
                     + "FROM Item LEFT JOIN Location ON Item.location = Location.id "
-                    + "WHERE Item.deleted = 'false' AND Item.type = 'item'", rs -> {
-                        return new Item(rs.getString("uuid"),
+                    + "WHERE Item.deleted = 'false' AND Item.type = 'book'", rs -> {
+                        return new Book(rs.getString("uuid"),
                                 rs.getString("name"),
                                 rs.getString("serial_number"),
                                 rs.getString("location_name"),
@@ -73,11 +74,11 @@ public class ItemDao {
         }
     }
 
-    public Item create(Item t) throws SQLException {
+    public Book create(Book t) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void update(String key, Item t) throws SQLException {
+    public void update(String key, Book t) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

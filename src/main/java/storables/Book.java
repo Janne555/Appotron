@@ -28,10 +28,18 @@ public class Book extends Item {
             List<String> descriptions,
             Map<String, String> tags) {
         super(uuid, name, serial_number, location, locationId, created_on, descriptions, tags);
-        this.author = tags.remove("author");
-        this.publisher = tags.remove("publisher");
-        this.publishingYear = Integer.parseInt(tags.remove("publishing_year"));
+        this.author = super.getTags().remove("author");
+        this.publisher = super.getTags().remove("publisher");
+        this.publishingYear = Integer.parseInt(super.getTags().remove("publishing_year"));
 
+    }
+    
+    @Override
+    public String toString() {
+        return super.toString()
+                + ", author=" + author
+                + ", publisher=" + publisher
+                + ", publishing_year=" + publishingYear;
     }
 
 }

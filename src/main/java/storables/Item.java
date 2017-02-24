@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import sql.db.Type;
 
 /**
  *
@@ -18,28 +19,28 @@ public class Item {
 
     private String uuid;
     private String name;
-    private String serial_number;
+    private String serialNumber;
     private String location;
     private int locationId;
-    private Timestamp created_on;
+    private Timestamp createdOn;
     private List<String> descriptions;
     private Map<String, String> tags;
 
     public Item(String uuid,
             String name,
-            String serial_number,
+            String serialNumber,
             String location,
             int locationId,
-            Timestamp created_on,
+            Timestamp createdOn,
             List<String> descriptions,
             Map<String, String> tags) {
 
         this.uuid = uuid;
         this.name = name;
-        this.serial_number = serial_number;
+        this.serialNumber = serialNumber;
         this.location = location;
         this.locationId = locationId;
-        this.created_on = created_on;
+        this.createdOn = createdOn;
         this.descriptions = descriptions;
         this.tags = tags;
     }
@@ -48,6 +49,7 @@ public class Item {
             String serial_number,
             String location,
             int locationId,
+            Type type,
             List<String> descriptions,
             Map<String, String> tags) {
         this(UUID.randomUUID().toString(), name, serial_number, location, locationId, new Timestamp(System.currentTimeMillis()), descriptions, tags);
@@ -61,24 +63,16 @@ public class Item {
         return name;
     }
 
-    public String getSerial_number() {
-        return serial_number;
+    public String getSerialNumber() {
+        return serialNumber;
     }
 
     public String getLocation() {
         return location;
     }
 
-    public Timestamp getCreated_on() {
-        return created_on;
-    }
-
-    public void setTags(Map<String, String> tags) {
-        this.tags = tags;
-    }
-
-    public void setDescriptions(List<String> descriptions) {
-        this.descriptions = descriptions;
+    public Timestamp getCreatedOn() {
+        return createdOn;
     }
     
     public List<String> getDescriptions() {
@@ -97,9 +91,9 @@ public class Item {
     public String toString() {
         return uuid + ", "
                 + name + ", "
-                + serial_number + ", "
+                + serialNumber + ", "
                 + location + ", "
-                + ", "
+                + createdOn + ", "
                 + descriptions + ", "
                 + tags;
     }

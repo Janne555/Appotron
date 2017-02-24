@@ -24,6 +24,7 @@ import java.util.Map;
  * @author Janne
  */
 public class Database {
+
     private String address;
 
     public Database(String driver, String address) throws SQLException, ClassNotFoundException {
@@ -34,7 +35,7 @@ public class Database {
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(address);
     }
-    
+
     public void update(String sql) throws SQLException {
         try (Connection connection = getConnection()) {
             connection.createStatement().executeUpdate(sql);
@@ -43,19 +44,31 @@ public class Database {
 
     public <T> List<T> queryAndCollect(String query, Collector<T> col, Object... params) throws SQLException {
         List<T> rows = new ArrayList<>();
-        PreparedStatement stmt = getConnection().prepareStatement("");
-        for (int i = 0; i < params.length; i++) {
-            stmt.setObject(i + 1, params[i]);
+        try (Connection connection = getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(query);
+            for (int i = 0; i < params.length; i++) {
+                stmt.setObject(i + 1, params[i]);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                rows.add(col.collect(rs));
+            }
+            rs.close();
         }
-        
-        ResultSet rs = stmt.executeQuery(query);
-        
-        while (rs.next()) {
-            rows.add(col.collect(rs));
+        return rows;
+    }
+
+    public <T> List<T> queryAndCollect(String query, Collector<T> col) throws SQLException {
+        List<T> rows = new ArrayList<>();
+        try (Connection connection = getConnection()) {
+            ResultSet rs = connection.createStatement().executeQuery(query);
+            while (rs.next()) {
+                rows.add((T) col.collect(rs));
+            }
+            rs.close();
         }
-        
-        rs.close();
-        stmt.close();
         return rows;
     }
 
@@ -67,18 +80,6 @@ public class Database {
         }
         rs.close();
         stmt.close();
-    }
-
-    public List<String> getDescriptions(String serial_or_isbn) throws SQLException {
-        Statement stmt = getConnection().createStatement();
-        ResultSet rs = stmt.executeQuery(serial_or_isbn);
-        List<String> descriptions = new ArrayList<>();
-        while (rs.next()) {
-            descriptions.add(rs.getString("descriptor"));
-        }
-        rs.close();
-        stmt.close();
-        return descriptions;
     }
 
     public int getLocationKey(String value) throws SQLException {

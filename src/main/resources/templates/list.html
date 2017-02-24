@@ -1,0 +1,29 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>Alueet</title>
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <div>
+            <table>
+                <tr class="titlerow">
+                    <td>Name</td>
+                    <td>Location</td>
+                    <td>Serial Number</td>
+                    <td>UUID</td>
+                    <td>Created</td>
+                </tr>
+            <tr th:each="item: ${items}">
+                <td th:text="${item.name}">first</td>
+                <td th:text="${item.location}">first</td>
+                <td th:text="${item.serialNumber}">first</td>
+                <td th:text="${item.uuid}">first</td>
+                <td th:text="${item.createdOn}">first</td>
+            </tr>
+            </table>
+        </div>
+
+    </body>
+</html>

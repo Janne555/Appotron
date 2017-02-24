@@ -27,9 +27,15 @@ public class Foodstuff extends Item {
             Map<String, String> tags,
             Timestamp expirationDate) {
         super(uuid, name, serial_number, location, locationId, created_on, descriptions, tags);
+        this.expirationDate = expirationDate;
     }
 
     public Timestamp getExpirationDate() {
         return expirationDate;
+    }
+    
+    @Override
+    public String toString() {
+        return super.toString() + ", " + expirationDate;
     }
 }
