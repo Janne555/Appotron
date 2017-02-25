@@ -17,9 +17,8 @@ import sql.db.ItemDao;
 import spark.ModelAndView;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
-import sql.db.BookDao;
-import sql.db.FoodstuffDao;
 import sql.db.ItemDao;
+import storables.Foodstuff;
 
 /**
  *
@@ -49,26 +48,39 @@ public class Main {
 
             database.update(sql);
         }
+
+        ItemDao itemDao = new ItemDao(database);
         
-        for (Item i : new BookDao(database).findAll()) {
-            System.out.println(i);
+        for (Item it : itemDao.findAll()) {
+            System.out.println(it);
         }
         
-        System.out.println(new BookDao(database).findOne("9266c739-b79d-4da4-b339-7c23eea3c00e"));
-
-        get("/everything", (req, res) -> {
+        get("/", (req, res) -> {
             HashMap map = new HashMap<>();
-            ItemDao itemDao = new ItemDao(database);
-            if (req.queryParams("uuid") != null) {
-                List<Item> list = new ArrayList<>();
-                list.add(itemDao.findOne(req.queryParams("uuid")));
-                map.put("items", list);
-            } else {
-                map.put("items", itemDao.findAll());
-            }
-
+            List<Item> list = new ArrayList<>();
+            list.addAll(itemDao.findAll());
+            map.put("items", list);
             return new ModelAndView(map, "list");
         }, new ThymeleafTemplateEngine());
 
+        get("/find", (req, res) -> {
+            HashMap map = new HashMap<>();
+            String type;
+            if ((type = req.queryParams("type")) != null && req.queryParams("all").equals("true")) {
+                switch (type) {
+                    case "item":
+                        map.put("items", itemDao.findAll());
+                        break;
+                    case "foodstuff":
+                        break;
+                    case "book":
+                        break;
+                    default:
+                        throw new AssertionError();
+                }
+            } else {
+            }
+            return new ModelAndView(map, "list");
+        }, new ThymeleafTemplateEngine());
     }
 }
