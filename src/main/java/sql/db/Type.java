@@ -10,7 +10,19 @@ package sql.db;
  * @author Janne
  */
 public enum Type {
-    ITEM, FOODSTUFF, BOOK;
+    ITEM("item"), 
+    FOODSTUFF("foodstuff"),
+    BOOK("book");
+    
+    private final String type;
+
+    private Type(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
     
     public static Type parseType(String type) {
         switch (type) {

@@ -25,6 +25,7 @@ public class Item {
     private Timestamp createdOn;
     private List<String> descriptions;
     private Map<String, String> tags;
+    private Type type;
 
     public Item(String uuid,
             String name,
@@ -33,7 +34,8 @@ public class Item {
             int locationId,
             Timestamp createdOn,
             List<String> descriptions,
-            Map<String, String> tags) {
+            Map<String, String> tags,
+            Type type) {
 
         this.uuid = uuid;
         this.name = name;
@@ -43,16 +45,7 @@ public class Item {
         this.createdOn = createdOn;
         this.descriptions = descriptions;
         this.tags = tags;
-    }
-
-    public Item(String name,
-            String serial_number,
-            String location,
-            int locationId,
-            Type type,
-            List<String> descriptions,
-            Map<String, String> tags) {
-        this(UUID.randomUUID().toString(), name, serial_number, location, locationId, new Timestamp(System.currentTimeMillis()), descriptions, tags);
+        this.type = type;
     }
 
     public String getUuid() {

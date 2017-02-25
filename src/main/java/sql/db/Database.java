@@ -47,10 +47,10 @@ public class Database {
         try (Connection connection = getConnection()) {
             PreparedStatement stmt = connection.prepareStatement(query);
             for (int i = 0; i < params.length; i++) {
+                System.out.println(params[i]);
                 stmt.setObject(i + 1, params[i]);
             }
             
-            System.out.println();
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {

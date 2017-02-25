@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javafx.util.Pair;
 import sql.db.Database;
 import sql.db.DatabaseCreator;
 import sql.db.Testdata;
@@ -18,7 +19,8 @@ import spark.ModelAndView;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import sql.db.ItemDao;
-import storables.Foodstuff;
+import sql.db.Search;
+import sql.db.Type;
 
 /**
  *
@@ -48,10 +50,11 @@ public class Main {
 
             database.update(sql);
         }
-
+        
+        
         ItemDao itemDao = new ItemDao(database);
         
-        for (Item it : itemDao.findAll()) {
+        for (Item it : itemDao.findBy(new HashMap<>())) {
             System.out.println(it);
         }
         
@@ -65,22 +68,27 @@ public class Main {
 
         get("/find", (req, res) -> {
             HashMap map = new HashMap<>();
-            String type;
-            if ((type = req.queryParams("type")) != null && req.queryParams("all").equals("true")) {
-                switch (type) {
-                    case "item":
-                        map.put("items", itemDao.findAll());
-                        break;
-                    case "foodstuff":
-                        break;
-                    case "book":
-                        break;
-                    default:
-                        throw new AssertionError();
+            if (req.queryParams("all").equals("true")) {
+                HashMap searchTerms = new HashMap<>();
+                for (String queryParam : req.queryParams()) {
+                    if (queryParam.equals("all")) {
+                        continue;
+                    }
+                    searchTerms.put(Search.parseSearch(queryParam), req.queryParams(queryParam));
                 }
+                map.put("items", itemDao.findBy(searchTerms));
+                
             } else {
             }
             return new ModelAndView(map, "list");
         }, new ThymeleafTemplateEngine());
+    }
+    
+    public static Pair<Search, String>[] getPairs(List<Pair<Search, String>> stuff) {
+        Pair<Search, String>[] pairs = new Pair[stuff.size()];
+        for (int i = 0; i < stuff.size(); i++) {
+            pairs[i] = stuff.get(i);
+        }
+        return pairs;
     }
 }
