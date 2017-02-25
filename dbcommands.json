@@ -85,10 +85,12 @@
 		"columns":
 		[
 		{
-			"uuid": "STRING PRIMARY KEY",
+			"id": "INTEGER PRIMARY KEY AUTOINCREMENT",
+			"item_uuid": "STRING",
 			"serial_number": "STRING NOT NULL",
 			"key": "STRING NOT NULL",
-			"value": "STRING"
+			"value": "STRING",
+			"FOREIGN ": "KEY(serial_number) REFERENCES Item(serial_number)"
 		}
 		]
 	},
@@ -100,17 +102,6 @@
 			"id": "INTEGER PRIMARY KEY AUTOINCREMENT",
 			"name": "STRING UNIQUE NOT NULL",
 			"deleted": "BOOLEAN NOT NULL"
-		}
-		]
-	},
-	{
-		"name": "ExpirationDate",
-		"columns":
-		[
-		{
-			"item_uuid": "STRING NOT NULL",
-			"expiration": "TIMESTAMP NOT NULL",
-			"FOREIGN ": "KEY(item_uuid) REFERENCES Item(uuid)"
 		}
 		]
 	}

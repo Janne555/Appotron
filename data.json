@@ -46,21 +46,21 @@
 },
 {
 	"type": "tag",
-	"uuid": "'e47ade57-1b93-48bd-a5a4-d19f99e61897'",
+	"item_uuid": "''",
 	"serial_number": "'r05k4pu551'",
 	"key": "'tilavuus'",
 	"value": "'20l'"
 },
 {
 	"type": "tag",
-	"uuid": "'b11d90e3-3698-4ffa-8acf-2bc86b33d880'",
+	"item_uuid": "''",
 	"serial_number": "'r05k4pu551'",
 	"key": "'aäri'",
 	"value": "'musta'"
 },
 {
 	"type": "tag",
-	"uuid": "'1e6fad2a-78ad-4edd-a1ff-7cf6996e0428'",
+	"item_uuid": "''",
 	"serial_number": "'r05k4pu551'",
 	"key": "'laatu'",
 	"value": "'huono'"
@@ -94,14 +94,14 @@
 },
 {
 	"type": "tag",
-	"uuid": "'5a694c82-42ec-4aec-932b-373b31cff5b1'",
+	"item_uuid": "''",
 	"serial_number": "'kyn4'",
 	"key": "'malli'",
 	"value": "'mustekynä'"
 },
 {
 	"type": "tag",
-	"uuid": "'5b694c82-42ec-4aec-932b-373b31cff5b1'",
+	"item_uuid": "''",
 	"serial_number": "'kyn4'",
 	"key": "'vari'",
 	"value": "'punainen'"
@@ -117,28 +117,28 @@
 },
 {
 	"type": "tag",
-	"uuid": "'342a6e67-eafb-4565-ba8f-06f94f2c1210'",
+	"item_uuid": "''",
 	"serial_number": "'r44m477u'",
 	"key": "'author'",
 	"value": "'ihminen'"
 },
 {
 	"type": "tag",
-	"uuid": "'6582ee68-7bdb-4d32-86d4-fbcbc2113382'",
+	"item_uuid": "''",
 	"serial_number": "'r44m477u'",
 	"key": "'publisher'",
 	"value": "'kirkko'"
 },
 {
 	"type": "tag",
-	"uuid": "'adcecea3-67e4-497b-8962-fca4f4f16043'",
+	"item_uuid": "''",
 	"serial_number": "'r44m477u'",
 	"key": "'publishing_year'",
 	"value": "'1300'"
 },
 {
 	"type": "tag",
-	"uuid": "'26541c9d-760a-4abb-9421-710a3585ce55'",
+	"item_uuid": "''",
 	"serial_number": "'r44m477u'",
 	"key": "'genre'",
 	"value": "'fiktio'"
@@ -154,28 +154,28 @@
 },
 {
 	"type": "tag",
-	"uuid": "'b9aceb1c-2f5f-4b18-9fa6-aba4f33d92da'",
+	"item_uuid": "''",
 	"serial_number": "'74ry50rmu573nh3rr4574'",
 	"key": "'author'",
 	"value": "'j.r.r tolkien'"
 },
 {
 	"type": "tag",
-	"uuid": "'d35ac65c-f705-4683-a1c9-0d8307771798'",
+	"item_uuid": "''",
 	"serial_number": "'74ry50rmu573nh3rr4574'",
 	"key": "'publisher'",
 	"value": "''"
 },
 {
 	"type": "tag",
-	"uuid": "'5d94dd37-df9e-4bb2-9ef1-25d8cc9af71b'",
+	"item_uuid": "''",
 	"serial_number": "'74ry50rmu573nh3rr4574'",
 	"key": "'publishing_year'",
 	"value": "'2000'"
 },
 {
 	"type": "tag",
-	"uuid": "'e4572b05-5193-4dda-808f-0eb4baa0b698'",
+	"item_uuid": "''",
 	"serial_number": "'74ry50rmu573nh3rr4574'",
 	"key": "'genre'",
 	"value": "'fantasia'"
@@ -191,28 +191,28 @@
 },
 {
 	"type": "tag",
-	"uuid": "'02dbfebd-18c9-4d15-865b-fec172e79ddd'",
+	"item_uuid": "''",
 	"serial_number": "'7h353lf15hg3n3'",
 	"key": "'author'",
 	"value": "'richard dawkins'"
 },
 {
 	"type": "tag",
-	"uuid": "'808b62c6-2781-479e-8fc1-6656c909846b'",
+	"item_uuid": "''",
 	"serial_number": "'7h353lf15hg3n3'",
 	"key": "'publisher'",
 	"value": "'oxford'"
 },
 {
 	"type": "tag",
-	"uuid": "'5ef82bb2-5320-45d5-ba9b-c9d0d61c1161'",
+	"item_uuid": "''",
 	"serial_number": "'7h353lf15hg3n3'",
 	"key": "'publishing_year'",
 	"value": "'1970'"
 },
 {
 	"type": "tag",
-	"uuid": "'fd513d15-951b-4569-81bf-95d8831301cd'",
+	"item_uuid": "''",
 	"serial_number": "'7h353lf15hg3n3'",
 	"key": "'genre'",
 	"value": "'tiede'"
@@ -228,28 +228,28 @@
 },
 {
 	"type": "tag",
-	"uuid": "'2f73be9d-fddb-4702-ab48-96dfcb41127a'",
+	"item_uuid": "''",
 	"serial_number": "'4g4m30f7hr0n35'",
 	"key": "'author'",
 	"value": "'g.r.r martin'"
 },
 {
 	"type": "tag",
-	"uuid": "'948b6328-1092-4b97-bb91-e989f25e998e'",
+	"item_uuid": "''",
 	"serial_number": "'4g4m30f7hr0n35'",
 	"key": "'publisher'",
 	"value": "'publishing house'"
 },
 {
 	"type": "tag",
-	"uuid": "'611e9d6d-02a0-4981-a204-c9dcfcb2ae2a'",
+	"item_uuid": "''",
 	"serial_number": "'4g4m30f7hr0n35'",
 	"key": "'publishing_year'",
 	"value": "'1990'"
 },
 {
 	"type": "tag",
-	"uuid": "'4a4848f3-2ae0-4720-acf1-7b3e7b0e0021'",
+	"item_uuid": "''",
 	"serial_number": "'4g4m30f7hr0n35'",
 	"key": "'genre'",
 	"value": "'fantasia'"
@@ -265,28 +265,28 @@
 },
 {
 	"type": "tag",
-	"uuid": "'658533d1-5c6c-4781-baff-c1e2997d41b8'",
+	"item_uuid": "''",
 	"serial_number": "'k1rj4n3n'",
 	"key": "'author'",
 	"value": "'kirjailijanen'"
 },
 {
 	"type": "tag",
-	"uuid": "'8fca5e6f-5c9d-4eec-ac5e-8c9f16b5beac'",
+	"item_uuid": "''",
 	"serial_number": "'k1rj4n3n'",
 	"key": "'publisher'",
 	"value": "'julkaisijanen'"
 },
 {
 	"type": "tag",
-	"uuid": "'f148f2fc-5299-43c1-ac78-5b7ed60a8fb3'",
+	"item_uuid": "''",
 	"serial_number": "'k1rj4n3n'",
 	"key": "'publishing_year'",
 	"value": "'1999'"
 },
 {
 	"type": "tag",
-	"uuid": "'770767cf-7f2b-4f18-9e05-f57c491f398b'",
+	"item_uuid": "''",
 	"serial_number": "'k1rj4n3n'",
 	"key": "'genre'",
 	"value": "'testi'"
@@ -301,9 +301,11 @@
 	"created_on": "'2017-02-03 23:21:23'"
 },
 {
-	"type": "expiration",
+	"type": "tag",
 	"item_uuid": "'d5486bec-c2b5-4f52-9955-43d1252ad0c3'",
-	"expiration": "'2017-03-07 23:21:23'"
+	"serial_number": "'b4n44n1'",
+	"key": "'expiration'",
+	"value": "'2017-03-07 23:21:23'"
 },
 {
 	"main": "'foodstuff'",
@@ -315,9 +317,11 @@
 	"created_on": "'2017-02-03 23:21:23'"
 },
 {
-	"type": "expiration",
+	"type": "tag",
 	"item_uuid": "'5ad004c1-cfb0-43a2-896b-64e9919bb38a'",
-	"expiration": "'2017-10-07 23:21:23'"
+	"serial_number": "'k375upp1'",
+	"key": "'expiration'",
+	"value": "'2017-03-07 23:21:23'"
 },
 {
 	"main": "'foodstuff'",
@@ -329,23 +333,27 @@
 	"created_on": "'2017-02-03 23:21:23'"
 },
 {
-	"type": "expiration",
+	"type": "tag",
 	"item_uuid": "'d91482a4-9c57-477c-807e-e2656f6afeda'",
-	"expiration": "'2018-03-07 23:21:23'"
+	"serial_number": "'k4hv1'",
+	"key": "'expiration'",
+	"value": "'2017-03-07 23:21:23'"
 },
 {
 	"main": "'foodstuff'",
 	"type": "item",
-	"uuid": "'d982c17e-ccdb-4b9f-bb6b-139c989e4b16'",
+	"uuid": "'d982c17e-ccdb-4b9f-bb6b-130c989e4b16'",
 	"name": "'maito'",
 	"serial_number": "'m4170'",
 	"location": "1",
 	"created_on": "'2017-02-03 23:21:23'"
 },
 {
-	"type": "expiration",
-	"item_uuid": "'d982c17e-ccdb-4b9f-bb6b-139c989e4b16'",
-	"expiration": "'2017-02-09 23:21:23'"
+	"type": "tag",
+	"item_uuid": "'d982c17e-ccdb-4b9f-bb6b-130c989e4b16'",
+	"serial_number": "'m4170'",
+	"key": "'expiration'",
+	"value": "'2017-03-07 23:21:23'"
 },
 {
 	"main": "'foodstuff'",
@@ -357,8 +365,10 @@
 	"created_on": "'2017-02-03 23:21:23'"
 },
 {
-	"type": "expiration",
+	"type": "tag",
 	"item_uuid": "'b1708bb4-bae3-42ca-bb55-a6365f87df68'",
-	"expiration": "'2017-02-09 23:21:23'"
+	"serial_number": "'m4170'",
+	"key": "'expiration'",
+	"value": "'2017-03-07 23:21:23'"
 }
 ]}

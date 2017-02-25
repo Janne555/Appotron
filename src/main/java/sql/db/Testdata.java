@@ -53,9 +53,9 @@ public class Testdata {
                             + "'false')";
                     break;
                 case "tag":
-                    sql += "Tag(uuid, serial_number, key, value)"
+                    sql += "Tag(item_uuid, serial_number, key, value)"
                             + " VALUES("
-                            + o.get("uuid").getAsString() + ", "
+                            + o.get("item_uuid").getAsString() + ", "
                             + o.get("serial_number").getAsString() + ", "
                             + o.get("key").getAsString() + ", "
                             + o.get("value").getAsString() + ")";
@@ -67,12 +67,8 @@ public class Testdata {
                             + o.get("serial_number").getAsString() + ", "
                             + o.get("descriptor").getAsString() + ")";
                     break;
-                case "expiration":
-                    sql += "ExpirationDate(item_uuid, expiration)"
-                            + " VALUES("
-                            + o.get("item_uuid").getAsString() + ", "
-                            + o.get("expiration").getAsString() + ")";
             }
+            System.out.println(sql);
             inserts.add(sql);
         }
     }

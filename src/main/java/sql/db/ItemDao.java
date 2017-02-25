@@ -6,11 +6,8 @@
 package sql.db;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import storables.Item;
 
 /**
@@ -43,12 +40,12 @@ public class ItemDao {
                                 rs.getInt("location_id"),
                                 new Timestamp(rs.getString("created_on")),
                                 MetaDao.getDescriptions(rs.getString("serial_number"), connection),
-                                MetaDao.getTags(rs.getString("serial_number"), connection));
+                                MetaDao.getTags(rs.getString("serial_number"), rs.getString("uuid"), connection));
                     }, uuid);
             return queryAndCollect.get(0);
         }
     }
-
+    
     public List<Item> findAll() throws SQLException {
         try (Connection connection = db.getConnection()) {
             List<Item> queryAndCollect = db.queryAndCollect("SELECT "
@@ -67,7 +64,7 @@ public class ItemDao {
                                 rs.getInt("location_id"),
                                 new Timestamp(rs.getString("created_on")),
                                 MetaDao.getDescriptions(rs.getString("serial_number"), connection),
-                                MetaDao.getTags(rs.getString("serial_number"), connection));
+                                MetaDao.getTags(rs.getString("serial_number"), rs.getString("uuid"), connection));
                     });
             return queryAndCollect;
         }

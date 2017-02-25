@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class MetaDao {
 
-    public static Map<String, String> getTags(String serialNumber, Connection connection) throws SQLException {
+    public static Map<String, String> getTags(String serialNumber, String uuid, Connection connection) throws SQLException {
         Map<String, String> tags = new HashMap<>();
         PreparedStatement statement = connection.prepareStatement(
                 "SELECT * FROM Tag WHERE serial_number = ?");
@@ -28,6 +28,14 @@ public class MetaDao {
         ResultSet rs = statement.executeQuery();
         while (rs.next()) {
             try {
+                if (rs.getString("key").equals("expiration")) {
+                    if (rs.getString("item_uuid").equals(uuid)) {
+                        tags.put(rs.getString("key"), rs.getString("value"));
+                        continue;
+                    } else {
+                        continue;
+                    }
+                }
                 tags.put(rs.getString("key"), rs.getString("value"));
             } catch (SQLException ex) {
                 System.out.println(ex);
