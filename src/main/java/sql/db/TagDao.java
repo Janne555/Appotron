@@ -32,38 +32,39 @@ public class TagDao {
     public Tag findOne(int id) throws SQLException {
         List<Tag> queryAndCollect = db.queryAndCollect(select + " WHERE id = ?", rs -> {
             return new Tag(rs.getInt("id"),
-                    rs.getString("item_uuid"),
-                    rs.getString("serial_number"),
+                    rs.getString("identifier"),
                     rs.getString("key"),
-                    rs.getString("value"));
+                    rs.getString("value"),
+                    rs.getString("type"));
         }, id);
         return queryAndCollect.get(0);
     }
-
+    
     public List<Tag> findAll() throws SQLException {
         List<Tag> queryAndCollect = db.queryAndCollect(select, rs -> {
             return new Tag(rs.getInt("id"),
-                    rs.getString("item_uuid"),
-                    rs.getString("serial_number"),
+                    rs.getString("identifier"),
                     rs.getString("key"),
-                    rs.getString("value"));
+                    rs.getString("value"),
+                    rs.getString("type"));
         });
         return queryAndCollect;
     }
 
-    public List<Tag> findAllBySerial(String serialNumber) throws SQLException {
-        List<Tag> queryAndCollect = db.queryAndCollect(select + " WHERE serial_number = ?", rs -> {
+    public List<Tag> findAllByIdentifier(String identifier) throws SQLException {
+        List<Tag> queryAndCollect = db.queryAndCollect(select + " WHERE identifier = ?", rs -> {
             return new Tag(rs.getInt("id"),
-                    rs.getString("item_uuid"),
-                    rs.getString("serial_number"),
+                    rs.getString("identifier"),
                     rs.getString("key"),
-                    rs.getString("value"));
-        }, serialNumber);
+                    rs.getString("value"),
+                    rs.getString("type"));
+        }, identifier);
+
         return queryAndCollect;
     }
 
     public void create(Tag t) throws SQLException {
-        db.update("INSERT INTO Tag(item_uuid, serial_number, key, value) VALUES(?, ?, ?, ?)", t.getObjs());
+        db.update("INSERT INTO Tag(identifier, key, value, type) VALUES(?, ?, ?, ?)", t.getObjs());
     }
 
     public void create(List<Tag> tags) throws SQLException {

@@ -70,27 +70,15 @@
 		]
 	},
 	{
-		"name": "Description",
-		"columns":
-		[
-		{
-			"uuid": "STRING PRIMARY KEY",
-			"serial_number": "STRING NOT NULL",
-			"descriptor": "STRING"
-		}
-		]
-	},
-	{
 		"name": "Tag",
 		"columns":
 		[
 		{
 			"id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-			"item_uuid": "STRING",
-			"serial_number": "STRING NOT NULL",
+			"identifier": "STRING NOT NULL",
 			"key": "STRING NOT NULL",
 			"value": "STRING",
-			"FOREIGN ": "KEY(serial_number) REFERENCES Item(serial_number)"
+			"type": "STRING NOT NULL"
 		}
 		]
 	},

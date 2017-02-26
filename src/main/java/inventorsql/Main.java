@@ -46,7 +46,7 @@ public class Main {
         Testdata td = new Testdata("data.json");
 
         for (String sql : td.getInserts()) {
-//            System.out.println(sql);
+            System.out.println(sql);
 
             database.update(sql);
         }
@@ -54,12 +54,12 @@ public class Main {
         ItemDao itemDao = new ItemDao(database);
         TagDao tagDao = new TagDao(database);
 
-        tagDao.create(new Tag(0, "d982c17e-ccdb-4b9f-bb6b-130c989e4b16", "m4170", "käyttöaste", "kulunut"));
-        
-        Tag findOne = tagDao.findOne(31);
-        findOne.setValue("uuden veroinen");
-        System.out.println(findOne);
-        tagDao.update(findOne);
+//        tagDao.create(new Tag(0, "d982c17e-ccdb-4b9f-bb6b-130c989e4b16", "m4170", "käyttöaste", "kulunut"));
+//        
+//        Tag findOne = tagDao.findOne(31);
+//        findOne.setValue("uuden veroinen");
+//        System.out.println(findOne);
+//        tagDao.update(findOne);
 
 //        for (Tag tag : tagDao.findAll()) {
 //            System.out.println(tag);
@@ -69,7 +69,7 @@ public class Main {
 //            System.out.println(it);
 //        }
 
-        System.out.println(itemDao.findOne("d982c17e-ccdb-4b9f-bb6b-130c989e4b16"));
+//        System.out.println(itemDao.findOne("d982c17e-ccdb-4b9f-bb6b-130c989e4b16"));
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();

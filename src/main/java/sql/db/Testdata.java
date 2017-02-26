@@ -53,20 +53,15 @@ public class Testdata {
                             + "'false')";
                     break;
                 case "tag":
-                    sql += "Tag(item_uuid, serial_number, key, value)"
+                    sql += "Tag(identifier, key, value, type)"
                             + " VALUES("
-                            + o.get("item_uuid").getAsString() + ", "
-                            + o.get("serial_number").getAsString() + ", "
+                            + o.get("identifier").getAsString() + ", "
                             + o.get("key").getAsString() + ", "
-                            + o.get("value").getAsString() + ")";
+                            + o.get("value").getAsString() + ", "
+                            + o.get("main").getAsString() + ")";
                     break;
                 case "description":
-                    sql += "Description(uuid, serial_number, descriptor)"
-                            + " VALUES("
-                            + o.get("uuid").getAsString() + ", "
-                            + o.get("serial_number").getAsString() + ", "
-                            + o.get("descriptor").getAsString() + ")";
-                    break;
+                    continue;
             }
             System.out.println(sql);
             inserts.add(sql);

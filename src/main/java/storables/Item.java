@@ -21,7 +21,6 @@ public class Item {
     private String location;
     private int locationId;
     private Timestamp createdOn;
-    private List<String> descriptions;
     private List<Tag> tags;
     private Type type;
 
@@ -31,24 +30,17 @@ public class Item {
             String location,
             int locationId,
             Timestamp createdOn,
-            List<String> descriptions,
+            List<Tag> uuidTags,
             List<Tag> tags,
             Type type) {
-
+        
+        tags.addAll(uuidTags);
         this.uuid = uuid;
         this.name = name;
         this.serialNumber = serialNumber;
         this.location = location;
         this.locationId = locationId;
         this.createdOn = createdOn;
-        for (int i = 0; i < tags.size(); i++) {
-            Tag tag = tags.get(i);
-            if (!tag.getItemUuid().equals("") && !tag.getItemUuid().equals(uuid)) {
-                tags.remove(i);
-            }
-        }
-        
-        this.descriptions = descriptions;
         this.tags = tags;
         this.type = type;
     }
@@ -73,10 +65,6 @@ public class Item {
         return createdOn;
     }
     
-    public List<String> getDescriptions() {
-        return descriptions;
-    }
-
     public List<Tag> getTags() {
         return tags;
     }
@@ -103,8 +91,7 @@ public class Item {
                 + name + ", "
                 + serialNumber + ", "
                 + location + ", "
-                + createdOn + ", "
-                + descriptions + ", ";
+                + createdOn + ", ";
         
         for (Tag tag : tags) {
             result += ", " + tag;

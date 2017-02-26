@@ -10,29 +10,28 @@ package storables;
  * @author Janne
  */
 public class Tag {
-
     private int id;
-    private String itemUuid;
-    private String serialNumber;
+    private String identifier;
     private String key;
     private String value;
+    private String type;
 
-    public Tag(int id, String itemUuid, String serialNumber, String key, String value) {
-        this.itemUuid = "" + itemUuid;
-        this.serialNumber = "" + serialNumber;
-        this.key = "" + key;
-        this.value = "" + value;
+    public Tag(int id, String identifier, String key, String value, String type) {
+        this.identifier = identifier;
+        this.key = key;
+        this.value = value;
         this.id = id;
+        this.type = type;
     }
 
-    public void setItemUuid(String itemUuid) {
-        this.itemUuid = itemUuid;
+    public String getIdentifier() {
+        return identifier;
     }
 
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
+    public String getType() {
+        return type;
     }
-
+    
     public void setKey(String key) {
         this.key = key;
     }
@@ -45,14 +44,6 @@ public class Tag {
         return id;
     }
 
-    public String getItemUuid() {
-        return itemUuid;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
     public String getKey() {
         return key;
     }
@@ -62,21 +53,19 @@ public class Tag {
     }
 
     public Object[] getObjs() {
-        Object[] objs = new Object[4];
-        objs[0] = itemUuid;
-        objs[1] = serialNumber;
-        objs[2] = key;
-        objs[3] = value;
+        Object[] objs = new Object[3];
+        objs[0] = identifier;
+        objs[1] = key;
+        objs[2] = value;
         return objs;
     }
 
     public Object[] getObjsId() {
-        Object[] objs = new Object[5];
-        objs[0] = itemUuid;
-        objs[1] = serialNumber;
-        objs[2] = key;
-        objs[3] = value;
-        objs[4] = id;
+        Object[] objs = new Object[4];
+        objs[0] = identifier;
+        objs[1] = key;
+        objs[2] = value;
+        objs[3] = id;
         return objs;
     }
 

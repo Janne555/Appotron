@@ -47,23 +47,26 @@
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'r05k4pu551'",
+	"identifier": "'r05k4pu551'",
 	"key": "'tilavuus'",
-	"value": "'20l'"
+	"value": "'20l'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'r05k4pu551'",
+	"identifier": "'r05k4pu551'",
 	"key": "'aäri'",
-	"value": "'musta'"
+	"value": "'musta'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'r05k4pu551'",
+	"identifier": "'r05k4pu551'",
 	"key": "'laatu'",
-	"value": "'huono'"
+	"value": "'huono'",
+	"main": "'serial'"
 },
 {
 	"main": "'item'",
@@ -95,16 +98,18 @@
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'kyn4'",
+	"identifier": "'kyn4'",
 	"key": "'malli'",
-	"value": "'mustekynä'"
+	"value": "'mustekynä'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'kyn4'",
+	"identifier": "'kyn4'",
 	"key": "'vari'",
-	"value": "'punainen'"
+	"value": "'punainen'",
+	"main": "'serial'"
 },
 {
 	"main": "'book'",
@@ -118,30 +123,34 @@
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'r44m477u'",
+	"identifier": "'r44m477u'",
 	"key": "'author'",
-	"value": "'ihminen'"
+	"value": "'ihminen'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'r44m477u'",
+	"identifier": "'r44m477u'",
 	"key": "'publisher'",
-	"value": "'kirkko'"
+	"value": "'kirkko'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'r44m477u'",
+	"identifier": "'r44m477u'",
 	"key": "'publishing_year'",
-	"value": "'1300'"
+	"value": "'1300'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'r44m477u'",
+	"identifier": "'r44m477u'",
 	"key": "'genre'",
-	"value": "'fiktio'"
+	"value": "'fiktio'",
+	"main": "'serial'"
 },
 {
 	"main": "'book'",
@@ -155,30 +164,34 @@
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'74ry50rmu573nh3rr4574'",
+	"identifier": "'74ry50rmu573nh3rr4574'",
 	"key": "'author'",
-	"value": "'j.r.r tolkien'"
+	"value": "'j.r.r tolkien'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'74ry50rmu573nh3rr4574'",
+	"identifier": "'74ry50rmu573nh3rr4574'",
 	"key": "'publisher'",
-	"value": "''"
+	"value": "''",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'74ry50rmu573nh3rr4574'",
+	"identifier": "'74ry50rmu573nh3rr4574'",
 	"key": "'publishing_year'",
-	"value": "'2000'"
+	"value": "'2000'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'74ry50rmu573nh3rr4574'",
+	"identifier": "'74ry50rmu573nh3rr4574'",
 	"key": "'genre'",
-	"value": "'fantasia'"
+	"value": "'fantasia'",
+	"main": "'serial'"
 },
 {
 	"main": "'book'",
@@ -192,30 +205,34 @@
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'7h353lf15hg3n3'",
+	"identifier": "'7h353lf15hg3n3'",
 	"key": "'author'",
-	"value": "'richard dawkins'"
+	"value": "'richard dawkins'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'7h353lf15hg3n3'",
+	"identifier": "'7h353lf15hg3n3'",
 	"key": "'publisher'",
-	"value": "'oxford'"
+	"value": "'oxford'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'7h353lf15hg3n3'",
+	"identifier": "'7h353lf15hg3n3'",
 	"key": "'publishing_year'",
-	"value": "'1970'"
+	"value": "'1970'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'7h353lf15hg3n3'",
+	"identifier": "'7h353lf15hg3n3'",
 	"key": "'genre'",
-	"value": "'tiede'"
+	"value": "'tiede'",
+	"main": "'serial'"
 },
 {
 	"main": "'book'",
@@ -229,30 +246,34 @@
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'4g4m30f7hr0n35'",
+	"identifier": "'4g4m30f7hr0n35'",
 	"key": "'author'",
-	"value": "'g.r.r martin'"
+	"value": "'g.r.r martin'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'4g4m30f7hr0n35'",
+	"identifier": "'4g4m30f7hr0n35'",
 	"key": "'publisher'",
-	"value": "'publishing house'"
+	"value": "'publishing house'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'4g4m30f7hr0n35'",
+	"identifier": "'4g4m30f7hr0n35'",
 	"key": "'publishing_year'",
-	"value": "'1990'"
+	"value": "'1990'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'4g4m30f7hr0n35'",
+	"identifier": "'4g4m30f7hr0n35'",
 	"key": "'genre'",
-	"value": "'fantasia'"
+	"value": "'fantasia'",
+	"main": "'serial'"
 },
 {
 	"main": "'book'",
@@ -266,30 +287,34 @@
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'k1rj4n3n'",
+	"identifier": "'k1rj4n3n'",
 	"key": "'author'",
-	"value": "'kirjailijanen'"
+	"value": "'kirjailijanen'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'k1rj4n3n'",
+	"identifier": "'k1rj4n3n'",
 	"key": "'publisher'",
-	"value": "'julkaisijanen'"
+	"value": "'julkaisijanen'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'k1rj4n3n'",
+	"identifier": "'k1rj4n3n'",
 	"key": "'publishing_year'",
-	"value": "'1999'"
+	"value": "'1999'",
+	"main": "'serial'"
 },
 {
 	"type": "tag",
 	"item_uuid": "''",
-	"serial_number": "'k1rj4n3n'",
+	"identifier": "'k1rj4n3n'",
 	"key": "'genre'",
-	"value": "'testi'"
+	"value": "'testi'",
+	"main": "'serial'"
 },
 {
 	"main": "'foodstuff'",
@@ -302,10 +327,10 @@
 },
 {
 	"type": "tag",
-	"item_uuid": "'d5486bec-c2b5-4f52-9955-43d1252ad0c3'",
-	"serial_number": "'b4n44n1'",
+	"identifier": "'d5486bec-c2b5-4f52-9955-43d1252ad0c3'",
 	"key": "'expiration'",
-	"value": "'2017-03-07 23:21:23'"
+	"value": "'2017-03-07 23:21:23'",
+	"main": "'uuid'"
 },
 {
 	"main": "'foodstuff'",
@@ -318,10 +343,10 @@
 },
 {
 	"type": "tag",
-	"item_uuid": "'5ad004c1-cfb0-43a2-896b-64e9919bb38a'",
-	"serial_number": "'k375upp1'",
+	"identifier": "'5ad004c1-cfb0-43a2-896b-64e9919bb38a'",
 	"key": "'expiration'",
-	"value": "'2017-03-07 23:21:23'"
+	"value": "'2017-03-07 23:21:23'",
+	"main": "'uuid'"
 },
 {
 	"main": "'foodstuff'",
@@ -334,10 +359,10 @@
 },
 {
 	"type": "tag",
-	"item_uuid": "'d91482a4-9c57-477c-807e-e2656f6afeda'",
-	"serial_number": "'k4hv1'",
+	"identifier": "'d91482a4-9c57-477c-807e-e2656f6afeda'",
 	"key": "'expiration'",
-	"value": "'2017-03-07 23:21:23'"
+	"value": "'2017-03-07 23:21:23'",
+	"main": "'uuid'"
 },
 {
 	"main": "'foodstuff'",
@@ -350,10 +375,10 @@
 },
 {
 	"type": "tag",
-	"item_uuid": "'d982c17e-ccdb-4b9f-bb6b-130c989e4b16'",
-	"serial_number": "'m4170'",
+	"identifier": "'d982c17e-ccdb-4b9f-bb6b-130c989e4b16'",
 	"key": "'expiration'",
-	"value": "'2017-03-07 23:21:23'"
+	"value": "'2017-03-07 23:21:23'",
+	"main": "'uuid'"
 },
 {
 	"main": "'foodstuff'",
@@ -366,9 +391,9 @@
 },
 {
 	"type": "tag",
-	"item_uuid": "'b1708bb4-bae3-42ca-bb55-a6365f87df68'",
-	"serial_number": "'m4170'",
+	"identifier": "'b1708bb4-bae3-42ca-bb55-a6365f87df68'",
 	"key": "'expiration'",
-	"value": "'2017-03-07 23:21:23'"
+	"value": "'2017-03-07 23:21:23'",
+	"main": "'uuid'"
 }
 ]}

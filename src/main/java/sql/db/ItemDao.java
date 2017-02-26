@@ -5,15 +5,12 @@
  */
 package sql.db;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.util.Pair;
 import storables.Item;
-import storables.Tag;
 
 /**
  *
@@ -48,8 +45,8 @@ public class ItemDao {
                     rs.getString("location_name"),
                     rs.getInt("location_id"),
                     new Timestamp(rs.getString("created_on")),
-                    getDescriptions(rs.getString("serial_number")),
-                    tagDao.findAllBySerial(rs.getString("serial_number")),
+                    tagDao.findAllByIdentifier(rs.getString("uuid")),
+                    tagDao.findAllByIdentifier(rs.getString("serial_number")),
                     Type.parseType(rs.getString("type")));
         }, uuid);
         return queryAndCollect.get(0);
@@ -63,19 +60,13 @@ public class ItemDao {
                     rs.getString("location_name"),
                     rs.getInt("location_id"),
                     new Timestamp(rs.getString("created_on")),
-                    getDescriptions(rs.getString("serial_number")),
-                    tagDao.findAllBySerial(rs.getString("serial_number")),
+                    tagDao.findAllByIdentifier(rs.getString("uuid")),
+                    tagDao.findAllByIdentifier(rs.getString("serial_number")),
                     Type.parseType(rs.getString("type")));
         });
         return queryAndCollect;
     }
 
-    private List<String> getDescriptions(String serialNumber) throws SQLException {
-        return db.queryAndCollect("SELECT * FROM Description WHERE serial_number = ?", rs -> {
-            return rs.getString("descriptor");
-        }, serialNumber);
-    }
-    
     public List<Item> findBy(Map<Param, String> terms) throws SQLException {
         String query = select;
         if (!terms.isEmpty()) {
@@ -87,8 +78,9 @@ public class ItemDao {
             query += search.getParam() + " AND ";
             values.add(terms.get(search));
         }
-
-        query = query.substring(0, query.length() - 5);
+        if (!terms.isEmpty()) {
+            query = query.substring(0, query.length() - 5);
+        }
 
         System.out.println(query);
 
@@ -99,8 +91,8 @@ public class ItemDao {
                     rs.getString("location_name"),
                     rs.getInt("location_id"),
                     new Timestamp(rs.getString("created_on")),
-                    getDescriptions(rs.getString("serial_number")),
-                    tagDao.findAllBySerial(rs.getString("serial_number")),
+                    tagDao.findAllByIdentifier(rs.getString("uuid")),
+                    tagDao.findAllByIdentifier(rs.getString("serial_number")),
                     Type.parseType(rs.getString("type")));
         }, values.toArray());
         return queryAndCollect;
