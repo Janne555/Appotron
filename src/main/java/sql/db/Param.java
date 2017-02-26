@@ -9,12 +9,12 @@ package sql.db;
  *
  * @author Janne
  */
-public enum Search {
+public enum Param {
     UUID("Item.uuid = ?"),
     NAME("Item.name = ?"),
     SERIAL("Item.serial_number = ?"),
-    LOCATION_NAME("location_name = ?"),
-    LOCATION_ID("location_id = ?"),
+    LOC_NAME("location_name = ?"),
+    LOC_ID("location_id = ?"),
     CREATED_ON("Item.created_on = ?"),
     CREATED_BEFORE("Item.created_on < ?"),
     CREATED_AFTER("Item.created_on > ?"),
@@ -22,18 +22,18 @@ public enum Search {
     EXPIRES_BEFORE(""),
     EXPIRES_AFTER("");
 
-    private final String term;
+    private final String param;
 
-    Search(String term) {
-        this.term = term;
+    Param(String term) {
+        this.param = term;
     }
 
-    public String getTerm() {
-        return term;
+    public String getParam() {
+        return param;
     }
 
-    public static Search parseSearch(String search) {
-        switch (search) {
+    public static Param parseParam(String param) {
+        switch (param) {
             case "uuid":
                 return UUID;
             case "name":
@@ -41,9 +41,9 @@ public enum Search {
             case "serial":
                 return SERIAL;
             case "location_name":
-                return LOCATION_NAME;
+                return LOC_NAME;
             case "location_id":
-                return LOCATION_ID;
+                return LOC_ID;
             case "created_on":
                 return CREATED_ON;
             case "type":

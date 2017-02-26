@@ -5,19 +5,13 @@
  */
 package sql.db;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -42,15 +36,26 @@ public class Database {
         }
     }
 
+    public void update(String sql, Object... params) throws SQLException {
+        try (Connection connection = getConnection()) {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            for (int i = 0; i < params.length; i++) {
+                System.out.println(params[i]);
+                ps.setObject(i + 1, params[i]);
+            }
+            ps.executeUpdate();
+            ps.close();
+        }
+    }
+
     public <T> List<T> queryAndCollect(String query, Collector<T> col, Object... params) throws SQLException {
         List<T> rows = new ArrayList<>();
         try (Connection connection = getConnection()) {
             PreparedStatement stmt = connection.prepareStatement(query);
             for (int i = 0; i < params.length; i++) {
-                System.out.println(params[i]);
                 stmt.setObject(i + 1, params[i]);
             }
-            
+
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -71,41 +76,5 @@ public class Database {
             rs.close();
         }
         return rows;
-    }
-
-    public void query(String query, Command com) throws SQLException {
-        Statement stmt = getConnection().createStatement();
-        ResultSet rs = stmt.executeQuery(query);
-        while (rs.next()) {
-            com.act(rs);
-        }
-        rs.close();
-        stmt.close();
-    }
-
-    public int getLocationKey(String value) throws SQLException {
-        String sql = "SELECT * FROM Location WHERE name = \"" + value + "\"";
-        Statement stmt = getConnection().createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-        if (!rs.next()) {
-            return 0;
-        }
-        int result = rs.getInt("id");
-        rs.close();
-        stmt.close();
-        return result;
-    }
-
-    public String getLocationValue(int key) throws SQLException {
-        String sql = "SELECT * FROM Location WHERE id = " + key;
-        Statement stmt = getConnection().createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-        if (!rs.next()) {
-            return null;
-        }
-        String result = rs.getString("name");
-        rs.close();
-        stmt.close();
-        return result;
     }
 }

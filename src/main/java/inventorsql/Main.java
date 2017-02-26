@@ -14,13 +14,13 @@ import sql.db.Database;
 import sql.db.DatabaseCreator;
 import sql.db.Testdata;
 import storables.Item;
-import sql.db.ItemDao;
 import spark.ModelAndView;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import sql.db.ItemDao;
-import sql.db.Search;
-import sql.db.Type;
+import sql.db.Param;
+import sql.db.TagDao;
+import storables.Tag;
 
 /**
  *
@@ -46,18 +46,31 @@ public class Main {
         Testdata td = new Testdata("data.json");
 
         for (String sql : td.getInserts()) {
-            System.out.println(sql);
+//            System.out.println(sql);
 
             database.update(sql);
         }
-        
-        
+
         ItemDao itemDao = new ItemDao(database);
+        TagDao tagDao = new TagDao(database);
+
+        tagDao.create(new Tag(0, "d982c17e-ccdb-4b9f-bb6b-130c989e4b16", "m4170", "käyttöaste", "kulunut"));
         
-        for (Item it : itemDao.findBy(new HashMap<>())) {
-            System.out.println(it);
-        }
-        
+        Tag findOne = tagDao.findOne(31);
+        findOne.setValue("uuden veroinen");
+        System.out.println(findOne);
+        tagDao.update(findOne);
+
+//        for (Tag tag : tagDao.findAll()) {
+//            System.out.println(tag);
+//        }
+//
+//        for (Item it : itemDao.findAll()) {
+//            System.out.println(it);
+//        }
+
+        System.out.println(itemDao.findOne("d982c17e-ccdb-4b9f-bb6b-130c989e4b16"));
+
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
             List<Item> list = new ArrayList<>();
@@ -74,21 +87,21 @@ public class Main {
                     if (queryParam.equals("all")) {
                         continue;
                     }
-                    searchTerms.put(Search.parseSearch(queryParam), req.queryParams(queryParam));
+                    searchTerms.put(Param.parseParam(queryParam), req.queryParams(queryParam));
                 }
                 map.put("items", itemDao.findBy(searchTerms));
-                
+
             } else {
             }
             return new ModelAndView(map, "list");
         }, new ThymeleafTemplateEngine());
+
+        get("/tags", (req, res) -> {
+            HashMap map = new HashMap<>();
+            map.put("tags", tagDao.findAll());
+            return new ModelAndView(map, "dropdown");
+        }, new ThymeleafTemplateEngine());
+
     }
-    
-    public static Pair<Search, String>[] getPairs(List<Pair<Search, String>> stuff) {
-        Pair<Search, String>[] pairs = new Pair[stuff.size()];
-        for (int i = 0; i < stuff.size(); i++) {
-            pairs[i] = stuff.get(i);
-        }
-        return pairs;
-    }
+
 }

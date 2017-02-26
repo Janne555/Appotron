@@ -29,7 +29,7 @@ public class DatabaseCreator {
     private String databaseName;
     private String filename;
     private Database db;
-    private List<Table> tables;
+    private List<TableCreator> tables;
 
     public DatabaseCreator(String filename, Database db) throws FileNotFoundException, SQLException {
         this.filename = filename;
@@ -60,7 +60,7 @@ public class DatabaseCreator {
             //get the name of the table
             String name = tableJsonObj.get("name").getAsString();
             //create a table object
-            Table tableObj = new Table(name);
+            TableCreator tableObj = new TableCreator(name);
             //get columns as an array
             JsonArray columns = tableJsonObj.getAsJsonArray("columns");
             //loop through array of columns
@@ -88,12 +88,12 @@ public class DatabaseCreator {
     }
 
     private void createTables() throws SQLException {
-        for (Table t : tables) {
+        for (TableCreator t : tables) {
             createTable(t);
         }
     }
     
-    private void createTable(Table table) throws SQLException {
+    private void createTable(TableCreator table) throws SQLException {
         String sql = "CREATE TABLE " + table.getName() + " (";
         List<String> columnNames = table.getColumnNames();
         List<String> commands = table.getCommands();

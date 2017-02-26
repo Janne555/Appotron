@@ -15,12 +15,12 @@ import java.util.Map;
  *
  * @author Janne
  */
-public class Table {
+public class TableCreator {
     private String name;
     private List<String> columnNames;
     private List<String> commands;
 
-    public Table(String name) {
+    public TableCreator(String name) {
         this.name = name;
         this.columnNames = new ArrayList<>();
         this.commands = new ArrayList<>();

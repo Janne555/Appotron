@@ -7,8 +7,6 @@ package storables;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import sql.db.Type;
 
 /**
@@ -24,7 +22,7 @@ public class Item {
     private int locationId;
     private Timestamp createdOn;
     private List<String> descriptions;
-    private Map<String, String> tags;
+    private List<Tag> tags;
     private Type type;
 
     public Item(String uuid,
@@ -34,7 +32,7 @@ public class Item {
             int locationId,
             Timestamp createdOn,
             List<String> descriptions,
-            Map<String, String> tags,
+            List<Tag> tags,
             Type type) {
 
         this.uuid = uuid;
@@ -43,6 +41,13 @@ public class Item {
         this.location = location;
         this.locationId = locationId;
         this.createdOn = createdOn;
+        for (int i = 0; i < tags.size(); i++) {
+            Tag tag = tags.get(i);
+            if (!tag.getItemUuid().equals("") && !tag.getItemUuid().equals(uuid)) {
+                tags.remove(i);
+            }
+        }
+        
         this.descriptions = descriptions;
         this.tags = tags;
         this.type = type;
@@ -72,7 +77,7 @@ public class Item {
         return descriptions;
     }
 
-    public Map<String, String> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
@@ -80,14 +85,30 @@ public class Item {
         return locationId;
     }
     
+    public Object[] getObjs() {
+        Object[] objs = new Object[7];
+        objs[0] = uuid;
+        objs[1] = name;
+        objs[2] = serialNumber;
+        objs[3] = locationId;
+        objs[4] = createdOn;
+        objs[5] = type.getType();
+        objs[6] = "false";
+        return objs;
+    }
+    
     @Override
     public String toString() {
-        return uuid + ", "
+        String result = uuid + ", "
                 + name + ", "
                 + serialNumber + ", "
                 + location + ", "
                 + createdOn + ", "
-                + descriptions + ", "
-                + tags;
+                + descriptions + ", ";
+        
+        for (Tag tag : tags) {
+            result += ", " + tag;
+        }
+        return result;
     }
 }
