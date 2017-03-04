@@ -5,11 +5,16 @@
  */
 package storables;
 
+import com.google.gson.JsonObject;
+import java.util.List;
+import sql.db.Type;
+
 /**
  *
  * @author Janne
  */
 public class Tag {
+
     private int id;
     private String identifier;
     private String key;
@@ -24,6 +29,14 @@ public class Tag {
         this.type = type;
     }
 
+    public Tag(int id, String identifier, String key, String value, Type type) {
+        this.identifier = identifier;
+        this.key = key;
+        this.value = value;
+        this.id = id;
+        this.type = type.getType();
+    }
+
     public String getIdentifier() {
         return identifier;
     }
@@ -31,7 +44,7 @@ public class Tag {
     public String getType() {
         return type;
     }
-    
+
     public void setKey(String key) {
         this.key = key;
     }
@@ -53,25 +66,35 @@ public class Tag {
     }
 
     public Object[] getObjs() {
-        Object[] objs = new Object[3];
-        objs[0] = identifier;
-        objs[1] = key;
-        objs[2] = value;
-        return objs;
-    }
-
-    public Object[] getObjsId() {
         Object[] objs = new Object[4];
         objs[0] = identifier;
         objs[1] = key;
         objs[2] = value;
-        objs[3] = id;
+        objs[3] = type;
+        return objs;
+    }
+
+    public Object[] getObjsId() {
+        Object[] objs = new Object[5];
+        objs[0] = identifier;
+        objs[1] = key;
+        objs[2] = value;
+        objs[3] = type;
+        objs[4] = id;
         return objs;
     }
 
     @Override
     public String toString() {
         return key + "=" + value;
+    }
+
+    public static JsonObject getJsonObject(List<Tag> tags) {
+        JsonObject json = new JsonObject();
+        tags.forEach((tag) -> {
+            json.addProperty(tag.getKey(), tag.getValue());
+        });
+        return json;
     }
 
 }

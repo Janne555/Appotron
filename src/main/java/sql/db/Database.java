@@ -40,7 +40,7 @@ public class Database {
         try (Connection connection = getConnection()) {
             PreparedStatement ps = connection.prepareStatement(sql);
             for (int i = 0; i < params.length; i++) {
-                System.out.println(params[i]);
+//                System.out.println(params[i]);
                 ps.setObject(i + 1, params[i]);
             }
             ps.executeUpdate();

@@ -5,13 +5,8 @@
  */
 package sql.db;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import storables.Item;
 import storables.Tag;
 
 /**
@@ -74,10 +69,10 @@ public class TagDao {
     }
 
     public void update(Tag t) throws SQLException {
-        db.update("UPDATE Tag SET item_uuid = ?, serial_number = ?, key = ?, value = ? WHERE id = ?", t.getObjsId());
+        db.update("UPDATE Tag SET identifier = ?, key = ?, value = ?, type = ? WHERE id = ?", t.getObjsId());
     }
 
-    public void delete(String key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void delete(int id) throws SQLException {
+        db.update("DELETE FROM Tag WHERE id = ?", id);
     }
 }

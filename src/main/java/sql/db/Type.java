@@ -12,7 +12,9 @@ package sql.db;
 public enum Type {
     ITEM("item"), 
     FOODSTUFF("foodstuff"),
-    BOOK("book");
+    BOOK("book"),
+    SERIAL("serial"),
+    UUID("uuid");
     
     private final String type;
 

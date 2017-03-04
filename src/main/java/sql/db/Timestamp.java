@@ -16,6 +16,9 @@ import java.time.format.DateTimeFormatter;
 public class Timestamp extends java.sql.Timestamp {
     public Timestamp(String timestampString) {
         super(0);
+        if (timestampString.length() > 19) {
+            timestampString = timestampString.substring(0, 19);
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime time = LocalDateTime.parse(timestampString, formatter);
         super.setTime(time.toEpochSecond(ZoneOffset.UTC) * 1000);

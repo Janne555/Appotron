@@ -5,21 +5,31 @@
  */
 package inventorsql;
 
+import client.ItemHelper;
+import com.google.gson.JsonObject;
 import java.io.File;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import javafx.util.Pair;
+import java.util.UUID;
 import sql.db.Database;
 import sql.db.DatabaseCreator;
 import sql.db.Testdata;
 import storables.Item;
 import spark.ModelAndView;
+import spark.ResponseTransformer;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import sql.db.ItemDao;
+import static sql.db.JsonUtil.json;
+import sql.db.LocationDao;
 import sql.db.Param;
 import sql.db.TagDao;
+import sql.db.Type;
+import storables.Location;
 import storables.Tag;
 
 /**
@@ -53,23 +63,58 @@ public class Main {
 
         ItemDao itemDao = new ItemDao(database);
         TagDao tagDao = new TagDao(database);
+        LocationDao locDao = new LocationDao(database);
+        
+        get("/testing", (req, res) -> new ModelAndView(new HashMap<>(), "testing"), new ThymeleafTemplateEngine());
+        
+        get("/tags.get", (req, res) -> {
+            System.out.println("received request for tags: " + req.queryParams("param"));
+            
+            return tagDao.findAllByIdentifier(req.queryParams("param"));
+        }, json());
 
-//        tagDao.create(new Tag(0, "d982c17e-ccdb-4b9f-bb6b-130c989e4b16", "m4170", "käyttöaste", "kulunut"));
-//        
-//        Tag findOne = tagDao.findOne(31);
-//        findOne.setValue("uuden veroinen");
-//        System.out.println(findOne);
-//        tagDao.update(findOne);
+        post("/additem.post", (req, res) -> {
+            for(String s : req.queryParams()) {
+                System.out.println(s);
+            }
+            String name = req.queryParams("name");
+            Type type = Type.parseType(req.queryParams("type"));
+            String serialNumber = req.queryParams("serialNumber");
+            String uuid = UUID.randomUUID().toString();
+            Location location = Location.parseLocation(req.queryParams("location"));
+            if (type == Type.FOODSTUFF) {
+                System.out.println(req.queryParams("expiration"));
+            }
+            
+            List<Tag> tags = ItemHelper.parseTags(req, uuid);
 
-//        for (Tag tag : tagDao.findAll()) {
-//            System.out.println(tag);
-//        }
-//
-//        for (Item it : itemDao.findAll()) {
-//            System.out.println(it);
-//        }
+            Item item = new Item(uuid, name, serialNumber, location, new Timestamp(System.currentTimeMillis()), tags, type);
 
-//        System.out.println(itemDao.findOne("d982c17e-ccdb-4b9f-bb6b-130c989e4b16"));
+            System.out.println(item);
+
+            try {
+                itemDao.create(item);
+            } catch (SQLException ex) {
+                res.redirect("/fail?msg=" + ex.toString());
+            }
+
+            res.redirect("/");
+            return "ok";
+        });
+
+        get("/additem", (req, res) -> {
+            HashMap map = new HashMap();
+            List<Location> findAll = locDao.findAll();
+            Collections.sort(findAll);
+            map.put("locations", findAll);
+            return new ModelAndView(map, "additem");
+        }, new ThymeleafTemplateEngine());
+
+        get("/fail", (req, res) -> {
+            HashMap map = new HashMap();
+            map.put("msg", req.queryParams("msg"));
+            return new ModelAndView(map, "fail");
+        }, new ThymeleafTemplateEngine());
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -103,5 +148,6 @@ public class Main {
         }, new ThymeleafTemplateEngine());
 
     }
+
 
 }

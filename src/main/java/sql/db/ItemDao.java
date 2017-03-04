@@ -49,6 +49,10 @@ public class ItemDao {
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
                     Type.parseType(rs.getString("type")));
         }, uuid);
+        if (queryAndCollect.isEmpty()) {
+            return null;
+        }
+        
         return queryAndCollect.get(0);
     }
 
@@ -111,15 +115,15 @@ public class ItemDao {
     }
 
     public void create(Item t) throws SQLException {
-        db.update("INSERT INTO Item(uuid, name, serial_number, location, created_on, type, deleted VALUES(?,?,?,?,?,?,?)", t.getObjs());
+        db.update("INSERT INTO Item(uuid, name, serial_number, location, created_on, type, deleted) VALUES(?,?,?,?,?,?,?)", t.getObjs());
         tagDao.create(t.getTags());
     }
 
-    public void update(String key, Item t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void update(Item t) throws SQLException {
+        db.update("UPDATE Item SET name = ?, serial_number = ?, location = ?, created_on = ?, type = ?, deleted = ? WHERE uuid = ?", t.getObjs());
     }
 
     public void delete(String key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        db.update("UPDATE Item SET deleted = 'true' WHERE uuid = ?", key);
     }
 }
