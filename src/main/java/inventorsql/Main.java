@@ -25,10 +25,12 @@ import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import sql.db.ItemDao;
 import static sql.db.JsonUtil.json;
+import sql.db.ListItemDao;
 import sql.db.LocationDao;
 import sql.db.Param;
 import sql.db.TagDao;
 import sql.db.Type;
+import storables.ListItem;
 import storables.Location;
 import storables.Tag;
 
@@ -50,20 +52,26 @@ public class Main {
         }
 
         Database database = new Database("org.sqlite.JDBC", "jdbc:sqlite:inventor.db");
-
         DatabaseCreator creator = new DatabaseCreator("dbcommands.json", database);
-
         Testdata td = new Testdata("data.json");
 
         for (String sql : td.getInserts()) {
-            System.out.println(sql);
-
             database.update(sql);
         }
 
         ItemDao itemDao = new ItemDao(database);
         TagDao tagDao = new TagDao(database);
         LocationDao locDao = new LocationDao(database);
+        ListItemDao liDao = new ListItemDao(database);
+        
+        liDao.create(new ListItem(0, 0, "sadasdas", 3));
+        
+        
+        
+        get("/expiring.get", (reg, res) -> {
+            System.out.println("received request for expiring foodstuffs");
+            return itemDao.getExpiring(5);
+        }, json());
         
         get("/testing", (req, res) -> new ModelAndView(new HashMap<>(), "testing"), new ThymeleafTemplateEngine());
         
@@ -118,10 +126,8 @@ public class Main {
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
-            List<Item> list = new ArrayList<>();
-            list.addAll(itemDao.findAll());
-            map.put("items", list);
-            return new ModelAndView(map, "list");
+            map.put("items", itemDao.getExpiring(5));
+            return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
 
         get("/find", (req, res) -> {

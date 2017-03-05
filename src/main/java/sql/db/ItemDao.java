@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import storables.Item;
+import storables.Tag;
 
 /**
  *
@@ -125,5 +126,18 @@ public class ItemDao {
 
     public void delete(String key) throws SQLException {
         db.update("UPDATE Item SET deleted = 'true' WHERE uuid = ?", key);
+    }
+    
+    public List<Item> getExpiring(int number) throws SQLException {
+        List<Tag> tags = db.queryAndCollect("SELECT * FROM Tag WHERE key = 'expiration' ORDER BY value ASC LIMIT ?", rs -> {
+            return new Tag(rs.getInt("id"), rs.getString("identifier"), rs.getString("key"), rs.getString("value"), rs.getString("type"));
+        }, number);
+        
+        List<Item> items = new ArrayList<>();
+        for (Tag tag : tags) {
+            items.add(findOne(tag.getIdentifier()));
+        }
+        
+        return items;
     }
 }

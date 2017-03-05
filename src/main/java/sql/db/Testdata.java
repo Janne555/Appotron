@@ -21,6 +21,7 @@ import java.util.List;
  * @author Janne
  */
 public class Testdata {
+
     private List<String> inserts;
 
     public Testdata(String filename) throws FileNotFoundException {
@@ -60,6 +61,21 @@ public class Testdata {
                             + o.get("value").getAsString() + ", "
                             + o.get("main").getAsString() + ")";
                     break;
+                case "shoppinglist":
+                    sql += "ShoppingList(id, name, created_on, deleted)"
+                            + " VALUES("
+                            + o.get("id").getAsString() + ", "
+                            + o.get("name").getAsString() + ", "
+                            + o.get("created_on").getAsString() + ", "
+                            + "'false'" + ")";
+                    break;
+                case "listitem":
+                    sql += "ListItem(shopping_list, serial_number, amount)"
+                            + " VALUES("
+                            + o.get("shopping_list").getAsString() + ", "
+                            + o.get("serial_number").getAsString() + ", "
+                            + o.get("amount").getAsString() + ")";
+                    break;
                 case "description":
                     continue;
             }
@@ -71,6 +87,5 @@ public class Testdata {
     public List<String> getInserts() {
         return inserts;
     }
-    
-    
+
 }

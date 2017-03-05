@@ -45,12 +45,13 @@
 		"name": "ListItem",
 		"columns":
 		[
-		{
+		{	
+			"id": "INTEGER PRIMARY KEY AUTOINCREMENT",
 			"shopping_list": "INTEGER NOT NULL",
 			"serial_number": "STRING NOT NULL",
 			"amount" : "INTEGER NOT NULL",
-			"deleted": "BOOLEAN NOT NULL",
-			"FOREIGN ": "KEY(shopping_list) REFERENCES ShoppingList(id)"
+			"FOREIGN ": "KEY(shopping_list) REFERENCES ShoppingList(id)",
+			"FOREIGN ": "KEY(serial_number) REFERENCES Item(serial_number)"
 		}
 		]
 	},

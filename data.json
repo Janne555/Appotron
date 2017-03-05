@@ -329,7 +329,7 @@
 	"type": "tag",
 	"identifier": "'d5486bec-c2b5-4f52-9955-43d1252ad0c3'",
 	"key": "'expiration'",
-	"value": "'2017-03-07 23:21:23'",
+	"value": "'2017-05-07 23:21:23'",
 	"main": "'uuid'"
 },
 {
@@ -345,7 +345,7 @@
 	"type": "tag",
 	"identifier": "'5ad004c1-cfb0-43a2-896b-64e9919bb38a'",
 	"key": "'expiration'",
-	"value": "'2017-03-07 23:21:23'",
+	"value": "'2017-03-21 23:21:23'",
 	"main": "'uuid'"
 },
 {
@@ -355,13 +355,13 @@
 	"name": "'kahvi'",
 	"serial_number": "'k4hv1'",
 	"location": "2",
-	"created_on": "'2017-02-03 23:21:23'"
+	"created_on": "'2017-03-20 23:21:23'"
 },
 {
 	"type": "tag",
 	"identifier": "'d91482a4-9c57-477c-807e-e2656f6afeda'",
 	"key": "'expiration'",
-	"value": "'2017-03-07 23:21:23'",
+	"value": "'2017-04-12 23:21:23'",
 	"main": "'uuid'"
 },
 {
@@ -377,7 +377,7 @@
 	"type": "tag",
 	"identifier": "'d982c17e-ccdb-4b9f-bb6b-130c989e4b16'",
 	"key": "'expiration'",
-	"value": "'2017-03-07 23:21:23'",
+	"value": "'2017-04-11 23:21:23'",
 	"main": "'uuid'"
 },
 {
@@ -393,7 +393,61 @@
 	"type": "tag",
 	"identifier": "'b1708bb4-bae3-42ca-bb55-a6365f87df68'",
 	"key": "'expiration'",
-	"value": "'2017-03-07 23:21:23'",
+	"value": "'2017-04-10 23:21:23'",
 	"main": "'uuid'"
+},
+{
+	"type": "shoppinglist",
+	"id": "0",
+	"name": "'jannen lista'",
+	"created_on": "'2017-02-03 23:21:23'"
+},
+{
+	"type": "listitem",
+	"shopping_list": "0",
+	"serial_number": "'b4n44n1'",
+	"amount": "3"
+},
+{
+	"type": "shoppinglist",
+	"id": "1",
+	"name": "'jarkon lista'",
+	"created_on": "'2017-02-03 23:21:23'"
+},
+{
+	"type": "listitem",
+	"shopping_list": "1",
+	"serial_number": "'b4n44n1'",
+	"amount": "5"
+},
+{
+	"type": "listitem",
+	"shopping_list": "1",
+	"serial_number": "'r05k4pu551'",
+	"amount": "1"
+},
+{
+	"type": "shoppinglist",
+	"id": "2",
+	"name": "'mathiaksen lista'",
+	"created_on": "'2017-02-03 23:21:23'"
+},
+{
+	"type": "listitem",
+	"shopping_list": "2",
+	"serial_number": "'m4170'",
+	"amount": "2"
+},
+{
+	"type": "listitem",
+	"shopping_list": "2",
+	"serial_number": "'k1rj4'",
+	"amount": "1"
+},
+{
+	"type": "listitem",
+	"shopping_list": "2",
+	"serial_number": "'k4hv1'",
+	"amount": "6"
 }
 ]}

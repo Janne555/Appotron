@@ -87,18 +87,16 @@
 
         </script>
         <style>
-            .selected {
-                color: green;
-            }
         </style>
     </head>
     <body>
     
     <div class="w3-bar w3-black">
+        <a class="w3-bar-item w3-button w3-mobile" href="/">Front Page</a>
         <div class="w3-dropdown-hover w3-mobile">
             <button class="w3-button w3-black">Show</button>
             <div class="w3-dropdown-content w3-white w3-card-4">
-                <a href="/">Everything</a>
+                <a href="/find?all=true">Everything</a>
                 <a href="/find?all=true&#38;type=book">Books</a>
                 <a href="/find?all=true&#38;type=foodstuff">Foodstuff</a>
                 <a href="/find?all=true&#38;type=item">Items</a>
@@ -108,7 +106,6 @@
         <a class="w3-bar-item w3-button w3-mobile" href="#">Search</a>
     </div>
     <div class="w3-main">
-    <!-- <div class="w3-row"> -->
     <div class="w3-col m6 l4 w3-card-4">
         <form class="w3-container" action="/additem.post" method="post">
                 <div class="w3-container w3-green">
@@ -169,7 +166,6 @@
             <input class="w3-button w3-block w3-teal" type="reset" name="reset" value="Reset" /> <br />
             
         </form>
-    <!-- </div> -->
     </div>
     </div>
     </body>

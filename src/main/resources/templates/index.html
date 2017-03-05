@@ -1,12 +1,51 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <title>Alueet</title>
-    <meta charset="utf-8" />
-    <!-- <link th:href="@{~styles.css}" rel="stylesheet" type="text/css" href="styles.css" /> -->
-</head>
-
-<body>
-</body>
+    <head>
+        <title>List</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css" />
+        <style>
+        body {
+        }
+        </style>
+    </head>
+    <body>
+    <div class="w3-bar w3-black">
+        <a class="w3-bar-item w3-button w3-mobile w3-dark-grey" href="/">Front Page</a>
+        <div class="w3-dropdown-hover w3-mobile">
+            <button class="w3-button w3-black">Show</button>
+            <div class="w3-dropdown-content w3-white w3-card-4">
+                <a href="/find?all=true">Everything</a>
+                <a href="/find?all=true&#38;type=book">Books</a>
+                <a href="/find?all=true&#38;type=foodstuff">Foodstuff</a>
+                <a href="/find?all=true&#38;type=item">Items</a>
+             </div>
+        </div>
+        <a class="w3-bar-item w3-button w3-mobile" href="/additem">Add Item</a>
+        <a class="w3-bar-item w3-button w3-mobile" href="#">Search</a>
+    </div>
+    <div class="w3-main">
+    <div class="w3-col m4 l3 w3-card-4">
+    <div class="w3-card-4">
+    	<div class="w3-container w3-green">
+            <h2>Expiring Foodstuffs</h2>
+        </div>
+    	<table class="w3-table-all">
+    		<tr>
+    			<th>Name</th>
+    			<th>Expires In (days)</th>
+    			<th>Location</th>
+    		</tr>
+	        <tr th:each="item: ${items}">
+	            <td th:text="${item.name}">first</td>
+	            <td>0</td>
+	            <td th:text="${item.location}">asd</td>
+	        </tr>
+    	</table>
+    </div>
+    </div>
+    </div>
+    </body>
 </html>
