@@ -1,5 +1,5 @@
 {
-	"database": "inventor-v.0.0.1.db",
+	"database": "inventor-v.0.2.0.db",
 	"tables":
 	[
 	{
@@ -21,11 +21,10 @@
 			"uuid": "STRING PRIMARY KEY",
 			"name": "STRING NOT NULL",
 			"serial_number": "STRING NOT NULL",
-			"location": "INTEGER NOT NULL",
+			"location": "STRING NOT NULL",
 			"created_on": "TIMESTAMP NOT NULL",
 			"type": "STRING NOT NULL",
-			"deleted": "BOOLEAN NOT NULL",
-			"FOREIGN ": "KEY(location) REFERENCES Location(id)"
+			"deleted": "BOOLEAN NOT NULL"
 		}
 		]
 	},
@@ -80,17 +79,6 @@
 			"key": "STRING NOT NULL",
 			"value": "STRING",
 			"type": "STRING NOT NULL"
-		}
-		]
-	},
-	{
-		"name": "Location",
-		"columns":
-		[
-		{
-			"id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-			"name": "STRING UNIQUE NOT NULL",
-			"deleted": "BOOLEAN NOT NULL"
 		}
 		]
 	}

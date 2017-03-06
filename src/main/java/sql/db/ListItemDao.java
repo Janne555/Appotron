@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 import storables.ListItem;
 
-public class ListItemDao<T, K> implements Dao<ListItem, String> {
+public class ListItemDao implements Dao<ListItem, String> {
 
     private Database db;
 
@@ -25,10 +25,17 @@ public class ListItemDao<T, K> implements Dao<ListItem, String> {
 
     @Override
     public ListItem findOne(String key) throws SQLException {
-        List<ListItem> queryAndCollect = db.queryAndCollect("SELECT * FROM ListItem WHERE id = ?", rs -> {
+        List<ListItem> queryAndCollect = db.queryAndCollect("SELECT ListItem.id AS id, "
+                + "ListItem.shopping_list AS shopping_list, "
+                + "ListItem.serial_number AS sernum, "
+                + "ListItem.amount AS amount, "
+                + "Item.name AS name "
+                + "FROM ListItem "
+                + "LEFT JOIN Item ON ListItem.serial_number = Item.serial_number WHERE id = ?", rs -> {
             return new ListItem(rs.getInt("id"),
                     rs.getInt("shopping_list"),
-                    rs.getString("serial_number"),
+                    rs.getString("sernum"),
+                    rs.getString("name"),
                     rs.getInt("amount"));
         }, key);
 
@@ -41,20 +48,34 @@ public class ListItemDao<T, K> implements Dao<ListItem, String> {
 
     @Override
     public List<ListItem> findAll() throws SQLException {
-        List<ListItem> queryAndCollect = db.queryAndCollect("SELECT * FROM ListItem", rs -> {
+        List<ListItem> queryAndCollect = db.queryAndCollect("SELECT ListItem.id AS id, "
+                + "ListItem.shopping_list AS shopping_list, "
+                + "ListItem.serial_number AS sernum, "
+                + "ListItem.amount AS amount, "
+                + "Item.name AS name "
+                + "FROM ListItem "
+                + "LEFT JOIN Item ON ListItem.serial_number = Item.serial_number", rs -> {
             return new ListItem(rs.getInt("id"),
                     rs.getInt("shopping_list"),
-                    rs.getString("serial_number"),
+                    rs.getString("sernum"),
+                    rs.getString("name"),
                     rs.getInt("amount"));
         });
         return queryAndCollect;
     }
     
     public List<ListItem> findAllByShoppingList(String shoppingListId) throws SQLException {
-        List<ListItem> queryAndCollect = db.queryAndCollect("SELECT * FROM ListItem WHERE shopping_list = ?", rs -> {
+        List<ListItem> queryAndCollect = db.queryAndCollect("SELECT ListItem.id AS id, "
+                + "ListItem.shopping_list AS shopping_list, "
+                + "ListItem.serial_number AS sernum, "
+                + "ListItem.amount AS amount, "
+                + "Item.name AS name "
+                + "FROM ListItem "
+                + "LEFT JOIN Item ON ListItem.serial_number = Item.serial_number WHERE shopping_list = ?", rs -> {
             return new ListItem(rs.getInt("id"),
                     rs.getInt("shopping_list"),
-                    rs.getString("serial_number"),
+                    rs.getString("sernum"),
+                    rs.getString("name"),
                     rs.getInt("amount"));
         }, shoppingListId);
         return queryAndCollect;

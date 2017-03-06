@@ -6,8 +6,15 @@
 package storables;
 
 import java.sql.Timestamp;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.format.datetime.joda.LocalDateParser;
 import sql.db.Incrementer;
 import sql.db.Type;
 
@@ -20,7 +27,7 @@ public class Item implements Comparable<Item> {
     private String uuid;
     private String name;
     private String serialNumber;
-    private Location location;
+    private String location;
     private Timestamp createdOn;
     private List<Tag> tags;
     private Type type;
@@ -28,7 +35,7 @@ public class Item implements Comparable<Item> {
     public Item(String uuid,
             String name,
             String serialNumber,
-            Location location,
+            String location,
             Timestamp createdOn,
             List<Tag> uuidTags,
             List<Tag> tags,
@@ -49,22 +56,11 @@ public class Item implements Comparable<Item> {
         this.type = type;
     }
     
-    public Item(String uuid,
-            String name,
-            String serialNumber,
-            String locationName,
-            int locationId,
-            Timestamp createdOn,
-            List<Tag> uuidTags,
-            List<Tag> tags,
-            Type type) {
-        this(uuid, name, serialNumber, new Location(locationName, locationId), createdOn, uuidTags, tags, type);
-    }
     
     public Item(String uuid,
             String name,
             String serialNumber,
-            Location location,
+            String location,
             Timestamp createdOn,
             List<Tag> tags,
             Type type) {
@@ -75,41 +71,71 @@ public class Item implements Comparable<Item> {
         return uuid;
     }
 
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public String getName() {
         return name;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public String getLocation() {
-        return location.getName();
-    }
-
-    public Timestamp getCreatedOn() {
-        return createdOn;
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public int getLocationId() {
-        return location.getId();
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
 
-    public void setLocation(Location location) {
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
         this.location = location;
     }
+
+    public Timestamp getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Timestamp createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+    
+    public long getDaysUntilExpiration() {
+        for (Tag tag : this.tags) {
+            if (tag.getKey().equals("expiration")) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime time = LocalDateTime.parse(tag.getValue(), formatter);
+                LocalDateTime now = LocalDateTime.now();
+                return now.until(time, ChronoUnit.DAYS);
+                
+            }
+        }
+        return 0;
+    }
+
 
     public Object[] getObjs() {
         Object[] objs = new Object[7];
@@ -117,7 +143,7 @@ public class Item implements Comparable<Item> {
         objs[inc.next()] = uuid;
         objs[inc.next()] = name;
         objs[inc.next()] = serialNumber;
-        objs[inc.next()] = getLocationId();
+        objs[inc.next()] = location;
         objs[inc.next()] = createdOn.toString();
         objs[inc.next()] = type.getType();
         objs[inc.next()] = "false";
@@ -130,7 +156,7 @@ public class Item implements Comparable<Item> {
                 "UUID: " + uuid + ", "
                 + "NAME: " + name + ", "
                 + "SERIAL: " + serialNumber + ", "
-                + "Location: " + location.getString() + ", "
+                + "Location: " + location + ", "
                 + "CREATED: " + createdOn + ", ";
 
         for (Tag tag : tags) {

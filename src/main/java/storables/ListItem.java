@@ -15,14 +15,17 @@ public class ListItem implements Objectify {
     private int id;
     private int shoppingList;
     private String serialNumber;
+    private String itemName;
     private int amount;
 
-    public ListItem(int id, int shoppingList, String serialNumber, int amount) {
+    public ListItem(int id, int shoppingList, String serialNumber, String itemName, int amount) {
         this.id = id;
         this.shoppingList = shoppingList;
         this.serialNumber = serialNumber;
+        this.itemName = itemName;
         this.amount = amount;
     }
+
 
     public int getShoppingList() {
         return shoppingList;
@@ -55,6 +58,23 @@ public class ListItem implements Objectify {
         objs[inc.next()] = this.amount;
         objs[inc.next()] = this.id;
         return objs;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+    
+    @Override
+    public String toString() {
+        return "id: " + id + "; "
+                + "list_id: " + shoppingList + "; "
+                + "serial: " + serialNumber + "; "
+                + "name: " + itemName + "; "
+                + "amount: " + amount;
     }
     
 }

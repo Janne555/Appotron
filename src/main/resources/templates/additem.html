@@ -22,9 +22,16 @@
                     }
             })});
 
+            //BUG SECURITY YOU CAN ENTER CODE TO FUNK UP THE URL
+            $(document).ready(function(){
+                $("#scanbutton").click(function(){
+                    var name = $("#name").val();
+                    var url = "http://zxing.appspot.com/scan?ret=http%3A%2F%2Flocalhost%3A4567%2Fadditem%3Fserial%3D%7BCODE%7D%26name%3D" + name + "&SCAN_FORMATS=UPC_A,EAN_13";
+                    window.location.href = url;
+            })});
+
             $(document).ready(function(){
                 $("#removetagbutton").click(function(){
-                    console.log("here we are again");
                     $("tr").remove(".w3-grey");
             })});
 
@@ -90,7 +97,7 @@
         </style>
     </head>
     <body>
-    
+    <!-- Navigation bar -->
     <div class="w3-bar w3-black">
         <a class="w3-bar-item w3-button w3-mobile" href="/">Front Page</a>
         <div class="w3-dropdown-hover w3-mobile">
@@ -112,22 +119,29 @@
                     <h2>Basic Info</h2>
                 </div>
                 <label class="w3-label" for="typechooser">Type:</label>
-                <select class="w3-select" name="type" id="typechooser">
+                <select class="w3-select" name="type" id="typechooser" required="true">
                     <option value="" disabled="true" selected="true">Choose type</option>
                     <option value="book">Book</option>
                     <option value="foodstuff">Foodstuff</option>
                     <option value="item">Item</option>
                 </select><br/>
                 <label class="w3-label" for="location">Location:</label>
-                <select class="w3-select" name="location" id="location">
-                    <option value="" disabled="true" selected="true">Choose Location</option>
-                    <option th:each="location: ${locations}" th:value="${location.string}" th:text="${location.name}" />
-                </select>
+                <input class="w3-input" list="locationslist" required="true" name="location" id="location" />
+                <datalist id="locationslist">    
+                    <option th:each="location: ${locations}" th:value="${location}" />
+                </datalist>
                 <label class="w3-label" for="name">Name:</label>
-                <input class="w3-input" type="text" name="name" required="true" id="name" /><br/>
+                <input class="w3-input" type="text" name="name" required="true" id="name" th:value="${namefield}" /><br/>
                 <label class="w3-label" for="serialNumber">Serial Number:</label>
-                <input class="w3-input" type="text" name="serialNumber" required="true" id="serialNumber" /> <br/>
-                <input class="w3-button w3-block w3-teal" type="button" id="searchbutton" value="Search for Tags" /> <br/>
+                <div class="w3-container w3-cell" style="width: 90%">
+                <input class="w3-input" type="text" name="serialNumber" required="true" id="serialNumber" th:value="${serialfield}"/>
+                </div>
+                <div class="w3-container w3-cell">
+                <input class="w3-button w3-teal" type="button" id="scanbutton" value="Scan" />
+                </div> <br/>
+                <input class="w3-button w3-block w3-teal" type="button" id="searchbutton" value="Search for Tags" />
+                
+                <br/>
                 <div class="w3-container w3-green">
                     <h2>Tags</h2>
                 </div>
@@ -143,9 +157,9 @@
                         </table>
                     </div>
                     </div>
-                    <label class="w3-label" for="location">Key:</label>
+                    <label class="w3-label" for="tagkey">Key:</label>
                     <input class="w3-input" type="text" name="tagkey" id="keyinput" /> <br />
-                    <label class="w3-label" for="location">Value:</label>
+                    <label class="w3-label" for="tagvalue">Value:</label>
                     <input class="w3-input" type="text" name="tagvalue" id="valueinput" /><br />
                     <input class="w3-button w3-block w3-teal" type="button" id="addtagbutton" value="Add Tag" /><br />
                     <div class="w3-responsive" id="newtags" style="display: none;">

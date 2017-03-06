@@ -26,16 +26,7 @@ public class ItemDao {
     public ItemDao(Database db) {
         this.db = db;
         this.tagDao = new TagDao(db);
-        this.select = "SELECT "
-                + "Item.uuid, "
-                + "Item.name, "
-                + "Item.serial_number, "
-                + "Item.created_on, "
-                + "Item.location AS location_id, "
-                + "Location.name AS location_name, "
-                + "Item.type "
-                + "FROM Item LEFT JOIN Location ON Item.location = Location.id "
-                + "WHERE Item.deleted = 'false'";
+        this.select = "SELECT * FROM Item WHERE Item.deleted = 'false'";
     }
 
     public Item findOne(String uuid) throws SQLException {
@@ -43,8 +34,7 @@ public class ItemDao {
             return new Item(rs.getString("uuid"),
                     rs.getString("name"),
                     rs.getString("serial_number"),
-                    rs.getString("location_name"),
-                    rs.getInt("location_id"),
+                    rs.getString("location"),
                     new Timestamp(rs.getString("created_on")),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
@@ -62,8 +52,7 @@ public class ItemDao {
             return new Item(rs.getString("uuid"),
                     rs.getString("name"),
                     rs.getString("serial_number"),
-                    rs.getString("location_name"),
-                    rs.getInt("location_id"),
+                    rs.getString("location"),
                     new Timestamp(rs.getString("created_on")),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
@@ -93,8 +82,7 @@ public class ItemDao {
             return new Item(rs.getString("uuid"),
                     rs.getString("name"),
                     rs.getString("serial_number"),
-                    rs.getString("location_name"),
-                    rs.getInt("location_id"),
+                    rs.getString("location"),
                     new Timestamp(rs.getString("created_on")),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
@@ -113,6 +101,13 @@ public class ItemDao {
             terms.put(Param.SERIAL, s);
         }
         return findBy(terms);
+    }
+    
+    public List<String> getLocations() throws SQLException {
+        List<String> queryAndCollect = db.queryAndCollect("SELECT DISTINCT location FROM Item ORDER BY location ASC", rs -> {
+            return rs.getString("location");
+        });
+        return queryAndCollect;
     }
 
     public void create(Item t) throws SQLException {

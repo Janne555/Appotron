@@ -27,8 +27,8 @@
         <a class="w3-bar-item w3-button w3-mobile" href="#">Search</a>
     </div>
     <div class="w3-main">
-    <div class="w3-col m4 l3 w3-card-4">
-    <div class="w3-card-4">
+    <div class="w3-col m6 l4">
+    <div class="w3-card-4 w3-margin">
     	<div class="w3-container w3-green">
             <h2>Expiring Foodstuffs</h2>
         </div>
@@ -40,8 +40,23 @@
     		</tr>
 	        <tr th:each="item: ${items}">
 	            <td th:text="${item.name}">first</td>
-	            <td>0</td>
+	            <td th:text="${item.daysUntilExpiration}">0</td>
 	            <td th:text="${item.location}">asd</td>
+	        </tr>
+    	</table>
+    </div>
+    <div class="w3-card-4 w3-margin">
+    	<div class="w3-container w3-green">
+            <h2 th:text="${listname}">Shopping List</h2>
+        </div>
+    	<table class="w3-table-all">
+    		<tr>
+    			<th>Name</th>
+    			<th>Amount</th>
+    		</tr>
+	        <tr th:each="item: ${listitems}">
+	            <td th:text="${item.itemName}">first</td>
+	            <td th:text="${item.amount}">asd</td>
 	        </tr>
     	</table>
     </div>

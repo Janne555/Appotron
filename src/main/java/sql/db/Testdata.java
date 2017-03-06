@@ -38,10 +38,6 @@ public class Testdata {
             JsonObject o = element.getAsJsonObject();
             String sql = "INSERT INTO ";
             switch (o.get("type").getAsString()) {
-                case "location":
-                    sql += "Location(name, deleted) VALUES("
-                            + o.get("name").getAsString() + ", 'false')";
-                    break;
                 case "item":
                     sql += "Item(uuid, name, serial_number, location, created_on, type, deleted)"
                             + " VALUES("

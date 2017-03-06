@@ -26,12 +26,12 @@ import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import sql.db.ItemDao;
 import static sql.db.JsonUtil.json;
 import sql.db.ListItemDao;
-import sql.db.LocationDao;
 import sql.db.Param;
+import sql.db.ShoppingListDao;
 import sql.db.TagDao;
 import sql.db.Type;
 import storables.ListItem;
-import storables.Location;
+import storables.ShoppingList;
 import storables.Tag;
 
 /**
@@ -45,6 +45,14 @@ public class Main {
      * @throws java.io.FileNotFoundException
      */
     public static void main(String[] args) throws Exception {
+//        if (localhost) {
+//            String projectDir = System.getProperty("user.dir");
+//            String staticDir = "/src/main/resources/public";
+//            staticFiles.externalLocation(projectDir + staticDir);
+//        } else {
+//            staticFiles.location("/public");
+//        }
+
         try {
             File f = new File("inventor.db");
             f.delete();
@@ -61,39 +69,39 @@ public class Main {
 
         ItemDao itemDao = new ItemDao(database);
         TagDao tagDao = new TagDao(database);
-        LocationDao locDao = new LocationDao(database);
         ListItemDao liDao = new ListItemDao(database);
-        
-        liDao.create(new ListItem(0, 0, "sadasdas", 3));
-        
-        
-        
+        ShoppingListDao slDao = new ShoppingListDao(database);
+
+        for (ListItem li : liDao.findAll()) {
+            System.out.println(li);
+        }
+
         get("/expiring.get", (reg, res) -> {
             System.out.println("received request for expiring foodstuffs");
             return itemDao.getExpiring(5);
         }, json());
-        
+
         get("/testing", (req, res) -> new ModelAndView(new HashMap<>(), "testing"), new ThymeleafTemplateEngine());
-        
+
         get("/tags.get", (req, res) -> {
             System.out.println("received request for tags: " + req.queryParams("param"));
-            
+
             return tagDao.findAllByIdentifier(req.queryParams("param"));
         }, json());
 
         post("/additem.post", (req, res) -> {
-            for(String s : req.queryParams()) {
+            for (String s : req.queryParams()) {
                 System.out.println(s);
             }
             String name = req.queryParams("name");
             Type type = Type.parseType(req.queryParams("type"));
             String serialNumber = req.queryParams("serialNumber");
             String uuid = UUID.randomUUID().toString();
-            Location location = Location.parseLocation(req.queryParams("location"));
+            String location = req.queryParams("location");
             if (type == Type.FOODSTUFF) {
                 System.out.println(req.queryParams("expiration"));
             }
-            
+
             List<Tag> tags = ItemHelper.parseTags(req, uuid);
 
             Item item = new Item(uuid, name, serialNumber, location, new Timestamp(System.currentTimeMillis()), tags, type);
@@ -112,9 +120,15 @@ public class Main {
 
         get("/additem", (req, res) -> {
             HashMap map = new HashMap();
-            List<Location> findAll = locDao.findAll();
-            Collections.sort(findAll);
-            map.put("locations", findAll);
+            map.put("locations", itemDao.getLocations());
+            String name = "";
+            String serialNumber = "";
+            if (!req.queryParams().isEmpty()) {
+                name += req.queryParams("name");
+                serialNumber += req.queryParams("serial");
+            }
+            map.put("namefield", name);
+            map.put("serialfield", serialNumber);
             return new ModelAndView(map, "additem");
         }, new ThymeleafTemplateEngine());
 
@@ -127,6 +141,9 @@ public class Main {
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("items", itemDao.getExpiring(5));
+            ShoppingList sl = slDao.findOne("0");
+            map.put("listname", "Shopping List: " + sl.getName());
+            map.put("listitems", sl.getListItems());
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
 
@@ -154,6 +171,5 @@ public class Main {
         }, new ThymeleafTemplateEngine());
 
     }
-
 
 }
