@@ -1,3 +1,5 @@
+package ztrash;
+
 ///*
 // * To change this license header, choose License Headers in Project Properties.
 // * To change this template file, choose Tools | Templates
@@ -6,13 +8,13 @@
 //package storables;
 //
 //
-//public class SerialTag extends Tag {
+//public class UuidTag extends Tag {
 //
-//    public SerialTag(int id, String serial, String key, String value) {
-//        super(id, serial, key, value);
+//    public UuidTag(int id, String uuid, String key, String value) {
+//        super(id, uuid, key, value);
 //    }
 //    
-//    public String getSerial() {
+//    public String getUuid() {
 //        return super.identifier;
 //    }
 //    

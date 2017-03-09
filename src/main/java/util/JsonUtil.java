@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sql.db;
+package util;
 
 import com.google.gson.Gson;
 import spark.ResponseTransformer;

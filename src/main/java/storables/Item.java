@@ -15,8 +15,8 @@ import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.format.datetime.joda.LocalDateParser;
-import sql.db.Incrementer;
-import sql.db.Type;
+import util.Incrementer;
+import util.Type;
 
 /**
  *

@@ -7,7 +7,7 @@ package storables;
 
 import com.google.gson.JsonObject;
 import java.util.List;
-import sql.db.Type;
+import util.Type;
 
 /**
  *

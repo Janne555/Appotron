@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+    <div th:fragment="navigation">
+    <div class="w3-bar w3-black">
+        <a class="w3-bar-item w3-button w3-mobile" href="/">Front Page</a>
+        <div class="w3-dropdown-hover w3-mobile">
+            <button class="w3-button w3-black">Show</button>
+            <div class="w3-dropdown-content w3-white w3-card-4">
+                <a href="/find?all=true">Everything</a>
+                <a href="/find?all=true&#38;type=book">Books</a>
+                <a href="/find?all=true&#38;type=foodstuff">Foodstuff</a>
+                <a href="/find?all=true&#38;type=item">Items</a>
+             </div>
+        </div>
+        <a class="w3-bar-item w3-button w3-mobile" href="/additem">Add Item</a>
+        <a class="w3-bar-item w3-button w3-mobile" href="/addserving">Add Serving</a>
+        <a class="w3-bar-item w3-button w3-mobile" href="#">Search</a>
+        <a class="w3-bar-item w3-button w3-mobile" th:href="@{~/profile/{username} (username=${user.username})}" th:text="${user.username}" th:if="${user}" />
+        <a class="w3-bar-item w3-button w3-mobile w3-right-align" href="/login" th:if="${not user}">Login</a>
+        <a class="w3-bar-item w3-button w3-mobile" href="/logout" th:if="${user}">Logout</a>
+    </div>
+    </div>
+    </body>
+</html>

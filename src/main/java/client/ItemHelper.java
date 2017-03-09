@@ -8,7 +8,7 @@ package client;
 import java.util.ArrayList;
 import java.util.List;
 import spark.Request;
-import sql.db.Type;
+import util.Type;
 import storables.Tag;
 
 /**

@@ -8,7 +8,8 @@
 		[
 		{
 			"id": "STRING PRIMARY KEY",
-			"name": "STRING NOT NULL",
+			"name": "STRING NOT NULL UNIQUE",
+			"password": "STRING NOT NULL",
 			"deleted": "BOOLEAN NOT NULL"
 		}
 		]
@@ -78,7 +79,38 @@
 			"identifier": "STRING NOT NULL",
 			"key": "STRING NOT NULL",
 			"value": "STRING",
-			"type": "STRING NOT NULL"
+			"type": "STRING NOT NULL",
+			"FOREIGN ": "KEY(identifier) REFERENCES item(serial_number)"
+		}
+		]
+	},
+	{
+		"name": "Serving",
+		"columns":
+		[
+		{	
+			"id": "INTEGER PRIMARY KEY",
+			"user": "STRING NOT NULL",
+			"identifier": "STRING NOT NULL",
+			"mass": "INTEGER NOT NULL",
+			"date": "TIMESTAMP NOT NULL",
+			"deleted": "BOOLEAN NOT NULL",
+			"FOREIGN ": "KEY(user) REFERENCES User(uuid)",
+			"FOREIGN ": "Key(identifier) REFERENCES Item(serial_number)"
+		}
+		]
+	},
+	{
+		"name": "NutritionalInfo",
+		"columns":
+		[
+		{
+			"energy": "FLOAT",
+			"identifier": "STRING NOT NULL",
+			"carbohydrate": "FLOAT",
+			"fat": "FLOAT",
+			"protein": "FLOAT",
+			"FOREIGN ": "Key(identifier) REFERENCES Item(serial_number)"
 		}
 		]
 	}

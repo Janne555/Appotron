@@ -26,7 +26,7 @@
             $(document).ready(function(){
                 $("#scanbutton").click(function(){
                     var name = $("#name").val();
-                    var url = "http://zxing.appspot.com/scan?ret=http%3A%2F%2Flocalhost%3A4567%2Fadditem%3Fserial%3D%7BCODE%7D%26name%3D" + name + "&SCAN_FORMATS=UPC_A,EAN_13";
+                    var url = "http://zxing.appspot.com/scan?ret=http%3A%2F%2F192.168.1.204%3A4567%2Fadditem%3Fserial%3D%7BCODE%7D%26name%3D" + name + "&SCAN_FORMATS=UPC_A,EAN_13";
                     window.location.href = url;
             })});
 
@@ -97,20 +97,7 @@
         </style>
     </head>
     <body>
-    <!-- Navigation bar -->
-    <div class="w3-bar w3-black">
-        <a class="w3-bar-item w3-button w3-mobile" href="/">Front Page</a>
-        <div class="w3-dropdown-hover w3-mobile">
-            <button class="w3-button w3-black">Show</button>
-            <div class="w3-dropdown-content w3-white w3-card-4">
-                <a href="/find?all=true">Everything</a>
-                <a href="/find?all=true&#38;type=book">Books</a>
-                <a href="/find?all=true&#38;type=foodstuff">Foodstuff</a>
-                <a href="/find?all=true&#38;type=item">Items</a>
-             </div>
-        </div>
-        <a class="w3-bar-item w3-button w3-mobile w3-dark-grey" href="#">Add Item</a>
-        <a class="w3-bar-item w3-button w3-mobile" href="#">Search</a>
+    <div th:replace="fragments :: navigation">
     </div>
     <div class="w3-main">
     <div class="w3-col m6 l4 w3-card-4">

@@ -3,13 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sql.db;
+package sql.daos;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import sql.db.Database;
+import util.Param;
+import util.Timestamp;
+import util.Type;
 import storables.Item;
 import storables.Tag;
 

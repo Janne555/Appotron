@@ -5,7 +5,7 @@
  */
 package storables;
 
-import sql.db.Incrementer;
+import util.Incrementer;
 
 /**
  *

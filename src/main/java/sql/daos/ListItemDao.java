@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sql.db;
+package sql.daos;
 
 import java.sql.SQLException;
 import java.util.List;
+import sql.db.Dao;
+import sql.db.Database;
 import storables.ListItem;
 
 public class ListItemDao implements Dao<ListItem, String> {

@@ -12,19 +12,7 @@
         </style>
     </head>
     <body>
-    <div class="w3-bar w3-black">
-        <a class="w3-bar-item w3-button w3-mobile w3-dark-grey" href="/">Front Page</a>
-        <div class="w3-dropdown-hover w3-mobile">
-            <button class="w3-button w3-black">Show</button>
-            <div class="w3-dropdown-content w3-white w3-card-4">
-                <a href="/find?all=true">Everything</a>
-                <a href="/find?all=true&#38;type=book">Books</a>
-                <a href="/find?all=true&#38;type=foodstuff">Foodstuff</a>
-                <a href="/find?all=true&#38;type=item">Items</a>
-             </div>
-        </div>
-        <a class="w3-bar-item w3-button w3-mobile" href="/additem">Add Item</a>
-        <a class="w3-bar-item w3-button w3-mobile" href="#">Search</a>
+    <div th:replace="fragments :: navigation">
     </div>
     <div class="w3-main">
     <div class="w3-col m6 l4">
@@ -47,7 +35,7 @@
     </div>
     <div class="w3-card-4 w3-margin">
     	<div class="w3-container w3-green">
-            <h2 th:text="${listname}">Shopping List</h2>
+            <h2>Shopping List</h2>
         </div>
     	<table class="w3-table-all">
     		<tr>

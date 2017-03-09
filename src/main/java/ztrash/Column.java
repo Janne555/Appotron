@@ -1,3 +1,5 @@
+package ztrash;
+
 ///*
 // * To change this license header, choose License Headers in Project Properties.
 // * To change this template file, choose Tools | Templates
@@ -9,24 +11,27 @@
 // *
 // * @author Janne
 // */
-//public enum Table {
-//    ITEM("Item"),
-//    LOC("Location"),
-//    TAG("Tag"),
-//    DESCR("Description");
-//    
+//public enum Column {
+//    UUID("Item.uuid"),
+//    NAME("Item.name"),
+//    SERIAL("Item.serial_number"),
+//    LOC_NAME("Location.name AS location_name"),
+//    LOC_ID("Location.id AS location_id"),
+//    CREATED_ON("Item.created_on"),
+//    TYPE("Item.type"),
+//    ITEM_UUID("item_uuid");
 //
-//    private final String table;
+//    private final String column;
 //
-//    Table(String table) {
-//        this.table = table;
+//    Column(String column) {
+//        this.column = column;
 //    }
 //
-//    public String getTable() {
-//        return table;
+//    public String getColumn() {
+//        return column;
 //    }
 //
-//    public static Table parseSearch(String search) {
+//    public static Column parseSearch(String search) {
 //        switch (search) {
 //            case "uuid":
 //                return UUID;

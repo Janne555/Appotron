@@ -1,0 +1,36 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>List</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css" />
+        <style>
+        body {
+        }
+        </style>
+    </head>
+    <body>
+    <div th:replace="fragments :: navigation">
+    </div>
+    <div class="w3-main">
+    <div class="w3-col m6 l4">
+    <div class="w3-card-4 w3-margin">
+    	<div class="w3-container w3-green">
+            <h2 th:text="${user.username}"></h2>
+        </div>
+        <table>
+            <tr>
+                <td><a href="/pwchange">Change password</a></td>
+            </tr>
+            <tr>
+                <td><a href="#">Loans</a></td>
+            </tr>
+        </table>
+    </div>
+
+    </div>
+    </div>
+    </body>
+</html>
