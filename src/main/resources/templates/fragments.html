@@ -18,7 +18,7 @@
         <a class="w3-bar-item w3-button w3-mobile" href="/addserving">Add Serving</a>
         <a class="w3-bar-item w3-button w3-mobile" href="#">Search</a>
         <a class="w3-bar-item w3-button w3-mobile" th:href="@{~/profile/{username} (username=${user.username})}" th:text="${user.username}" th:if="${user}" />
-        <a class="w3-bar-item w3-button w3-mobile w3-right-align" href="/login" th:if="${not user}">Login</a>
+        <a class="w3-bar-item w3-button w3-mobile" href="/login" th:if="${not user}">Login</a>
         <a class="w3-bar-item w3-button w3-mobile" href="/logout" th:if="${user}">Logout</a>
     </div>
     </div>

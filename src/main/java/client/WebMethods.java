@@ -58,7 +58,7 @@ public class WebMethods {
             map.put("user", req.session().attribute("user"));
 
             map.put("items", itemDao.getExpiring(5));
-            ShoppingList sl = slDao.findOne("0");
+            ShoppingList sl = slDao.findOne(0);
             map.put("listname", "Shopping List: " + sl.getName());
             map.put("listitems", sl.getListItems());
             return new ModelAndView(map, "index");
@@ -85,8 +85,11 @@ public class WebMethods {
 
         get("/tags.get", (req, res) -> {
             System.out.println("received request for tags: " + req.queryParams("param"));
-
-            return tagDao.findAllByIdentifier(req.queryParams("param"));
+            List<Tag> list = tagDao.findAllByIdentifier(req.queryParams("param"));
+            for (Tag t : list) {
+                System.out.println(t);
+            }
+            return list;
         }, json());
 
         get("/additem", (req, res) -> {
@@ -139,6 +142,7 @@ public class WebMethods {
         get("/login", (req, res) -> {
             HashMap map = new HashMap();
             map.put("user", req.session().attribute("user"));
+            map.put("redirect", req.queryParams("redirect"));
             return new ModelAndView(map, "login");
         }, new ThymeleafTemplateEngine());
 
@@ -148,7 +152,7 @@ public class WebMethods {
 
             User user = (User) req.session().attribute("user");
 
-            checkLogin(req, res);
+            checkLogin(req, res, "/profile/" + user.getUsername());
 
             return new ModelAndView(map, "profile");
         }, new ThymeleafTemplateEngine());
@@ -157,7 +161,7 @@ public class WebMethods {
             HashMap map = new HashMap();
             map.put("user", req.session().attribute("user"));
             
-            checkLogin(req, res);
+            checkLogin(req, res, "/addserving");
             
             return new ModelAndView(map, "addserving");
         }, new ThymeleafTemplateEngine());
@@ -174,7 +178,7 @@ public class WebMethods {
             }
 
             req.session(true).attribute("user", checkUser.getUser());
-            res.redirect("/");
+            res.redirect(req.queryParams("redirect"));
             return "";
         });
         before("/login", (req, res) -> {
@@ -214,11 +218,11 @@ public class WebMethods {
 
     }
 
-    private void checkLogin(Request req, Response res) {
+    private void checkLogin(Request req, Response res, String redirect) {
         User user = (User) req.session().attribute("user");
 
         if (user == null) {
-            res.redirect("/login");
+            res.redirect("/login?redirect=" + redirect);
             halt();
         } else if (req.params(":username") != null && !user.getUsername().equals(req.params(":username"))) {
             res.redirect("/fail?msg=access_denied");

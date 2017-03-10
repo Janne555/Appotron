@@ -3,13 +3,14 @@
 	"tables":
 	[
 	{
-		"name": "User",
+		"name": "Users",
 		"columns":
 		[
 		{
-			"id": "STRING PRIMARY KEY",
-			"name": "STRING NOT NULL UNIQUE",
-			"password": "STRING NOT NULL",
+			"id": "TEXT PRIMARY KEY",
+			"name": "TEXT NOT NULL UNIQUE",
+			"password": "TEXT NOT NULL",
+			"apikey": "TEXT",
 			"deleted": "BOOLEAN NOT NULL"
 		}
 		]
@@ -19,12 +20,12 @@
 		"columns":
 		[
 		{
-			"uuid": "STRING PRIMARY KEY",
-			"name": "STRING NOT NULL",
-			"serial_number": "STRING NOT NULL",
-			"location": "STRING NOT NULL",
+			"uuid": "TEXT PRIMARY KEY",
+			"name": "TEXT NOT NULL",
+			"serial_number": "TEXT NOT NULL",
+			"location": "TEXT NOT NULL",
 			"created_on": "TIMESTAMP NOT NULL",
-			"type": "STRING NOT NULL",
+			"type": "TEXT NOT NULL",
 			"deleted": "BOOLEAN NOT NULL"
 		}
 		]
@@ -34,8 +35,8 @@
 		"columns":
 		[
 		{
-			"id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-			"name": "STRING NOT NULL",
+			"id": "BIGSERIAL PRIMARY KEY",
+			"name": "TEXT NOT NULL",
 			"created_on": "TIMESTAMP NOT NULL",
 			"deleted": "BOOLEAN NOT NULL"
 		}
@@ -46,12 +47,11 @@
 		"columns":
 		[
 		{	
-			"id": "INTEGER PRIMARY KEY AUTOINCREMENT",
+			"id": "BIGSERIAL PRIMARY KEY",
 			"shopping_list": "INTEGER NOT NULL",
-			"serial_number": "STRING NOT NULL",
-			"amount" : "INTEGER NOT NULL",
-			"FOREIGN ": "KEY(shopping_list) REFERENCES ShoppingList(id)",
-			"FOREIGN ": "KEY(serial_number) REFERENCES Item(serial_number)"
+			"serial_number": "TEXT NOT NULL",
+			"amount" : "INT NOT NULL",
+			"FOREIGN1":"KEY(shopping_list) REFERENCES ShoppingList(id)"
 		}
 		]
 	},
@@ -60,13 +60,13 @@
 		"columns":
 		[
 		{
-			"user": "STRING NOT NULL",
-			"item_uuid": "STRING NOT NULL",
+			"user_uuid": "TEXT NOT NULL",
+			"item_uuid": "TEXT NOT NULL",
 			"created_on": "TIMESTAMP NOT NULL",
 			"returned": "BOOLEAN NOT NULL",
 			"deleted": "BOOLEAN NOT NULL",
-			"FOREIGN ": "KEY(user) REFERENCES User(uuid)",
-			"FOREIGN ": "Key(item_uuid) REFERENCES Item(uuid)"
+			"FOREIGN1":"KEY(user_uuid) REFERENCES Users(id)",
+			"FOREIGN2":"Key(item_uuid) REFERENCES Item(uuid)"
 		}
 		]
 	},
@@ -75,12 +75,11 @@
 		"columns":
 		[
 		{
-			"id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-			"identifier": "STRING NOT NULL",
-			"key": "STRING NOT NULL",
-			"value": "STRING",
-			"type": "STRING NOT NULL",
-			"FOREIGN ": "KEY(identifier) REFERENCES item(serial_number)"
+			"id": "BIGSERIAL PRIMARY KEY",
+			"identifier": "TEXT NOT NULL",
+			"key": "TEXT NOT NULL",
+			"value": "TEXT",
+			"type": "TEXT NOT NULL"
 		}
 		]
 	},
@@ -89,14 +88,13 @@
 		"columns":
 		[
 		{	
-			"id": "INTEGER PRIMARY KEY",
-			"user": "STRING NOT NULL",
-			"identifier": "STRING NOT NULL",
+			"id": "INT PRIMARY KEY",
+			"user_uuid": "TEXT NOT NULL",
+			"identifier": "TEXT NOT NULL",
 			"mass": "INTEGER NOT NULL",
 			"date": "TIMESTAMP NOT NULL",
 			"deleted": "BOOLEAN NOT NULL",
-			"FOREIGN ": "KEY(user) REFERENCES User(uuid)",
-			"FOREIGN ": "Key(identifier) REFERENCES Item(serial_number)"
+			"FOREIGN1":"KEY(user_uuid) REFERENCES Users(id)"
 		}
 		]
 	},
@@ -105,12 +103,11 @@
 		"columns":
 		[
 		{
-			"energy": "FLOAT",
-			"identifier": "STRING NOT NULL",
-			"carbohydrate": "FLOAT",
-			"fat": "FLOAT",
-			"protein": "FLOAT",
-			"FOREIGN ": "Key(identifier) REFERENCES Item(serial_number)"
+			"energy": "DECIMAL",
+			"identifier": "TEXT NOT NULL",
+			"carbohydrate": "DECIMAL",
+			"fat": "DECIMAL",
+			"protein": "DECIMAL"
 		}
 		]
 	}

@@ -11,7 +11,7 @@ import sql.db.Dao;
 import sql.db.Database;
 import storables.ListItem;
 
-public class ListItemDao implements Dao<ListItem, String> {
+public class ListItemDao {
 
     private Database db;
 
@@ -19,14 +19,12 @@ public class ListItemDao implements Dao<ListItem, String> {
         this.db = db;
     }
 
-    @Override
     public ListItem create(ListItem t) throws SQLException {
         db.update("INSERT INTO ListItem(shopping_list, serial_number, amount) VALUES(?,?,?)", t.getObjs());
         return t;
     }
 
-    @Override
-    public ListItem findOne(String key) throws SQLException {
+    public ListItem findOne(int key) throws SQLException {
         List<ListItem> queryAndCollect = db.queryAndCollect("SELECT ListItem.id AS id, "
                 + "ListItem.shopping_list AS shopping_list, "
                 + "ListItem.serial_number AS sernum, "
@@ -48,7 +46,6 @@ public class ListItemDao implements Dao<ListItem, String> {
         }
     }
 
-    @Override
     public List<ListItem> findAll() throws SQLException {
         List<ListItem> queryAndCollect = db.queryAndCollect("SELECT ListItem.id AS id, "
                 + "ListItem.shopping_list AS shopping_list, "
@@ -66,7 +63,7 @@ public class ListItemDao implements Dao<ListItem, String> {
         return queryAndCollect;
     }
     
-    public List<ListItem> findAllByShoppingList(String shoppingListId) throws SQLException {
+    public List<ListItem> findAllByShoppingList(int shoppingListId) throws SQLException {
         List<ListItem> queryAndCollect = db.queryAndCollect("SELECT ListItem.id AS id, "
                 + "ListItem.shopping_list AS shopping_list, "
                 + "ListItem.serial_number AS sernum, "
@@ -83,12 +80,10 @@ public class ListItemDao implements Dao<ListItem, String> {
         return queryAndCollect;
     }
 
-    @Override
     public void update(ListItem t) throws SQLException {
         db.update("UPDATE ListItem SET shopping_list = ?, serial_number = ?, amount = ? WHERE id = ?", t.getObjsId());
     }
 
-    @Override
     public void delete(String key) throws SQLException {
         db.update("DELETE FROM ListItem WHERE id = ?", key);
     }

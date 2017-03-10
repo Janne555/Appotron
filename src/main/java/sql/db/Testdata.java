@@ -75,7 +75,6 @@ public class Testdata {
                 case "description":
                     continue;
             }
-            System.out.println(sql);
             inserts.add(sql);
         }
     }

@@ -20,7 +20,7 @@ public class UserDao {
     }
 
     public User findUser(String username) throws SQLException {
-        List<User> queryAndCollect = db.queryAndCollect("SELECT * FROM User WHERE name = ?", rs -> {
+        List<User> queryAndCollect = db.queryAndCollect("SELECT * FROM Users WHERE name = ?", rs -> {
             return new User(rs.getString("id"), rs.getString("name"), rs.getString("password"));
         }, username);
         
@@ -32,6 +32,6 @@ public class UserDao {
     }
     
     public void createUser(User user) throws SQLException {
-        db.update("INSERT INTO User(id, name, password, deleted) VALUES(?,?,?,?)", user.getUuid(), user.getUsername(), PasswordUtil.hashPassword(user.getPassword()), false);
+        db.update("INSERT INTO Users(id, name, password, deleted) VALUES(?,?,?,?)", user.getUuid(), user.getUsername(), PasswordUtil.hashPassword(user.getPassword()), false);
     }
 }

@@ -41,7 +41,7 @@ public class ServingDao {
     }
     
     public void createServing(Serving serving) throws SQLException {
-        db.update("INSERT INTO Serving(user, identifier, mass, date, deleted) VALUES(?, ?, ?, ?, ?)",
+        db.update("INSERT INTO Serving(user_uuid, identifier, mass, date, deleted) VALUES(?, ?, ?, ?, ?)",
                 serving.getUserUuid(), serving.getIdentifier(), serving.getMass(), serving.getDate().toString(), false);
     }
 }

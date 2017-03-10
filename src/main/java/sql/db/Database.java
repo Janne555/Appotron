@@ -20,14 +20,19 @@ import java.util.List;
 public class Database {
 
     private String address;
+    private String username;
+    private String password;
 
-    public Database(String driver, String address) throws SQLException, ClassNotFoundException {
+    public Database(String driver, String address, String username, String password) throws ClassNotFoundException {
         Class.forName(driver);
         this.address = address;
+        this.address = address;
+        this.username = username;
+        this.password = password;
     }
 
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(address);
+        return DriverManager.getConnection(address, username, password);
     }
 
     public void update(String sql) throws SQLException {

@@ -16,7 +16,7 @@ import storables.ShoppingList;
  *
  * @author Janne
  */
-public class ShoppingListDao implements Dao<ShoppingList, String>{
+public class ShoppingListDao {
     private Database db;
     private ListItemDao liDao;
 
@@ -25,16 +25,14 @@ public class ShoppingListDao implements Dao<ShoppingList, String>{
         this.liDao = new ListItemDao(db);
     }
     
-    @Override
     public ShoppingList create(ShoppingList t) throws SQLException {
         db.update("INSERT INTO ShoppingList(name, created_on) VALUES(?,?)", t.getObjs());
         return t;
     }
 
-    @Override
-    public ShoppingList findOne(String key) throws SQLException {
+    public ShoppingList findOne(int key) throws SQLException {
         List<ShoppingList> queryAndCollect = db.queryAndCollect("SELECT * FROM ShoppingList WHERE id = ?", rs -> {
-            return new ShoppingList(rs.getInt("id"),
+            return new ShoppingList(Integer.parseInt(rs.getString("id")),
                     rs.getString("name"),
                     new Timestamp(rs.getString("created_on")), 
                     liDao.findAllByShoppingList(key));
@@ -46,23 +44,20 @@ public class ShoppingListDao implements Dao<ShoppingList, String>{
         }
     }
 
-    @Override
     public List<ShoppingList> findAll() throws SQLException {
         List<ShoppingList> queryAndCollect = db.queryAndCollect("SELECT * FROM ShoppingList", rs -> {
             return new ShoppingList(rs.getInt("id"),
                     rs.getString("name"),
                     new Timestamp(rs.getString("created_on")), 
-                    liDao.findAllByShoppingList(rs.getString("id")));
+                    liDao.findAllByShoppingList(rs.getInt("id")));
         });
         return queryAndCollect;
     }
 
-    @Override
     public void update(ShoppingList t) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public void delete(String key) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

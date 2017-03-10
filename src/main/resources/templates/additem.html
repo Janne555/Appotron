@@ -7,8 +7,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<!--         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script>
             /*<![CDATA[*/
             $(document).on("keypress", "form", function(event) { 
@@ -71,6 +71,7 @@
                     xhr.send();
                     xhr.addEventListener("readystatechange", processRequest, false);
                     xhr.onreadystatechange = processRequest;
+                    $("#headerold").siblings().remove();
 
                     function processRequest(e) {
                         if (xhr.readyState == 4 && xhr.status == 200) {
@@ -85,9 +86,11 @@
                                 cell1.innerHTML = key;
                                 cell2.innerHTML = value;
                             }
-                            $("oldtags").show();
+                            
                         }
+                        $("#oldtags").show();
                     }
+
                 })
             });
             /*]]>*/
@@ -100,7 +103,7 @@
     <div th:replace="fragments :: navigation">
     </div>
     <div class="w3-main">
-    <div class="w3-col m6 l4 w3-card-4">
+    <div class="w3-col m6 l4 w3-card-4 w3-margin">
         <form class="w3-container" action="/additem.post" method="post">
                 <div class="w3-container w3-green">
                     <h2>Basic Info</h2>
@@ -133,11 +136,11 @@
                     <h2>Tags</h2>
                 </div>
                 <div id="tagdiv">
-                    <div id="oldtags" style="display: none;">
+                    <div class="w3-margin" id="oldtags" style="display: none;">
                     <label class="w3-label" for="oldtags">Tags Associated with serial number</label>
                     <div class="w3-responsive">
                         <table class="w3-table-all" id="oldtagstable">
-                            <tr>
+                            <tr id="headerold">
                                 <th>Key</th>
                                 <th>Value</th>
                             </tr>

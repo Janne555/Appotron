@@ -5,41 +5,19 @@
  */
 package inventorsql;
 
-import client.ItemHelper;
 import client.WebMethods;
-import com.google.gson.JsonObject;
-import java.io.File;
+import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 import sql.db.Database;
 import sql.db.DatabaseCreator;
 import sql.db.Testdata;
-import storables.Item;
-import spark.ModelAndView;
-import spark.ResponseTransformer;
-import spark.Session;
-import static spark.Spark.*;
-import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import sql.daos.ItemDao;
-import static util.JsonUtil.json;
 import sql.daos.ListItemDao;
-import util.Param;
 import sql.daos.ShoppingListDao;
 import sql.daos.TagDao;
 import sql.daos.UserDao;
-import sql.db.LoginResult;
-import util.Type;
-import storables.ListItem;
-import storables.ShoppingList;
-import storables.Tag;
 import storables.User;
-import util.PasswordUtil;
-import util.Service;
 
 /**
  *
@@ -54,22 +32,26 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Database database = null;
         if (true) {
-            try {
-                File f = new File("inventor.db");
-                f.delete();
-            } catch (Exception ex) {
+            database = new Database("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/inventordev", "devaajat", "salasana");
+
+            String[] strings = {"item", "users", "listitem", "loan", "nutritionalinfo", "serving", "shoppinglist", "tag"};
+            for (String s : strings) {
+                try {
+                    database.update("DROP TABLE " + s + " CASCADE");
+                } catch (SQLException e) {
+                    if (!e.getMessage().contains("does not exist")) {
+                        throw e;
+                    }
+                }
             }
 
-            database = new Database("org.sqlite.JDBC", "jdbc:sqlite:inventor.db");
-            DatabaseCreator creator = new DatabaseCreator("dbcommands.json", database);
-            Testdata td = new Testdata("data.json");
+            new DatabaseCreator("dbcommands.json", database);
 
+            Testdata td = new Testdata("data.json");
             for (String sql : td.getInserts()) {
+                System.out.println(sql);
                 database.update(sql);
             }
-
-        } else {
-            database = new Database("org.sqlite.JDBC", "jdbc:sqlite:inventor.db");
         }
 
         ItemDao itemDao = new ItemDao(database);
@@ -77,10 +59,9 @@ public class Main {
         ListItemDao liDao = new ListItemDao(database);
         ShoppingListDao slDao = new ShoppingListDao(database);
         UserDao uDao = new UserDao(database);
-        
+
         uDao.createUser(new User(UUID.randomUUID().toString(), "janne", "salis"));
 
         new WebMethods(itemDao, tagDao, liDao, slDao, uDao);
-
     }
 }

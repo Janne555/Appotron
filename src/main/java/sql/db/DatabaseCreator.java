@@ -19,24 +19,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Janne
  */
 public class DatabaseCreator {
-
-    private String databaseName;
     private String filename;
     private Database db;
-    private List<TableCreator> tables;
+    private List<String> tables;
 
     public DatabaseCreator(String filename, Database db) throws FileNotFoundException, SQLException {
         this.filename = filename;
         this.db = db;
-        //initiate the list of table objects
         this.tables = new ArrayList<>();
-        
+
         parseJson();
         createTables();
     }
@@ -48,19 +47,17 @@ public class DatabaseCreator {
         Reader reader = new FileReader(file);
         //parse a json object from file reader input
         JsonObject json = new JsonParser().parse(reader).getAsJsonObject();
-        //get name of database
-        databaseName = json.get("database").getAsString();
         //get array of tables
         JsonArray tableJsonArray = json.getAsJsonArray("tables");
 
         //loop through array of tables
         for (JsonElement table : tableJsonArray) {
+            String sql = "CREATE TABLE ";
             //turn element into object
             JsonObject tableJsonObj = table.getAsJsonObject();
             //get the name of the table
             String name = tableJsonObj.get("name").getAsString();
-            //create a table object
-            TableCreator tableObj = new TableCreator(name);
+            sql += name + "(";
             //get columns as an array
             JsonArray columns = tableJsonObj.getAsJsonArray("columns");
             //loop through array of columns
@@ -74,39 +71,35 @@ public class DatabaseCreator {
                     //get a key value pair
                     Map.Entry<String, JsonElement> next = entrySet.next();
                     //get key from pair
-                    String key = next.getKey();
+                    String valueName = next.getKey();
+                    if (valueName.contains("FOREIGN")) {
+                        valueName = "FOREIGN";
+                    }
                     //get value from pair
-                    String value = next.getValue().getAsString();
-                    //store key and value to table object's lists
-                    tableObj.getColumnNames().add(key);
-                    tableObj.getCommands().add(value);
+                    String valueType = next.getValue().getAsString();
+                    sql += valueName + " " + valueType + ", ";
                 }
             }
             //add completed table object to list of table objects
-            tables.add(tableObj);
+            sql = sql.substring(0, sql.length() - 2) + ")";
+            tables.add(sql);
         }
     }
 
-    private void createTables() throws SQLException {
-        for (TableCreator t : tables) {
-            createTable(t);
-        }
-    }
-    
-    private void createTable(TableCreator table) throws SQLException {
-        String sql = "CREATE TABLE " + table.getName() + " (";
-        List<String> columnNames = table.getColumnNames();
-        List<String> commands = table.getCommands();
-        Iterator<String> iterator = commands.iterator();
-        for (String columnName : columnNames) {
-            String command = iterator.next();
-            sql += columnName + " " + command;
-            if (iterator.hasNext()) {
-                sql += ", ";
+    private void createTables() {
+        for (String t : tables) {
+            try {
+                db.update(t);
+                System.out.println("Table created succesfully: " + t);
+            } catch (SQLException ex) {
+                if (ex.getMessage().contains("already exists")) {
+                    System.out.println("Table already exists: " + t);
+                }
+                else {
+                    System.out.println(ex.getMessage());
+                    System.out.println(t);
+                }
             }
         }
-        sql += ")";
-        db.update(sql);
-        System.out.println("Table " + table.getName() + " created succesfully");
     }
 }
