@@ -88,10 +88,10 @@
 		"columns":
 		[
 		{	
-			"id": "INT PRIMARY KEY",
+			"id": "BIGSERIAL PRIMARY KEY",
 			"user_uuid": "TEXT NOT NULL",
 			"identifier": "TEXT NOT NULL",
-			"mass": "INTEGER NOT NULL",
+			"mass": "DECIMAL NOT NULL",
 			"date": "TIMESTAMP NOT NULL",
 			"deleted": "BOOLEAN NOT NULL",
 			"FOREIGN1":"KEY(user_uuid) REFERENCES Users(id)"
@@ -104,7 +104,7 @@
 		[
 		{
 			"energy": "DECIMAL",
-			"identifier": "TEXT NOT NULL",
+			"identifier": "TEXT NOT NULL UNIQUE",
 			"carbohydrate": "DECIMAL",
 			"fat": "DECIMAL",
 			"protein": "DECIMAL"

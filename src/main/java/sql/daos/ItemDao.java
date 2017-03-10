@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import sql.db.Database;
 import util.Param;
-import util.Timestamp;
 import util.Type;
 import storables.Item;
 import storables.Tag;
@@ -39,7 +38,7 @@ public class ItemDao {
                     rs.getString("name"),
                     rs.getString("serial_number"),
                     rs.getString("location"),
-                    new Timestamp(rs.getString("created_on")),
+                    rs.getTimestamp("created_on"),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
                     Type.parseType(rs.getString("type")));
@@ -47,7 +46,25 @@ public class ItemDao {
         if (queryAndCollect.isEmpty()) {
             return null;
         }
-        
+
+        return queryAndCollect.get(0);
+    }
+
+    public Item findOneBySerial(String serial) throws SQLException {
+        List<Item> queryAndCollect = db.queryAndCollect(select + " AND Item.serial_number = ?", rs -> {
+            return new Item(rs.getString("uuid"),
+                    rs.getString("name"),
+                    rs.getString("serial_number"),
+                    rs.getString("location"),
+                    rs.getTimestamp("created_on"),
+                    tagDao.findAllByIdentifier(rs.getString("uuid")),
+                    tagDao.findAllByIdentifier(rs.getString("serial_number")),
+                    Type.parseType(rs.getString("type")));
+        }, serial);
+        if (queryAndCollect.isEmpty()) {
+            return null;
+        }
+
         return queryAndCollect.get(0);
     }
 
@@ -57,7 +74,7 @@ public class ItemDao {
                     rs.getString("name"),
                     rs.getString("serial_number"),
                     rs.getString("location"),
-                    new Timestamp(rs.getString("created_on")),
+                    rs.getTimestamp("created_on"),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
                     Type.parseType(rs.getString("type")));
@@ -87,7 +104,7 @@ public class ItemDao {
                     rs.getString("name"),
                     rs.getString("serial_number"),
                     rs.getString("location"),
-                    new Timestamp(rs.getString("created_on")),
+                    rs.getTimestamp("created_on"),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
                     Type.parseType(rs.getString("type")));
@@ -106,7 +123,7 @@ public class ItemDao {
         }
         return findBy(terms);
     }
-    
+
     public List<String> getLocations() throws SQLException {
         List<String> queryAndCollect = db.queryAndCollect("SELECT DISTINCT location FROM Item ORDER BY location ASC", rs -> {
             return rs.getString("location");
@@ -126,17 +143,17 @@ public class ItemDao {
     public void delete(String key) throws SQLException {
         db.update("UPDATE Item SET deleted = 'true' WHERE uuid = ?", key);
     }
-    
+
     public List<Item> getExpiring(int number) throws SQLException {
         List<Tag> tags = db.queryAndCollect("SELECT * FROM Tag WHERE key = 'expiration' ORDER BY value ASC LIMIT ?", rs -> {
             return new Tag(rs.getInt("id"), rs.getString("identifier"), rs.getString("key"), rs.getString("value"), rs.getString("type"));
         }, number);
-        
+
         List<Item> items = new ArrayList<>();
         for (Tag tag : tags) {
             items.add(findOne(tag.getIdentifier()));
         }
-        
+
         return items;
     }
 }

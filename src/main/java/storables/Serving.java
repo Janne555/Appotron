@@ -12,16 +12,17 @@ import java.sql.Timestamp;
  * @author Janne
  */
 public class Serving {
+
     private int id;
     private String userUuid;
     private User user;
     private String identifier;
     private Item item;
     private NutritionalInfo nutritionalInfo;
-    private int mass;
+    private float mass;
     private Timestamp date;
 
-    public Serving(int id, String userUuid, User user, String identifier, Item item, NutritionalInfo nutritionalInfo, int mass, Timestamp date) {
+    public Serving(int id, String userUuid, User user, String identifier, Item item, NutritionalInfo nutritionalInfo, float mass, Timestamp date) {
         this.id = id;
         this.userUuid = userUuid;
         this.user = user;
@@ -30,6 +31,49 @@ public class Serving {
         this.nutritionalInfo = nutritionalInfo;
         this.mass = mass;
         this.date = date;
+    }
+
+    public String getName() {
+        if (item != null) {
+            return item.getName();
+        }
+        return "";
+    }
+
+    public String getTime() {
+        return date.toString();
+    }
+
+    public float getAmount() {
+        return mass;
+    }
+
+    public float getEnergy() {
+        if (nutritionalInfo != null) {
+            return mass * nutritionalInfo.getEnergy();
+        }
+        return 0;
+    }
+
+    public float getCarbohydrate() {
+        if (nutritionalInfo != null) {
+            return mass * nutritionalInfo.getCarbohydrates();
+        }
+        return 0;
+    }
+
+    public float getFat() {
+        if (nutritionalInfo != null) {
+            return mass * nutritionalInfo.getFat();
+        }
+        return 0;
+    }
+
+    public float getProtein() {
+        if (nutritionalInfo != null) {
+            return mass * nutritionalInfo.getProtein();
+        }
+        return 0;
     }
 
     public int getId() {
@@ -80,11 +124,11 @@ public class Serving {
         this.identifier = identifier;
     }
 
-    public int getMass() {
+    public float getMass() {
         return mass;
     }
 
-    public void setMass(int mass) {
+    public void setMass(float mass) {
         this.mass = mass;
     }
 

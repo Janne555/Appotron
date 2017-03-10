@@ -1,0 +1,49 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>List</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css" />
+        <style>
+        body {
+        }
+        </style>
+    </head>
+    <body>
+    <div th:replace="fragments :: navigation">
+    </div>
+    <div class="w3-main">
+    <div class="w3-col m12 l6">
+    <div class="w3-card-4 w3-margin">
+    	<div class="w3-container w3-green">
+            <h2>Today's Servings</h2>
+        </div>
+        <div class="w3-responsive">
+    	<table class="w3-table-all">
+    		<tr>
+    			<th>Time</th>
+    			<th>Name</th>
+                <th>Amount</th>
+    			<th>Energy</th>
+                <th>Carbohydrate</th>
+                <th>Fat</th>
+                <th>Protein</th>
+    		</tr>
+	        <tr th:each="serving: ${servings}">
+	            <td th:text="${serving.time}">first</td>
+	            <td th:text="${serving.name}">0</td>
+                <td th:text="${serving.amount}">0</td>
+	            <td th:text="${serving.energy}">asd</td>
+                <td th:text="${serving.carbohydrate}">asd</td>
+                <td th:text="${serving.fat}">asd</td>
+                <td th:text="${serving.protein}">asd</td>
+	        </tr>
+    	</table>
+        </div>
+    </div>
+    </div>
+    </div>
+    </body>
+</html>

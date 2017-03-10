@@ -11,11 +11,22 @@ public class User {
     private String username;
 
     private String password;
+    
+    private String apikey;
 
-    public User(String uuid, String username, String password) {
+    public User(String uuid, String username, String password, String apikey) {
         this.uuid = uuid;
         this.username = username;
         this.password = password;
+        this.apikey = apikey;
+    }
+
+    public String getApikey() {
+        return apikey;
+    }
+
+    public void setApikey(String apikey) {
+        this.apikey = apikey;
     }
 
     public String getUuid() {

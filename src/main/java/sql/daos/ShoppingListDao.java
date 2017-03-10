@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.List;
 import sql.db.Dao;
 import sql.db.Database;
-import util.Timestamp;
 import storables.ShoppingList;
 
 /**
@@ -34,7 +33,7 @@ public class ShoppingListDao {
         List<ShoppingList> queryAndCollect = db.queryAndCollect("SELECT * FROM ShoppingList WHERE id = ?", rs -> {
             return new ShoppingList(Integer.parseInt(rs.getString("id")),
                     rs.getString("name"),
-                    new Timestamp(rs.getString("created_on")), 
+                    rs.getTimestamp("created_on"), 
                     liDao.findAllByShoppingList(key));
         }, key);
         if (queryAndCollect.isEmpty()) {
@@ -48,7 +47,7 @@ public class ShoppingListDao {
         List<ShoppingList> queryAndCollect = db.queryAndCollect("SELECT * FROM ShoppingList", rs -> {
             return new ShoppingList(rs.getInt("id"),
                     rs.getString("name"),
-                    new Timestamp(rs.getString("created_on")), 
+                    rs.getTimestamp("created_on"), 
                     liDao.findAllByShoppingList(rs.getInt("id")));
         });
         return queryAndCollect;

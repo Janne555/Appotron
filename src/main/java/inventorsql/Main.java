@@ -6,18 +6,21 @@
 package inventorsql;
 
 import client.WebMethods;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.UUID;
+import org.mindrot.jbcrypt.BCrypt;
 import sql.db.Database;
 import sql.db.DatabaseCreator;
 import sql.db.Testdata;
 import sql.daos.ItemDao;
 import sql.daos.ListItemDao;
+import sql.daos.NutritionalInfoDao;
+import sql.daos.ServingDao;
 import sql.daos.ShoppingListDao;
 import sql.daos.TagDao;
 import sql.daos.UserDao;
 import storables.User;
+import util.PasswordUtil;
 
 /**
  *
@@ -59,9 +62,9 @@ public class Main {
         ListItemDao liDao = new ListItemDao(database);
         ShoppingListDao slDao = new ShoppingListDao(database);
         UserDao uDao = new UserDao(database);
+        ServingDao seDao = new ServingDao(database);
+        NutritionalInfoDao nuDao = new NutritionalInfoDao(database);
 
-        uDao.createUser(new User(UUID.randomUUID().toString(), "janne", "salis"));
-
-        new WebMethods(itemDao, tagDao, liDao, slDao, uDao);
+        new WebMethods(itemDao, tagDao, liDao, slDao, uDao, seDao, nuDao);
     }
 }

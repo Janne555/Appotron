@@ -19,19 +19,32 @@ public class UserDao {
         this.db = db;
     }
 
-    public User findUser(String username) throws SQLException {
+    public User findUserByName(String username) throws SQLException {
         List<User> queryAndCollect = db.queryAndCollect("SELECT * FROM Users WHERE name = ?", rs -> {
-            return new User(rs.getString("id"), rs.getString("name"), rs.getString("password"));
+            return new User(rs.getString("id"), rs.getString("name"), rs.getString("password"), rs.getString("apikey"));
         }, username);
-        
+
         if (queryAndCollect.isEmpty()) {
             return null;
         } else {
             return queryAndCollect.get(0);
         }
     }
-    
+
+    public User findUserByApikey(String apikey) throws SQLException {
+        List<User> queryAndCollect = db.queryAndCollect("SELECT * FROM Users WHERE apikey = ?", rs -> {
+            return new User(rs.getString("id"), rs.getString("name"), rs.getString("password"), rs.getString("apikey"));
+        }, apikey);
+
+        if (queryAndCollect.isEmpty()) {
+            return null;
+        } else {
+            return queryAndCollect.get(0);
+        }
+    }
+
     public void createUser(User user) throws SQLException {
-        db.update("INSERT INTO Users(id, name, password, deleted) VALUES(?,?,?,?)", user.getUuid(), user.getUsername(), PasswordUtil.hashPassword(user.getPassword()), false);
+        db.update("INSERT INTO Users(id, name, password, apikey, deleted) VALUES(?,?,?,?,?)",
+                user.getUuid(), user.getUsername(), PasswordUtil.hashPassword(user.getPassword()), user.getApikey(), false);
     }
 }

@@ -19,11 +19,15 @@ import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import sql.daos.ItemDao;
 import static util.JsonUtil.json;
 import sql.daos.ListItemDao;
+import sql.daos.NutritionalInfoDao;
+import sql.daos.ServingDao;
 import util.Param;
 import sql.daos.ShoppingListDao;
 import sql.daos.TagDao;
 import sql.daos.UserDao;
 import sql.db.LoginResult;
+import storables.NutritionalInfo;
+import storables.Serving;
 import util.Type;
 import storables.ShoppingList;
 import storables.Tag;
@@ -41,13 +45,17 @@ public class WebMethods {
     ListItemDao liDao;
     ShoppingListDao slDao;
     UserDao uDao;
+    ServingDao seDao;
+    NutritionalInfoDao nuDao;
 
-    public WebMethods(ItemDao itemDao, TagDao tagDao, ListItemDao liDao, ShoppingListDao slDao, UserDao uDao) {
+    public WebMethods(ItemDao itemDao, TagDao tagDao, ListItemDao liDao, ShoppingListDao slDao, UserDao uDao, ServingDao seDao, NutritionalInfoDao nuDao) {
         this.itemDao = itemDao;
         this.tagDao = tagDao;
         this.liDao = liDao;
         this.slDao = slDao;
         this.uDao = uDao;
+        this.seDao = seDao;
+        this.nuDao = nuDao;
 
         setupRoutes();
     }
@@ -62,6 +70,29 @@ public class WebMethods {
             map.put("listname", "Shopping List: " + sl.getName());
             map.put("listitems", sl.getListItems());
             return new ModelAndView(map, "index");
+        }, new ThymeleafTemplateEngine());
+
+        get("/addnutritionalinfo", (req, res) -> {
+            HashMap map = new HashMap<>();
+            map.put("user", req.session().attribute("user"));
+            String serial = req.queryParams("serial");
+            
+            //in case of return link from barcode reader app
+            if (serial != null) {
+                map.put("serialfield", serial);
+            } else {
+                map.put("serialfield", "");
+            }
+            
+            return new ModelAndView(map, "addnutritionalinfo");
+        }, new ThymeleafTemplateEngine());
+
+        get("/mealdiary", (req, res) -> {
+            HashMap map = new HashMap<>();
+            map.put("user", req.session().attribute("user"));
+            checkLogin(req, res, "/mealdiary");
+            map.put("servings", seDao.findTodaysByUser((User) req.session().attribute("user")));
+            return new ModelAndView(map, "mealdiary");
         }, new ThymeleafTemplateEngine());
 
         get("/logout", (req, res) -> {
@@ -160,17 +191,46 @@ public class WebMethods {
         get("/addserving", (req, res) -> {
             HashMap map = new HashMap();
             map.put("user", req.session().attribute("user"));
-            
+
             checkLogin(req, res, "/addserving");
-            
+
             return new ModelAndView(map, "addserving");
         }, new ThymeleafTemplateEngine());
+
+        post("/addnutritionalinfo.post", (req, res) -> {
+            String identifier = req.queryParams("serialNumber");
+            float energy = Float.parseFloat(req.queryParams("energy"));
+            float carbohydrate = Float.parseFloat(req.queryParams("energy"));
+            float fat = Float.parseFloat(req.queryParams("fat"));
+            float protein = Float.parseFloat(req.queryParams("protein"));
+            
+            try {
+                nuDao.create(new NutritionalInfo(0, identifier, energy, carbohydrate, fat, protein));
+            } catch (SQLException e) {
+                res.redirect("/fail?msg" + e.getMessage());
+            }
+            res.redirect("/");
+
+            return "";
+        });
+
+        post("/addserving.post", (req, res) -> {
+            String serialNumber = req.queryParams("serialNumber");
+            float mass = Float.parseFloat(req.queryParams("mass"));
+            User user = (User) req.session().attribute("user");
+
+            seDao.createServing(new Serving(0, user.getUuid(), user, serialNumber, null, null, mass, new Timestamp(System.currentTimeMillis())));
+
+            res.redirect("/");
+
+            return "";
+        });
 
         post("/login", (req, res) -> {
             String username = req.queryParams("username");
             String password = req.queryParams("password");
 
-            LoginResult checkUser = Service.checkUser(new User(null, username, password), uDao);
+            LoginResult checkUser = Service.checkUser(new User(null, username, password, null), uDao);
 
             if (checkUser.getUser() == null) {
                 res.redirect("fail?msg=" + checkUser.getError());

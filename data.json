@@ -423,5 +423,36 @@
 	"shopping_list": "2",
 	"serial_number": "'k4hv1'",
 	"amount": "6"
+},
+{
+	"type": "user",
+	"id": "'b1708ab4-bae4-42ca-bb25-a6365f87df68'",
+	"name": "'janne'",
+	"password": "'$2a$10$uW6DtkYk0fqKsWUjIqWzduJQ0SWgrO1Ct.eCytAPljUNJE0s/P1/O'",
+	"apikey": "'b1758ab4-bae4-42ca-bb25-a6365f87ef68'"
+},
+{
+	"type": "serving",
+	"user_uuid": "'b1708ab4-bae4-42ca-bb25-a6365f87df68'",
+	"identifier": "'k4hv1'",
+	"mass": "100.0"
+},
+{
+	"type": "serving",
+	"user_uuid": "'b1708ab4-bae4-42ca-bb25-a6365f87df68'",
+	"identifier": "'m4170'",
+	"mass": "100.0"
+},
+{
+	"type": "serving",
+	"user_uuid": "'b1708ab4-bae4-42ca-bb25-a6365f87df68'",
+	"identifier": "'b4n44n1'",
+	"mass": "100.0"
+},
+{
+	"type": "serving",
+	"user_uuid": "'b1708ab4-bae4-42ca-bb25-a6365f87df68'",
+	"identifier": "'k375upp1'",
+	"mass": "100.0"
 }
 ]}

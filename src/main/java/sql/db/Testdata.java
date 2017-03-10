@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +72,24 @@ public class Testdata {
                             + o.get("shopping_list").getAsString() + ", "
                             + o.get("serial_number").getAsString() + ", "
                             + o.get("amount").getAsString() + ")";
+                    break;
+                case "user":
+                    sql += "Users(id, name, password, apikey, deleted)"
+                            + " VALUES("
+                            + o.get("id").getAsString() + ", "
+                            + o.get("name").getAsString() + ", "
+                            + o.get("password").getAsString() + ", "
+                            + o.get("apikey").getAsString() + ", "
+                            + "'false'" + ")";
+                    break;
+                case "serving":
+                    sql += "Serving(user_uuid, identifier, mass, date, deleted)"
+                            + " VALUES("
+                            + o.get("user_uuid").getAsString() + ", "
+                            + o.get("identifier").getAsString() + ", "
+                            + o.get("mass").getAsString() + ", "
+                            + "'" + new Timestamp(System.currentTimeMillis()).toString() + "', "
+                            + "'false'" + ")";
                     break;
                 case "description":
                     continue;
