@@ -104,11 +104,48 @@
 		"columns":
 		[
 		{
-			"energy": "DECIMAL",
+			"energy": "DECIMAL NOT NULL",
 			"identifier": "TEXT NOT NULL UNIQUE",
-			"carbohydrate": "DECIMAL",
-			"fat": "DECIMAL",
-			"protein": "DECIMAL"
+			"carbohydrate": "DECIMAL NOT NULL",
+			"fat": "DECIMAL NOT NULL",
+			"protein": "DECIMAL NOT NULL"
+		}
+		]
+	},
+	{
+		"name": "Meal",
+		"columns":
+		[
+		{
+			"id": "TEXT PRIMARY KEY",
+			"name": "TEXT NOT NULL UNIQUE",
+			"type": "TEXT NOT NULL",
+			"deleted": "BOOLEAN NOT NULL"
+		}
+		]
+	},
+	{
+		"name": "Ingredient",
+		"columns":
+		[
+		{
+			"meal_id": "TEXT NOT NULL",
+			"item_identifier": "TEXT NOT NULL",
+			"percentage": "DECIMAL NOT NULL",
+			"deleted": "BOOLEAN NOT NULL",
+			"FOREIGN1":"KEY(meal_id) REFERENCES Meal(id)"
+		}
+		]
+	},
+	{
+		"name": "Session",
+		"columns":
+		[
+		{
+			"session_id": "TEXT NOT NULL",
+			"user_id": "TEXT NOT NULL",
+			"date": "TIMESTAMP NOT NULL",
+			"FOREIGN1":"KEY(user_id) REFERENCES Users(id)"
 		}
 		]
 	}

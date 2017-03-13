@@ -16,13 +16,6 @@ import java.util.logging.Logger;
 import sql.db.Database;
 import sql.db.DatabaseCreator;
 import sql.db.Testdata;
-import sql.daos.ItemDao;
-import sql.daos.ListItemDao;
-import sql.daos.NutritionalInfoDao;
-import sql.daos.ServingDao;
-import sql.daos.ShoppingListDao;
-import sql.daos.TagDao;
-import sql.daos.UserDao;
 
 /**
  *
@@ -54,7 +47,7 @@ public class Main {
                 System.getProperties().getProperty("postgre_password"));
 
         if (System.getProperties().getProperty("cleardatabase").equals("true")) {
-            String[] strings = {"item", "users", "listitem", "loan", "nutritionalinfo", "serving", "shoppinglist", "tag"};
+            String[] strings = {"item", "users", "listitem", "loan", "nutritionalinfo", "serving", "shoppinglist", "tag", "meal", "ingredient", "session"};
             for (String s : strings) {
                 try {
                     database.update("DROP TABLE " + s + " CASCADE");
@@ -77,14 +70,7 @@ public class Main {
                 database.update(sql);
             }
         }
-        ItemDao itemDao = new ItemDao(database);
-        TagDao tagDao = new TagDao(database);
-        ListItemDao liDao = new ListItemDao(database);
-        ShoppingListDao slDao = new ShoppingListDao(database);
-        UserDao uDao = new UserDao(database);
-        ServingDao seDao = new ServingDao(database);
-        NutritionalInfoDao nuDao = new NutritionalInfoDao(database);
 
-        new WebMethods(itemDao, tagDao, liDao, slDao, uDao, seDao, nuDao);
+        new WebMethods(database);
     }
 }

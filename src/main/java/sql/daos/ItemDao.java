@@ -149,7 +149,7 @@ public class ItemDao {
     }
 
     public List<Item> getExpiring(int number) throws SQLException {
-        List<Item> items = db.queryAndCollect("SELECT * FROM Item WHERE expiration IS NOT NULL ORDER BY expiration ASC LIMIT ?", rs -> {
+        List<Item> items = db.queryAndCollect(select + " AND expiration IS NOT NULL ORDER BY expiration ASC LIMIT ?", rs -> {
             return new Item(rs.getString("uuid"),
                     rs.getString("name"),
                     rs.getString("serial_number"),
@@ -160,6 +160,31 @@ public class ItemDao {
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
                     Type.parseType(rs.getString("type")));
         }, number);
+
+        return items;
+    }
+
+    public List<Item> searchIngredients(String param) throws SQLException {
+        param = "%" + param + "%";
+        Object[] objs = new Object[5];
+        for (int i = 0; i < objs.length; i++) objs[i] = param; 
+        List<Item> items = db.queryAndCollect("SELECT DISTINCT ON (serial_number) * FROM Item WHERE deleted = 'false'"
+                + " AND type = 'foodstuff'"
+                + " AND uuid LIKE ? "
+                + "OR serial_number LIKE ? "
+                + "OR name LIKE ? "
+                + "OR type LIKE ? "
+                + "OR location LIKE ? LIMIT 10", rs -> {
+                    return new Item(rs.getString("uuid"),
+                            rs.getString("name"),
+                            rs.getString("serial_number"),
+                            rs.getString("location"),
+                            rs.getTimestamp("created_on"),
+                            rs.getTimestamp("expiration"),
+                            tagDao.findAllByIdentifier(rs.getString("uuid")),
+                            tagDao.findAllByIdentifier(rs.getString("serial_number")),
+                            Type.parseType(rs.getString("type")));
+                }, objs);
 
         return items;
     }

@@ -12,29 +12,18 @@ import util.Incrementer;
  * @author Janne
  */
 public class NutritionalInfo {
-
-    private int id;
     private String identifier;
     private float energy;
     private float carbohydrates;
     private float fat;
     private float protein;
 
-    public NutritionalInfo(int id, String identifier, float energy, float carbohydrates, float fat, float protein) {
-        this.id = id;
+    public NutritionalInfo(String identifier, float energy, float carbohydrates, float fat, float protein) {
         this.identifier = identifier;
         this.energy = energy;
         this.carbohydrates = carbohydrates;
         this.fat = fat;
         this.protein = protein;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getIdentifier() {
@@ -87,17 +76,4 @@ public class NutritionalInfo {
         objs[inc.next()] = getProtein();
         return objs;
     }
-
-    public Object[] getObjsId() {
-        Object[] objs = new Object[6];
-        Incrementer inc = new Incrementer();
-        objs[inc.next()] = getIdentifier();
-        objs[inc.next()] = getEnergy();
-        objs[inc.next()] = getCarbohydrates();
-        objs[inc.next()] = getFat();
-        objs[inc.next()] = getProtein();
-        objs[inc.next()] = getId();
-        return objs;
-    }
-
 }

@@ -12,30 +12,27 @@ import java.sql.Timestamp;
  * @author Janne
  */
 public class Serving {
-
     private int id;
     private String userUuid;
     private User user;
     private String identifier;
-    private Item item;
-    private NutritionalInfo nutritionalInfo;
+    private Meal meal;
     private float mass;
     private Timestamp date;
 
-    public Serving(int id, String userUuid, User user, String identifier, Item item, NutritionalInfo nutritionalInfo, float mass, Timestamp date) {
+    public Serving(int id, String userUuid, User user, String identifier, Meal meal, float mass, Timestamp date) {
         this.id = id;
         this.userUuid = userUuid;
         this.user = user;
         this.identifier = identifier;
-        this.item = item;
-        this.nutritionalInfo = nutritionalInfo;
+        this.meal = meal;
         this.mass = mass;
         this.date = date;
     }
 
     public String getName() {
-        if (item != null) {
-            return item.getName();
+        if (meal != null) {
+            return meal.getName();
         }
         return "";
     }
@@ -49,29 +46,29 @@ public class Serving {
     }
 
     public float getEnergy() {
-        if (nutritionalInfo != null) {
-            return mass * nutritionalInfo.getEnergy();
+        if (meal != null) {
+            return mass * meal.getEnergy();
         }
         return 0;
     }
 
     public float getCarbohydrate() {
-        if (nutritionalInfo != null) {
-            return mass * nutritionalInfo.getCarbohydrates();
+        if (meal != null) {
+            return mass * meal.getCarbohydrate();
         }
         return 0;
     }
 
     public float getFat() {
-        if (nutritionalInfo != null) {
-            return mass * nutritionalInfo.getFat();
+        if (meal != null) {
+            return mass * meal.getFat();
         }
         return 0;
     }
 
     public float getProtein() {
-        if (nutritionalInfo != null) {
-            return mass * nutritionalInfo.getProtein();
+        if (meal != null) {
+            return mass * meal.getProtein();
         }
         return 0;
     }
@@ -92,20 +89,12 @@ public class Serving {
         this.user = user;
     }
 
-    public Item getItem() {
-        return item;
+    public Meal getMeal() {
+        return meal;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
-    public NutritionalInfo getNutritionalInfo() {
-        return nutritionalInfo;
-    }
-
-    public void setNutritionalInfo(NutritionalInfo nutritionalInfo) {
-        this.nutritionalInfo = nutritionalInfo;
+    public void setMeal(Meal meal) {
+        this.meal = meal;
     }
 
     public String getUserUuid() {

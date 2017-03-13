@@ -171,6 +171,7 @@ public class Item implements Comparable<Item> {
                 + "NAME: " + name + ", "
                 + "SERIAL: " + serialNumber + ", "
                 + "Location: " + location + ", "
+                + "EXPIRES: " + expiration + ", "
                 + "CREATED: " + createdOn + ", ";
 
         for (Tag tag : tags) {

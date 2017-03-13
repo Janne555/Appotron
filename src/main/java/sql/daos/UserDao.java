@@ -31,6 +31,18 @@ public class UserDao {
         }
     }
 
+    public User findUserById(String id) throws SQLException {
+        List<User> queryAndCollect = db.queryAndCollect("SELECT * FROM Users WHERE id = ?", rs -> {
+            return new User(rs.getString("id"), rs.getString("name"), rs.getString("password"), rs.getString("apikey"));
+        }, id);
+
+        if (queryAndCollect.isEmpty()) {
+            return null;
+        } else {
+            return queryAndCollect.get(0);
+        }
+    }
+
     public User findUserByApikey(String apikey) throws SQLException {
         List<User> queryAndCollect = db.queryAndCollect("SELECT * FROM Users WHERE apikey = ?", rs -> {
             return new User(rs.getString("id"), rs.getString("name"), rs.getString("password"), rs.getString("apikey"));

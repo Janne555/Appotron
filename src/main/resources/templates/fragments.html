@@ -3,11 +3,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
     <div th:fragment="navigation">
-    <div class="w3-bar w3-black">
-        <a class="w3-bar-item w3-button w3-mobile" href="/">Front Page</a>
+    <div class="w3-bar w3-teal">
+        <a class="w3-bar-item w3-button w3-teal w3-mobile" href="/">Front Page</a>
         <div class="w3-dropdown-hover w3-mobile">
-            <button class="w3-button w3-black">Show</button>
-            <div class="w3-dropdown-content w3-white w3-card-4">
+            <button class="w3-button w3-teal">Show</button>
+            <div class="w3-dropdown-content w3-card-4">
                 <a href="/find?all=true">Everything</a>
                 <a href="/find?all=true&#38;type=book">Books</a>
                 <a href="/find?all=true&#38;type=foodstuff">Foodstuff</a>
@@ -15,9 +15,10 @@
              </div>
         </div>
         <div class="w3-dropdown-hover w3-mobile">
-            <button class="w3-button w3-black">Add</button>
+            <button class="w3-button w3-teal">Add</button>
             <div class="w3-dropdown-content w3-white w3-card-4">
                 <a href="/additem">Item</a>
+                <a href="/addmeal">Meal</a>
                 <a href="/addserving">Serving</a>
                 <a href="/addnutritionalinfo">Nutritional Info</a>
              </div>

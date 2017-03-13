@@ -92,9 +92,36 @@ public class Testdata {
                             + "'" + new Timestamp(System.currentTimeMillis()).toString() + "', "
                             + "'false'" + ")";
                     break;
+                case "meal":
+                    sql += "Meal(id, name, type, deleted)"
+                            + " VALUES("
+                            + o.get("id").getAsString() + ", "
+                            + o.get("name").getAsString() + ", "
+                            + o.get("main").getAsString() + ", "
+                            + "'false'" + ")";
+                    break;
+                case "ingredient":
+                    sql += "Ingredient(meal_id, item_identifier, percentage, deleted)"
+                            + " VALUES("
+                            + o.get("meal_id").getAsString() + ", "
+                            + o.get("item_identifier").getAsString() + ", "
+                            + o.get("percentage").getAsString() + ", "
+                            + "'false'" + ")";
+                    break;
+                case "nutritionalinfo":
+                    sql += "NutritionalInfo(identifier, energy, carbohydrate, fat, protein)"
+                            + " VALUES("
+                            + o.get("identifier").getAsString() + ", "
+                            + o.get("energy").getAsString() + ", "
+                            + o.get("carbohydrate").getAsString() + ", "
+                            + o.get("fat").getAsString() + ", "
+                            + o.get("protein").getAsString() + ")";
+                    break;
                 case "description":
                     continue;
             }
+
+//            if (sql.equals("INSERT INTO ")) continue;
             inserts.add(sql);
         }
     }

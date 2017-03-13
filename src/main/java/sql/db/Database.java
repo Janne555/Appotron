@@ -82,4 +82,8 @@ public class Database {
         }
         return rows;
     }
+
+    public void queryAndCollect(String select__from_Ingredient_WHERE_deleted__fa, String mealId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

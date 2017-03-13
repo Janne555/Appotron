@@ -311,13 +311,6 @@
 	"created_on": "'2017-02-03 23:21:23'"
 },
 {
-	"type": "tag",
-	"identifier": "'d5486bec-c2b5-4f52-9955-43d1252ad0c3'",
-	"key": "'expiration'",
-	"value": "'2017-05-07 23:21:23'",
-	"main": "'uuid'"
-},
-{
 	"main": "'foodstuff'",
 	"type": "item",
 	"uuid": "'5ad004c1-cfb0-43a2-896b-64e9919bb38a'",
@@ -326,13 +319,6 @@
 	"location": "'kuivaruokahylly'",
 	"expiration": "'2017-06-03 23:21:23'",
 	"created_on": "'2017-02-03 23:21:23'"
-},
-{
-	"type": "tag",
-	"identifier": "'5ad004c1-cfb0-43a2-896b-64e9919bb38a'",
-	"key": "'expiration'",
-	"value": "'2017-03-21 23:21:23'",
-	"main": "'uuid'"
 },
 {
 	"main": "'foodstuff'",
@@ -345,13 +331,6 @@
 	"created_on": "'2017-03-20 23:21:23'"
 },
 {
-	"type": "tag",
-	"identifier": "'d91482a4-9c57-477c-807e-e2656f6afeda'",
-	"key": "'expiration'",
-	"value": "'2017-04-12 23:21:23'",
-	"main": "'uuid'"
-},
-{
 	"main": "'foodstuff'",
 	"type": "item",
 	"uuid": "'d982c17e-ccdb-4b9f-bb6b-130c989e4b16'",
@@ -360,13 +339,6 @@
 	"location": "'jaakaappi'",
 	"expiration": "'2017-06-03 23:21:23'",
 	"created_on": "'2017-02-03 23:21:23'"
-},
-{
-	"type": "tag",
-	"identifier": "'d982c17e-ccdb-4b9f-bb6b-130c989e4b16'",
-	"key": "'expiration'",
-	"value": "'2017-04-11 23:21:23'",
-	"main": "'uuid'"
 },
 {
 	"main": "'foodstuff'",
@@ -379,11 +351,24 @@
 	"created_on": "'2017-02-03 23:21:23'"
 },
 {
-	"type": "tag",
-	"identifier": "'b1708bb4-bae3-42ca-bb55-a6365f87df68'",
-	"key": "'expiration'",
-	"value": "'2017-04-10 23:21:23'",
-	"main": "'uuid'"
+	"main": "'foodstuff'",
+	"type": "item",
+	"uuid": "'b1738bb4-bae5-42ca-bb55-a3365f87df48'",
+	"name": "'ananas'",
+	"serial_number": "'4n4n45'",
+	"location": "'jaakaappi'",
+	"expiration": "'2017-06-03 23:21:23'",
+	"created_on": "'2017-02-03 23:21:23'"
+},
+{
+	"main": "'foodstuff'",
+	"type": "item",
+	"uuid": "'b5208bb4-bae3-42ca-bb57-a6365ff6df68'",
+	"name": "'persikka'",
+	"serial_number": "'p3r51kk4'",
+	"location": "'jaakaappi'",
+	"expiration": "'2017-06-03 23:21:23'",
+	"created_on": "'2017-02-03 23:21:23'"
 },
 {
 	"type": "shoppinglist",
@@ -449,25 +434,79 @@
 {
 	"type": "serving",
 	"user_uuid": "'b1708ab4-bae4-42ca-bb25-a6365f87df68'",
-	"identifier": "'k4hv1'",
+	"identifier": "'b4703ab4-bae4'",
 	"mass": "100.0"
 },
 {
 	"type": "serving",
 	"user_uuid": "'b1708ab4-bae4-42ca-bb25-a6365f87df68'",
-	"identifier": "'m4170'",
+	"identifier": "'b4703ab4-bae4'",
 	"mass": "100.0"
 },
 {
 	"type": "serving",
 	"user_uuid": "'b1708ab4-bae4-42ca-bb25-a6365f87df68'",
-	"identifier": "'b4n44n1'",
+	"identifier": "'b4703ab4-bae4'",
 	"mass": "100.0"
 },
 {
 	"type": "serving",
 	"user_uuid": "'b1708ab4-bae4-42ca-bb25-a6365f87df68'",
-	"identifier": "'k375upp1'",
+	"identifier": "'b4703ab4-bae4'",
 	"mass": "100.0"
+},
+{
+	"type": "serving",
+	"user_uuid": "'b1708ab4-bae4-42ca-bb25-a6365f87df68'",
+	"identifier": "'b4703ab4-bae4'",
+	"mass": "100.0"
+},
+{
+	"type": "meal",
+	"id": "'b4703ab4-bae4'",
+	"name": "'hedelmasalaatti'",
+	"main": "'jalkiruoka'"
+},
+{
+	"type": "ingredient",
+	"meal_id": "'b4703ab4-bae4'",
+	"item_identifier": "'b1738bb4-bae5-42ca-bb55-a3365f87df48'",
+	"percentage": "0.30"
+},
+{
+	"type": "ingredient",
+	"meal_id": "'b4703ab4-bae4'",
+	"item_identifier": "'b5208bb4-bae3-42ca-bb57-a6365ff6df68'",
+	"percentage": "0.24"
+},
+{
+	"type": "ingredient",
+	"meal_id": "'b4703ab4-bae4'",
+	"item_identifier": "'d5486bec-c2b5-4f52-9955-43d1252ad0c3'",
+	"percentage": "0.46"
+},
+{
+	"type": "nutritionalinfo",
+	"energy": "530",
+	"identifier": "'b1738bb4-bae5-42ca-bb55-a3365f87df48'",
+	"carbohydrate": "67",
+	"fat": "23",
+	"protein": "10"
+},
+{
+	"type": "nutritionalinfo",
+	"energy": "515",
+	"identifier": "'b5208bb4-bae3-42ca-bb57-a6365ff6df68'",
+	"carbohydrate": "57",
+	"fat": "33",
+	"protein": "20"
+},
+{
+	"type": "nutritionalinfo",
+	"energy": "945",
+	"identifier": "'d5486bec-c2b5-4f52-9955-43d1252ad0c3'",
+	"carbohydrate": "54",
+	"fat": "16",
+	"protein": "30"
 }
 ]}

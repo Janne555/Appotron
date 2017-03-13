@@ -13,7 +13,7 @@
             $(document).ready(function(){
                 $("#scanbutton").click(function(){
                     var name = $("#name").val();
-                    var url = "http://zxing.appspot.com/scan?ret=http%3A%2F%2F192.168.1.204%3A4567%2Fadditem%3Fserial%3D%7BCODE%7D%26name%3D" + name + "&SCAN_FORMATS=UPC_A,EAN_13";
+                    var url = "http://zxing.appspot.com/scan?ret=" + encodeURIComponent(window.location.href) + "%3Fserial%3D%7BCODE%7D%26name%3D" + encodeURIComponent(name) + "&SCAN_FORMATS=UPC_A,EAN_13";
                     window.location.href = url;
             })});
             /*]]>*/

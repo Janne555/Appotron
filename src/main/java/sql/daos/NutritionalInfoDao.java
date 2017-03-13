@@ -20,7 +20,7 @@ public class NutritionalInfoDao {
 
     public NutritionalInfo findOne(String identifier) throws SQLException {
         List<NutritionalInfo> queryAndCollect = db.queryAndCollect("SELECT * FROM NutritionalInfo WHERE identifier = ?", rs -> {
-            return new NutritionalInfo(0, identifier, rs.getFloat("energy"), rs.getFloat("carbohydrate"), rs.getFloat("fat"), rs.getFloat("protein"));
+            return new NutritionalInfo(identifier, rs.getFloat("energy"), rs.getFloat("carbohydrate"), rs.getFloat("fat"), rs.getFloat("protein"));
         }, identifier);
         
         if (queryAndCollect.isEmpty()) {

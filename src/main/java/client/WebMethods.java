@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -19,15 +20,19 @@ import spark.Request;
 import spark.Response;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
+import sql.daos.IngredientDao;
 import sql.daos.ItemDao;
 import static util.JsonUtil.json;
 import sql.daos.ListItemDao;
+import sql.daos.MealDao;
 import sql.daos.NutritionalInfoDao;
 import sql.daos.ServingDao;
+import sql.daos.SessionControlDao;
 import util.Param;
 import sql.daos.ShoppingListDao;
 import sql.daos.TagDao;
 import sql.daos.UserDao;
+import sql.db.Database;
 import sql.db.LoginResult;
 import storables.NutritionalInfo;
 import storables.Serving;
@@ -36,6 +41,7 @@ import storables.ShoppingList;
 import storables.Tag;
 import storables.User;
 import util.Service;
+import storables.*;
 
 /**
  *
@@ -50,20 +56,39 @@ public class WebMethods {
     UserDao uDao;
     ServingDao seDao;
     NutritionalInfoDao nuDao;
+    MealDao meDao;
+    IngredientDao ingDao;
+    SessionControlDao secDao;
 
-    public WebMethods(ItemDao itemDao, TagDao tagDao, ListItemDao liDao, ShoppingListDao slDao, UserDao uDao, ServingDao seDao, NutritionalInfoDao nuDao) {
-        this.itemDao = itemDao;
-        this.tagDao = tagDao;
-        this.liDao = liDao;
-        this.slDao = slDao;
-        this.uDao = uDao;
-        this.seDao = seDao;
-        this.nuDao = nuDao;
-
+    public WebMethods(Database db) {
+        this.itemDao = new ItemDao(db);
+        this.tagDao = new TagDao(db);
+        this.liDao = new ListItemDao(db);
+        this.slDao = new ShoppingListDao(db);
+        this.uDao = new UserDao(db);
+        this.seDao = new ServingDao(db);
+        this.nuDao = new NutritionalInfoDao(db);
+        this.meDao = new MealDao(db);
+        this.ingDao = new IngredientDao(db);
+        this.secDao = new SessionControlDao(db);
         setupRoutes();
     }
 
     private void setupRoutes() {
+        before("/*", (req, res) -> {
+            if (req.cookies().containsKey("sessioncontrolid")) {
+                String cookie = req.cookie("sessioncontrolid");
+                User user = secDao.getUser(cookie);
+                req.session(true).attribute("user", user);
+            }
+
+            if (req.session(true).attribute("user") == null && !req.pathInfo().equals("/login")) {
+                res.redirect("/login");
+            } else if (req.session(true).attribute("user") != null && req.pathInfo().equals("/login")) {
+                res.redirect("/fail?msg=alreadyloggedin");
+            }
+        });
+
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("user", req.session().attribute("user"));
@@ -77,6 +102,48 @@ public class WebMethods {
 
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
+
+        get("/testing", (req, res) -> {
+            Meal m = meDao.findAll().get(0);
+            HashMap map = new HashMap<>();
+            map.put("name", m.getName());
+            map.put("energy", m.getEnergy());
+            map.put("carbs", m.getCarbohydrate());
+            map.put("protein", m.getProtein());
+            map.put("fat", m.getFat());
+            return map;
+        }, json());
+
+        get("/addmeal", (req, res) -> {
+            HashMap map = new HashMap<>();
+            map.put("user", req.session().attribute("user"));
+            String serial = req.queryParams("serial");
+
+            //in case of return link from barcode reader app
+            if (serial != null) {
+                map.put("serialfield", serial);
+            } else {
+                map.put("serialfield", "");
+            }
+
+            List<String> list = new ArrayList<>();
+            map.put("ingredients", list);
+
+            return new ModelAndView(map, "addmeal");
+        }, new ThymeleafTemplateEngine());
+
+        get("/ingredients.get", (req, res) -> {
+            System.out.println("received request for ingredients: " + req.queryParams("param"));
+            String param = req.queryParams("param");
+
+            List<Item> list = itemDao.searchIngredients(param);
+            List<String> names = new ArrayList<>();
+
+            for (Item it : list) {
+                System.out.println(it);
+            }
+            return list;
+        }, json());
 
         get("/addnutritionalinfo", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -97,13 +164,35 @@ public class WebMethods {
             HashMap map = new HashMap<>();
             map.put("user", req.session().attribute("user"));
             checkLogin(req, res, "/mealdiary");
-            map.put("servings", seDao.findTodaysByUser((User) req.session().attribute("user")));
+            List<Serving> findTodaysByUser = seDao.findTodaysByUser((User) req.session().attribute("user"));
+            map.put("servings", findTodaysByUser);
+            float energy = 0;
+            float protein = 0;
+            float carbs = 0;
+            float fat = 0;
+
+            for (Serving s : findTodaysByUser) {
+                energy += s.getEnergy();
+                protein += s.getProtein();
+                carbs += s.getCarbohydrate();
+                fat += s.getFat();
+            }
+
+            map.put("energy", energy + " kcal");
+            map.put("protein", protein + " g");
+            map.put("carbs", carbs + " g");
+            map.put("fat", fat + " g");
+
             return new ModelAndView(map, "mealdiary");
         }, new ThymeleafTemplateEngine());
 
         get("/logout", (req, res) -> {
             HashMap map = new HashMap();
             req.session().removeAttribute("user");
+            if (req.cookies().containsKey("sessioncontrolid"))  {
+                req.cookies().remove("sessioncontrolid");
+                secDao.deleteSession(req.cookie("sessioncontrolid"));
+            }
             res.redirect("/");
             return new ModelAndView(map, "login");
         });
@@ -117,8 +206,6 @@ public class WebMethods {
             System.out.println("received request for expiring foodstuffs");
             return itemDao.getExpiring(5);
         }, json());
-
-        get("/testing", (req, res) -> new ModelAndView(new HashMap<>(), "testing"), new ThymeleafTemplateEngine());
 
         get("/tags.get", (req, res) -> {
             System.out.println("received request for tags: " + req.queryParams("param"));
@@ -203,6 +290,39 @@ public class WebMethods {
             return new ModelAndView(map, "addserving");
         }, new ThymeleafTemplateEngine());
 
+        post("/addmeal.post", (req, res) -> {
+            String name = req.queryParams("name");
+            String type = req.queryParams("type");
+            List<Ingredient> ingredients = new ArrayList<>();
+
+            float totalMass = 0;
+
+            for (String s : req.queryParamsValues("ingredients[]")) {
+                s = s.substring(4);
+                String massStr = s.substring(0, s.indexOf(","));
+                float mass = Float.parseFloat(massStr);
+                totalMass += mass;
+                s = s.substring(s.indexOf(":") + 1);
+                String serialNumber = s;
+                Item item = itemDao.findOneBySerial(serialNumber);
+                NutritionalInfo nuInfo = nuDao.findOne(serialNumber);
+                ingredients.add(new Ingredient(null, null, mass, item, nuInfo));
+            }
+
+            String uuid = UUID.randomUUID().toString().substring(0, 11);
+            for (Ingredient i : ingredients) {
+                float percentage = i.getPercentage() / totalMass;
+                i.setPercentage(percentage);
+                i.setItemId(i.getItem().getSerialNumber());
+                i.setMealId(uuid);
+            }
+
+            Meal meal = new Meal(uuid, name, type, ingredients.toArray());
+
+//            res.redirect("/");
+            return "";
+        });
+
         post("/addnutritionalinfo.post", (req, res) -> {
             String identifier = req.queryParams("serialNumber");
             float energy = Float.parseFloat(req.queryParams("energy"));
@@ -211,7 +331,7 @@ public class WebMethods {
             float protein = Float.parseFloat(req.queryParams("protein"));
 
             try {
-                nuDao.create(new NutritionalInfo(0, identifier, energy, carbohydrate, fat, protein));
+                nuDao.create(new NutritionalInfo(identifier, energy, carbohydrate, fat, protein));
             } catch (SQLException e) {
                 res.redirect("/fail?msg" + e.getMessage());
             }
@@ -225,7 +345,7 @@ public class WebMethods {
             float mass = Float.parseFloat(req.queryParams("mass"));
             User user = (User) req.session().attribute("user");
 
-            seDao.createServing(new Serving(0, user.getUuid(), user, serialNumber, null, null, mass, new Timestamp(System.currentTimeMillis())));
+            seDao.createServing(new Serving(0, user.getUuid(), user, serialNumber, null, mass, new Timestamp(System.currentTimeMillis())));
 
             res.redirect("/");
 
@@ -244,6 +364,10 @@ public class WebMethods {
             }
 
             req.session(true).attribute("user", checkUser.getUser());
+            SessionControl sessionControl = new SessionControl(null, checkUser.getUser().getUuid(), new Timestamp(System.currentTimeMillis()));
+            sessionControl.genNewSessionId();
+            secDao.createSession(sessionControl);
+            res.cookie("sessioncontrolid", sessionControl.getSessionId());
             res.redirect(req.queryParams("redirect"));
             return "";
         });

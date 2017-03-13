@@ -16,7 +16,6 @@ public class PasswordUtil {
 	}
 	
 	public static boolean verifyPassword(String pwd, String hash) {
-            System.out.println(pwd + hash);
 		boolean b = BCrypt.checkpw(pwd, hash);
 		
 		return b;
