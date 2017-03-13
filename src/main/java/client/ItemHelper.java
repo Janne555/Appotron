@@ -29,13 +29,6 @@ public class ItemHelper {
                 tags.add(new Tag(0, req.queryParams("serialNumber"), key, value, Type.SERIAL));
             }
         }
-        String expiration = req.queryParams("expiration");
-
-        if (!expiration.isEmpty()) {
-            expiration += " 00:00:00";
-            tags.add(new Tag(0, uuid, "expiration", expiration, Type.UUID));
-        }
-        
         return tags;
     }
 }

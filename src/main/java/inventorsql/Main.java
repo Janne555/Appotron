@@ -6,9 +6,13 @@
 package inventorsql;
 
 import client.WebMethods;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.UUID;
-import org.mindrot.jbcrypt.BCrypt;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sql.db.Database;
 import sql.db.DatabaseCreator;
 import sql.db.Testdata;
@@ -19,8 +23,6 @@ import sql.daos.ServingDao;
 import sql.daos.ShoppingListDao;
 import sql.daos.TagDao;
 import sql.daos.UserDao;
-import storables.User;
-import util.PasswordUtil;
 
 /**
  *
@@ -33,10 +35,25 @@ public class Main {
      * @throws java.io.FileNotFoundException
      */
     public static void main(String[] args) throws Exception {
-        Database database = null;
-        if (true) {
-            database = new Database("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/inventordev", "devaajat", "salasana");
+        InputStream input;
 
+        try {
+            input = new FileInputStream("application.configuration");
+
+            System.getProperties().load(input);
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        Database database = new Database("org.postgresql.Driver",
+                System.getProperties().getProperty("postgre_address"),
+                System.getProperties().getProperty("postgre_user"),
+                System.getProperties().getProperty("postgre_password"));
+
+        if (System.getProperties().getProperty("cleardatabase").equals("true")) {
             String[] strings = {"item", "users", "listitem", "loan", "nutritionalinfo", "serving", "shoppinglist", "tag"};
             for (String s : strings) {
                 try {
@@ -47,16 +64,19 @@ public class Main {
                     }
                 }
             }
-
+        }
+        
+        if (System.getProperties().getProperty("createtables").equals("true")) {
             new DatabaseCreator("dbcommands.json", database);
-
+        }
+        
+        if (System.getProperties().getProperty("insertdata").equals("true")) {
             Testdata td = new Testdata("data.json");
             for (String sql : td.getInserts()) {
                 System.out.println(sql);
                 database.update(sql);
             }
         }
-
         ItemDao itemDao = new ItemDao(database);
         TagDao tagDao = new TagDao(database);
         ListItemDao liDao = new ListItemDao(database);

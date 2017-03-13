@@ -7,6 +7,7 @@
 	"uuid": "'3793471d-8943-4f0d-b0a1-f6bfe6b16603'",
 	"serial_number": "'k1rj4'",
 	"created_on": "'2017-02-07 19:39:10'",
+	"expiration": "null",
 	"location": "'poyta'"
 },
 {
@@ -16,6 +17,7 @@
 	"uuid": "'9bda8daf-5921-48c7-99ed-ed4a7ca0f511'",
 	"serial_number": "'r05k4pu551'",
 	"created_on": "'2017-01-07 19:39:10'",
+	"expiration": "null",
 	"location": "'kaappi'"
 },
 {
@@ -49,6 +51,7 @@
 	"uuid": "'7b5da10b-f6b4-4046-9470-00e0712c633e'",
 	"serial_number": "'kyn4'",
 	"created_on": "'2017-02-02 19:39:10'",
+	"expiration": "null",
 	"location": "'kirjoituspoyta'"
 },
 {
@@ -58,6 +61,7 @@
 	"uuid": "'045810bf-e8d3-452b-8138-85378fccaee6'",
 	"serial_number": "'kyn4'",
 	"created_on": "'2017-02-02 19:39:10'",
+	"expiration": "null",
 	"location": "'kirjoituspoyta'"
 },
 {
@@ -67,6 +71,7 @@
 	"uuid": "'33e3eaaf-229b-46e6-85ac-281cd6c26eb8'",
 	"serial_number": "'kyn4'",
 	"created_on": "'2016-01-02 19:39:10'",
+	"expiration": "null",
 	"location": "'laatikosto'"
 },
 {
@@ -92,6 +97,7 @@
 	"uuid": "'9cbc9018-2072-423e-90f5-37715da120a6'",
 	"serial_number": "'r44m477u'",
 	"location": "'kaytavan hylly'",
+	"expiration": "null",
 	"created_on": "'2015-02-02 19:39:10'"
 },
 {
@@ -133,6 +139,7 @@
 	"uuid": "'89c5fb2e-1b7c-4569-8027-774c3d72f25a'",
 	"serial_number": "'74ry50rmu573nh3rr4574'",
 	"location": "'kirjahylly'",
+	"expiration": "null",
 	"created_on": "'2015-02-04 09:39:10'"
 },
 {
@@ -174,6 +181,7 @@
 	"uuid": "'dd26bdce-6d8a-4e84-a693-1c19a3c42894'",
 	"serial_number": "'7h353lf15hg3n3'",
 	"location": "'kaytavan hylly'",
+	"expiration": "null",
 	"created_on": "'2015-06-02 19:39:10'"
 },
 {
@@ -215,6 +223,7 @@
 	"uuid": "'9266c739-b79d-4da4-b339-7c23eea3c00e'",
 	"serial_number": "'4g4m30f7hr0n35'",
 	"location": "'kirjahylly'",
+	"expiration": "null",
 	"created_on": "'2015-01-06 19:39:10'"
 },
 {
@@ -256,6 +265,7 @@
 	"uuid": "'a3ac3738-2928-4b9f-9499-3cb09be48c08'",
 	"serial_number": "'k1rj4n3n'",
 	"location": "'kirjahylly'",
+	"expiration": "null",
 	"created_on": "'2013-11-22 19:39:10'"
 },
 {
@@ -297,6 +307,7 @@
 	"name": "'banaani'",
 	"serial_number": "'b4n44n1'",
 	"location": "'jaakaappi'",
+	"expiration": "'2017-06-03 23:21:23'",
 	"created_on": "'2017-02-03 23:21:23'"
 },
 {
@@ -313,6 +324,7 @@
 	"name": "'ketsuppi'",
 	"serial_number": "'k375upp1'",
 	"location": "'kuivaruokahylly'",
+	"expiration": "'2017-06-03 23:21:23'",
 	"created_on": "'2017-02-03 23:21:23'"
 },
 {
@@ -329,6 +341,7 @@
 	"name": "'kahvi'",
 	"serial_number": "'k4hv1'",
 	"location": "'mikrokaappi'",
+	"expiration": "'2017-06-03 23:21:23'",
 	"created_on": "'2017-03-20 23:21:23'"
 },
 {
@@ -345,6 +358,7 @@
 	"name": "'maito'",
 	"serial_number": "'m4170'",
 	"location": "'jaakaappi'",
+	"expiration": "'2017-06-03 23:21:23'",
 	"created_on": "'2017-02-03 23:21:23'"
 },
 {
@@ -361,6 +375,7 @@
 	"name": "'maito'",
 	"serial_number": "'m4170'",
 	"location": "'jaakaappi'",
+	"expiration": "'2017-06-03 23:21:23'",
 	"created_on": "'2017-02-03 23:21:23'"
 },
 {

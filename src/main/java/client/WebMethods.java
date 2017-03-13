@@ -7,6 +7,9 @@ package client;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -67,8 +70,11 @@ public class WebMethods {
 
             map.put("items", itemDao.getExpiring(5));
             ShoppingList sl = slDao.findOne(0);
-            map.put("listname", "Shopping List: " + sl.getName());
-            map.put("listitems", sl.getListItems());
+
+            if (sl != null) {
+                map.put("listitems", sl.getListItems());
+            }
+
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
 
@@ -76,14 +82,14 @@ public class WebMethods {
             HashMap map = new HashMap<>();
             map.put("user", req.session().attribute("user"));
             String serial = req.queryParams("serial");
-            
+
             //in case of return link from barcode reader app
             if (serial != null) {
                 map.put("serialfield", serial);
             } else {
                 map.put("serialfield", "");
             }
-            
+
             return new ModelAndView(map, "addnutritionalinfo");
         }, new ThymeleafTemplateEngine());
 
@@ -203,7 +209,7 @@ public class WebMethods {
             float carbohydrate = Float.parseFloat(req.queryParams("energy"));
             float fat = Float.parseFloat(req.queryParams("fat"));
             float protein = Float.parseFloat(req.queryParams("protein"));
-            
+
             try {
                 nuDao.create(new NutritionalInfo(0, identifier, energy, carbohydrate, fat, protein));
             } catch (SQLException e) {
@@ -256,14 +262,19 @@ public class WebMethods {
             String serialNumber = req.queryParams("serialNumber");
             String uuid = UUID.randomUUID().toString();
             String location = req.queryParams("location");
-            if (type == Type.FOODSTUFF) {
-                System.out.println(req.queryParams("expiration"));
+            String expirationstr = req.queryParams("expiration");
+            Timestamp expiration = null;
+            System.out.println(expirationstr);
+            if (!expirationstr.isEmpty()) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate time = LocalDate.parse(expirationstr, formatter);
+                expiration = Timestamp.valueOf(time.atStartOfDay());
+                System.out.println(expiration.toString());
             }
 
             List<Tag> tags = ItemHelper.parseTags(req, uuid);
 
-            Item item = new Item(uuid, name, serialNumber, location, new Timestamp(System.currentTimeMillis()), tags, type);
-
+            Item item = new Item(uuid, name, serialNumber, location, new Timestamp(System.currentTimeMillis()), expiration, tags, type);
             System.out.println(item);
 
             try {
@@ -271,7 +282,6 @@ public class WebMethods {
             } catch (SQLException ex) {
                 res.redirect("/fail?msg=" + ex.toString());
             }
-
             res.redirect("/");
             return "ok";
         });

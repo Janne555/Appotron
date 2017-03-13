@@ -25,6 +25,7 @@
 			"serial_number": "TEXT NOT NULL",
 			"location": "TEXT NOT NULL",
 			"created_on": "TIMESTAMP NOT NULL",
+			"expiration": "TIMESTAMP",
 			"type": "TEXT NOT NULL",
 			"deleted": "BOOLEAN NOT NULL"
 		}

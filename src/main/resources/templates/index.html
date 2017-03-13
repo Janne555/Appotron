@@ -23,17 +23,17 @@
     	<table class="w3-table-all w3-responsive">
     		<tr>
     			<th>Name</th>
-    			<th>Expires In (days)</th>
+    			<th>Expires</th>
     			<th>Location</th>
     		</tr>
 	        <tr th:each="item: ${items}">
 	            <td th:text="${item.name}">first</td>
-	            <td th:text="${item.daysUntilExpiration}">0</td>
+	            <td th:text="${item.expires}">0</td>
 	            <td th:text="${item.location}">asd</td>
 	        </tr>
     	</table>
     </div>
-    <div class="w3-card-4 w3-margin">
+    <div class="w3-card-4 w3-margin" th:if="${listitems}">
     	<div class="w3-container w3-green">
             <h2>Shopping List</h2>
         </div>

@@ -56,7 +56,7 @@ public class ShoppingList implements Objectify {
         Object[] objs = new Object[3];
         Incrementer inc = new Incrementer();
         objs[inc.next()] = this.name;
-        objs[inc.next()] = this.createdOn.toString();
+        objs[inc.next()] = this.createdOn;
         objs[inc.next()] = this.id;
         return objs;
     }

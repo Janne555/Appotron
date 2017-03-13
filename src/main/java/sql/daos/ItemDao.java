@@ -29,7 +29,7 @@ public class ItemDao {
     public ItemDao(Database db) {
         this.db = db;
         this.tagDao = new TagDao(db);
-        this.select = "SELECT * FROM Item WHERE Item.deleted = 'false'";
+        this.select = "SELECT * FROM Item WHERE Item.deleted = false";
     }
 
     public Item findOne(String uuid) throws SQLException {
@@ -39,6 +39,7 @@ public class ItemDao {
                     rs.getString("serial_number"),
                     rs.getString("location"),
                     rs.getTimestamp("created_on"),
+                    rs.getTimestamp("expiration"),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
                     Type.parseType(rs.getString("type")));
@@ -57,6 +58,7 @@ public class ItemDao {
                     rs.getString("serial_number"),
                     rs.getString("location"),
                     rs.getTimestamp("created_on"),
+                    rs.getTimestamp("expiration"),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
                     Type.parseType(rs.getString("type")));
@@ -75,6 +77,7 @@ public class ItemDao {
                     rs.getString("serial_number"),
                     rs.getString("location"),
                     rs.getTimestamp("created_on"),
+                    rs.getTimestamp("expiration"),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
                     Type.parseType(rs.getString("type")));
@@ -105,6 +108,7 @@ public class ItemDao {
                     rs.getString("serial_number"),
                     rs.getString("location"),
                     rs.getTimestamp("created_on"),
+                    rs.getTimestamp("expiration"),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
                     Type.parseType(rs.getString("type")));
@@ -132,27 +136,30 @@ public class ItemDao {
     }
 
     public void create(Item t) throws SQLException {
-        db.update("INSERT INTO Item(uuid, name, serial_number, location, created_on, type, deleted) VALUES(?,?,?,?,?,?,?)", t.getObjs());
+        db.update("INSERT INTO Item(uuid, name, serial_number, location, created_on, expiration, type, deleted) VALUES(?,?,?,?,?,?,?,?)", t.getObjs());
         tagDao.create(t.getTags());
     }
 
     public void update(Item t) throws SQLException {
-        db.update("UPDATE Item SET name = ?, serial_number = ?, location = ?, created_on = ?, type = ?, deleted = ? WHERE uuid = ?", t.getObjs());
+        db.update("UPDATE Item SET name = ?, serial_number = ?, location = ?, created_on = ?, expiration = ?, type = ?, deleted = ? WHERE uuid = ?", t.getObjs());
     }
 
     public void delete(String key) throws SQLException {
-        db.update("UPDATE Item SET deleted = 'true' WHERE uuid = ?", key);
+        db.update("UPDATE Item SET deleted = true WHERE uuid = ?", key);
     }
 
     public List<Item> getExpiring(int number) throws SQLException {
-        List<Tag> tags = db.queryAndCollect("SELECT * FROM Tag WHERE key = 'expiration' ORDER BY value ASC LIMIT ?", rs -> {
-            return new Tag(rs.getInt("id"), rs.getString("identifier"), rs.getString("key"), rs.getString("value"), rs.getString("type"));
+        List<Item> items = db.queryAndCollect("SELECT * FROM Item WHERE expiration IS NOT NULL ORDER BY expiration ASC LIMIT ?", rs -> {
+            return new Item(rs.getString("uuid"),
+                    rs.getString("name"),
+                    rs.getString("serial_number"),
+                    rs.getString("location"),
+                    rs.getTimestamp("created_on"),
+                    rs.getTimestamp("expiration"),
+                    tagDao.findAllByIdentifier(rs.getString("uuid")),
+                    tagDao.findAllByIdentifier(rs.getString("serial_number")),
+                    Type.parseType(rs.getString("type")));
         }, number);
-
-        List<Item> items = new ArrayList<>();
-        for (Tag tag : tags) {
-            items.add(findOne(tag.getIdentifier()));
-        }
 
         return items;
     }

@@ -1,1 +1,3 @@
 target for energy consumption
+copies to add item
+meal definitions or combinations of individual fooditems into meals

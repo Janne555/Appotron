@@ -40,13 +40,14 @@ public class Testdata {
             String sql = "INSERT INTO ";
             switch (o.get("type").getAsString()) {
                 case "item":
-                    sql += "Item(uuid, name, serial_number, location, created_on, type, deleted)"
+                    sql += "Item(uuid, name, serial_number, location, created_on, expiration, type, deleted)"
                             + " VALUES("
                             + o.get("uuid").getAsString() + ", "
                             + o.get("name").getAsString() + ", "
                             + o.get("serial_number").getAsString() + ", "
                             + o.get("location").getAsString() + ", "
                             + o.get("created_on").getAsString() + ", "
+                            + o.get("expiration").getAsString() + ", "
                             + o.get("main").getAsString() + ", "
                             + "'false')";
                     break;

@@ -1,1 +1,7 @@
-spring.thymeleaf.cache: false
+postgre_address=jdbc:postgresql://localhost:5432/inventordev
+postgre_user=devaajat
+postgre_password=salasana
+standalone=false
+insertdata=true
+createtables=true
+cleardatabase=true
