@@ -10,12 +10,16 @@ package util;
  * @author Janne
  */
 public enum Type {
-    ITEM("item"), 
+    ITEM("item"),
     FOODSTUFF("foodstuff"),
     BOOK("book"),
     SERIAL("serial"),
-    UUID("uuid");
-    
+    UUID("uuid"),
+    INGREDIENT("ingredient"),
+    SERVING("serving"),
+    SESSION("session"),
+    MEAL("meal");
+
     private final String type;
 
     private Type(String type) {
@@ -25,17 +29,13 @@ public enum Type {
     public String getType() {
         return type;
     }
-    
-    public static Type parseType(String type) {
-        switch (type) {
-            case "item":
-                return ITEM;
-            case "book":
-                return BOOK;
-            case "foodstuff":
-                return FOODSTUFF;
-            default:
-                throw new AssertionError();
+
+    public static Type getType(String type) {
+        for (Type c : values()) {
+            if (c.getType().equals(type)) {
+                return c;
+            }
         }
+        throw new IllegalArgumentException(type);
     }
 }

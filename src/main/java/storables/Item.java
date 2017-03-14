@@ -18,7 +18,7 @@ import util.Type;
  *
  * @author Janne
  */
-public class Item implements Comparable<Item> {
+public class Item implements Comparable<Item>, SearchResult {
 
     private String uuid;
     private String name;
@@ -66,6 +66,7 @@ public class Item implements Comparable<Item> {
         this(uuid, name, serialNumber, location, createdOn, expiration, null, tags, type);
     }
 
+    @Override
     public String getUuid() {
         return uuid;
     }
@@ -74,6 +75,7 @@ public class Item implements Comparable<Item> {
         this.uuid = uuid;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -90,6 +92,7 @@ public class Item implements Comparable<Item> {
         this.serialNumber = serialNumber;
     }
 
+    @Override
     public String getLocation() {
         return location;
     }
@@ -114,6 +117,7 @@ public class Item implements Comparable<Item> {
         this.tags = tags;
     }
 
+    @Override
     public Type getType() {
         return type;
     }
@@ -209,5 +213,15 @@ public class Item implements Comparable<Item> {
         hash = 67 * hash + Objects.hashCode(this.createdOn);
         hash = 67 * hash + Objects.hashCode(this.expiration);
         return hash;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return this.getSerialNumber();
+    }
+
+    @Override
+    public Timestamp getDate() {
+        return this.getCreatedOn();
     }
 }

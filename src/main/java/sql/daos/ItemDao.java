@@ -14,7 +14,6 @@ import sql.db.Database;
 import util.Param;
 import util.Type;
 import storables.Item;
-import storables.Tag;
 
 /**
  *
@@ -42,7 +41,7 @@ public class ItemDao {
                     rs.getTimestamp("expiration"),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
-                    Type.parseType(rs.getString("type")));
+                    Type.getType(rs.getString("type")));
         }, uuid);
         if (queryAndCollect.isEmpty()) {
             return null;
@@ -61,7 +60,7 @@ public class ItemDao {
                     rs.getTimestamp("expiration"),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
-                    Type.parseType(rs.getString("type")));
+                    Type.getType(rs.getString("type")));
         }, serial);
         if (queryAndCollect.isEmpty()) {
             return null;
@@ -80,52 +79,9 @@ public class ItemDao {
                     rs.getTimestamp("expiration"),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
-                    Type.parseType(rs.getString("type")));
+                    Type.getType(rs.getString("type")));
         });
         return queryAndCollect;
-    }
-
-    public List<Item> findBy(Map<Param, String> terms) throws SQLException {
-        String query = select;
-        if (!terms.isEmpty()) {
-            query += " AND ";
-        }
-
-        List<String> values = new ArrayList<>();
-        for (Param search : terms.keySet()) {
-            query += search.getParam() + " AND ";
-            values.add(terms.get(search));
-        }
-        if (!terms.isEmpty()) {
-            query = query.substring(0, query.length() - 5);
-        }
-
-        System.out.println(query);
-
-        List<Item> queryAndCollect = db.queryAndCollect(query, rs -> {
-            return new Item(rs.getString("uuid"),
-                    rs.getString("name"),
-                    rs.getString("serial_number"),
-                    rs.getString("location"),
-                    rs.getTimestamp("created_on"),
-                    rs.getTimestamp("expiration"),
-                    tagDao.findAllByIdentifier(rs.getString("uuid")),
-                    tagDao.findAllByIdentifier(rs.getString("serial_number")),
-                    Type.parseType(rs.getString("type")));
-        }, values.toArray());
-        return queryAndCollect;
-    }
-
-    public List<Item> tagSearch(String key, String value) throws SQLException {
-        List<String> queryAndCollect = db.queryAndCollect("SELECT serial_number FROM Tag WHERE key = ? AND value = ?", rs -> {
-            return rs.getString("serial_number");
-        }, key, value);
-        HashMap<Param, String> terms = new HashMap<>();
-        for (String s : queryAndCollect) {
-            System.out.println(s);
-            terms.put(Param.SERIAL, s);
-        }
-        return findBy(terms);
     }
 
     public List<String> getLocations() throws SQLException {
@@ -158,16 +114,19 @@ public class ItemDao {
                     rs.getTimestamp("expiration"),
                     tagDao.findAllByIdentifier(rs.getString("uuid")),
                     tagDao.findAllByIdentifier(rs.getString("serial_number")),
-                    Type.parseType(rs.getString("type")));
+                    Type.getType(rs.getString("type")));
         }, number);
 
         return items;
     }
-
+    
+/**
     public List<Item> searchIngredients(String param) throws SQLException {
         param = "%" + param + "%";
         Object[] objs = new Object[5];
-        for (int i = 0; i < objs.length; i++) objs[i] = param; 
+        for (int i = 0; i < objs.length; i++) {
+            objs[i] = param;
+        }
         List<Item> items = db.queryAndCollect("SELECT DISTINCT ON (serial_number) * FROM Item WHERE deleted = 'false'"
                 + " AND type = 'foodstuff'"
                 + " AND uuid LIKE ? "
@@ -185,6 +144,44 @@ public class ItemDao {
                             tagDao.findAllByIdentifier(rs.getString("serial_number")),
                             Type.parseType(rs.getString("type")));
                 }, objs);
+
+        return items;
+    }
+**/
+    
+    public List<Item> search(String... searchWords) throws SQLException {
+        if (searchWords.length == 0) {
+            return null;
+        }
+        
+        String sql = "SELECT * FROM "
+                + "(SELECT item.*, "
+                + "to_tsvector(item.uuid) || "
+                + "to_tsvector(item.name) || "
+                + "to_tsvector(item.serial_number) || "
+                + "to_tsvector(item.location) || "
+                + "to_tsvector(item.type) || "
+                + "to_tsvector(coalesce((string_agg(tag.value, '')), '')) "
+                + "AS document "
+                + "FROM Item LEFT JOIN Tag ON tag.identifier = item.serial_number "
+                + "WHERE item.deleted = 'false' GROUP BY item.uuid) i_search "
+                + "WHERE i_search.document @@ to_tsquery(?)";
+        
+        for (int i = 0; i < searchWords.length - 1; i++) {
+            sql += " AND i_search.document @@ to_tsquery(?)";
+        }
+        
+        List<Item> items = db.queryAndCollect(sql, rs -> {
+                    return new Item(rs.getString("uuid"),
+                            rs.getString("name"),
+                            rs.getString("serial_number"),
+                            rs.getString("location"),
+                            rs.getTimestamp("created_on"),
+                            rs.getTimestamp("expiration"),
+                            tagDao.findAllByIdentifier(rs.getString("uuid")),
+                            tagDao.findAllByIdentifier(rs.getString("serial_number")),
+                            Type.getType(rs.getString("type")));
+                }, searchWords);
 
         return items;
     }

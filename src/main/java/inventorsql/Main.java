@@ -11,11 +11,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sql.daos.ItemDao;
 import sql.db.Database;
 import sql.db.DatabaseCreator;
 import sql.db.Testdata;
+import storables.Item;
 
 /**
  *
@@ -70,7 +73,12 @@ public class Main {
                 database.update(sql);
             }
         }
-
+        
+        ItemDao itemDao = new ItemDao(database);
+        List<Item> search = itemDao.search("poyta");
+        for (Item it : search) {
+            System.out.println(it);
+        }
         new WebMethods(database);
     }
 }

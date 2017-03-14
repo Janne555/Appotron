@@ -1,36 +1,46 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
+    <head th:include="fragments :: head">
+    </head>
     <head>
-        <title>List</title>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css" />
-        <style>
-        body {
-        }
-        </style>
+    <script>
+            /*<![CDATA[*/
+            $(document).ready(function(){
+                $(".clickable-row").click(function(){
+                    window.location = $(this).data("href");
+            })});
+            /*]]>*/
+
+    </script>
     </head>
     <body>
     <div th:replace="fragments :: navigation">
     </div>
-    <div class="w3-main" style="margin-left: 200px">
-        <table>
-            <tr class="titlerow">
-                <td>Name</td>
-                <td>Location</td>
-                <td>Serial Number</td>
-                <td>UUID</td>
-                <td>Created</td>
-            </tr>
-        <tr th:each="item: ${items}">
-            <td th:text="${item.name}">first</td>
-            <td th:text="${item.location}">first</td>
-            <td th:text="${item.serialNumber}">first</td>
-            <td th:text="${item.uuid}">first</td>
-            <td th:text="${item.createdOn}">first</td>
-        </tr>
-        </table>
+    <div class="w3-main">
+    <div class="w3-col m11 l10 w3-card-4 w3-margin">
+        <div class="w3-container w3-green">
+            <h2>Search Results</h2>
+        </div>
+        <div class="w3-responsive">
+            <table class="w3-table-all w3-hoverable">
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Location</th>
+                    <th>Serial Number</th>
+                    <th>Created</th>
+                </tr>
+                <tr class="clickable-row" th:each="item : ${items}" th:attr="data-href=@{~/view?uuid={uuid}&#38;type={type} (uuid=${item.uuid}, type=${item.type.type})}">
+                    <td th:text="${item.name}"></td>
+                    <td th:text="${item.type}"></td>
+                    <td th:text="${item.location}"></td>
+                    <td th:text="${item.identifier}"></td>
+                    <td th:text="${item.date}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
     </div>
     </body>
 </html>

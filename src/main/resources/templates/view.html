@@ -96,35 +96,78 @@
     <div th:replace="fragments :: navigation">
     </div>
     <div class="w3-main">
-    <div class="w3-col m6 l4 w3-card-4 w3-margin">
-        <form class="w3-container" action="/additem.post" method="post">
+    <div class="w3-col m10 l8 w3-card-4 w3-margin">
                 <div class="w3-container w3-green">
-                    <h2>Basic Info</h2>
+                    <h2 th:text="${title}">Basic Info</h2>
                 </div>
-                <label class="w3-label" for="typechooser">Type:</label>
-                <select class="w3-select" name="type" id="typechooser" required="true">
-                    <option value="" disabled="true" selected="true">Choose type</option>
-                    <option value="book">Book</option>
-                    <option value="foodstuff">Foodstuff</option>
-                    <option value="item">Item</option>
-                </select><br/>
-                <label class="w3-label" for="location">Location:</label>
-                <input class="w3-input" list="locationslist" required="true" name="location" id="location" />
-                <datalist id="locationslist">    
-                    <option th:each="location: ${locations}" th:value="${location}" />
-                </datalist>
-                <label class="w3-label" for="name">Name:</label>
-                <input class="w3-input" type="text" name="name" required="true" id="name" th:value="${namefield}" /><br/>
-                <label class="w3-label" for="serialNumber">Serial Number:</label>
-                <div class="w3-container w3-cell" style="width: 90%">
-                <input class="w3-input" type="text" name="serialNumber" required="true" id="serialNumber" th:value="${serialfield}"/>
+                <div class="w3-margin">
+                    <h3>Name</h3>
+                    <p class="w3-margin" th:text="${item.name}" />
                 </div>
-                <div class="w3-container w3-cell">
-                <input class="w3-button w3-teal" type="button" id="scanbutton" value="Scan" />
-                </div> <br/>
-                <input class="w3-button w3-block w3-teal" type="button" id="searchbutton" value="Search for Tags" />
-                
-                <br/>
+                <div class="w3-margin">
+                    <h3>Type</h3>
+                    <p class="w3-margin" th:text="${item.type}" />
+                </div>
+
+                <!-- If item show this -->
+                <div th:if="${isItem}">
+                    <div class="w3-margin">
+                        <h3>Location</h3>
+                        <p class="w3-margin" th:text="${item.location}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Serial Number</h3>
+                        <p class="w3-margin" th:text="${item.identifier}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Unique Identifier</h3>
+                        <p class="w3-margin" th:text="${item.uuid}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Created On</h3>
+                        <p class="w3-margin" th:text="${item.date}" />
+                    </div>
+                    <div class="w3-margin" th:if="${isFoodstuff}">
+                        <h3>Expiration Date</h3>
+                        <p class="w3-margin" th:text="${item.expiration}" />
+                    </div>
+                    <div class="w3-margin" th:if="${not #lists.isEmpty(item.tags)}">
+                        <h3>Tags</h3>
+                        <ul class="w3-margin" th:each="tag : ${item.tags}">
+                            <li><p><span th:text="${tag.key}" />: <span th:text="${tag.value}" /></p></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- <div th:if="${isItem}">
+                    <label class="w3-label" for="type">Type:</label>
+                    <input class="w3-input" type="text" name="type" th:value="${item.type}" />
+                    <label class="w3-label" for="location">Location:</label>
+                    <input class="w3-input" name="location" id="location" th:value="${item.location}" />
+                    <label class="w3-label" for="serialNumber">Serial Number:</label>
+                    <input class="w3-input" type="text" name="serialNumber" id="serialNumber" th:value="${item.identifier}"/>
+                </div>
+
+                <div th:if="${isMeal}">
+                    <label class="w3-label" for="type">Type:</label>
+                    <input class="w3-input" type="text" name="type" th:value="${item.type}" />
+                    <label class="w3-label" for="ingredients">Ingredients:</label>
+                <div class="w3-responsive">
+                    <table class="w3-table-all">
+                        <tr>
+                            <th>Name</th>
+                            <th>Amount</th>
+                        </tr>
+                        <tr th:each="ingredient: ${item.ingredients}">
+                            <td th:text="${ingredient.name}">first</td>
+                            <td th:text="${ingredient.amount}">0</td>
+                            <td hidden="true"><input type="text" hidden="true" /></td>
+                        </tr>
+                    </table>
+                    </div>
+                </div>
+
+
                 <div class="w3-container w3-green">
                     <h2>Tags</h2>
                 </div>
@@ -160,9 +203,11 @@
                 <input class="w3-input" type="date" name="expiration" /><br/>
             </div>
             <input class="w3-button w3-block w3-teal" type="submit" name="submit" value="Submit" /> <br />
-            <input class="w3-button w3-block w3-teal" type="reset" name="reset" value="Reset" /> <br />
+            <input class="w3-button w3-block w3-teal" type="reset" name="reset" value="Reset" /> <br /> -->
+            <button class="w3-button w3-teal">Delete</button>
+            <button class="w3-button w3-teal">Edit</button>
+            <button class="w3-button w3-teal">Borrow</button>
             
-        </form>
     </div>
     </div>
     </body>

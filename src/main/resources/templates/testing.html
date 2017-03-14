@@ -1,10 +1,9 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
+    <head th:include="fragments :: head">
+        </head>
     <head>
-        <title>Add Item</title>
-        <meta charset="utf-8" />
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script th:inline="javascript">
         /*<![CDATA[*/
             var xhr = new XMLHttpRequest();

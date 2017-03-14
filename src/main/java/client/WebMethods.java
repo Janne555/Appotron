@@ -8,7 +8,6 @@ package client;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,6 +102,34 @@ public class WebMethods {
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
 
+        get("/view", (req, res) -> {
+            HashMap map = new HashMap<>();
+            map.put("user", req.session().attribute("user"));
+            
+            Type type = Type.getType(req.queryParams("type"));
+            String uuid = req.queryParams("uuid");
+            
+            if (type == Type.ITEM) {
+                Item item = itemDao.findOne(uuid);
+                map.put("item", item);
+                map.put("title", item.getName());
+                map.put("isItem", true);
+            }
+            
+            map.put("type", type.getType());
+            return new ModelAndView(map, "view");
+        }, new ThymeleafTemplateEngine());
+        
+        get("/search", (req, res) -> {
+            HashMap map = new HashMap<>();
+            map.put("user", req.session().attribute("user"));
+            String[] split = req.queryParams("query").split(" ");
+
+            map.put("items", itemDao.search(split));
+
+            return new ModelAndView(map, "list");
+        }, new ThymeleafTemplateEngine());
+
         get("/testing", (req, res) -> {
             Meal m = meDao.findAll().get(0);
             HashMap map = new HashMap<>();
@@ -136,13 +163,22 @@ public class WebMethods {
             System.out.println("received request for ingredients: " + req.queryParams("param"));
             String param = req.queryParams("param");
 
-            List<Item> list = itemDao.searchIngredients(param);
+            List<Item> list = itemDao.search("foodstuff", param);
             List<String> names = new ArrayList<>();
 
             for (Item it : list) {
                 System.out.println(it);
             }
             return list;
+        }, json());
+
+        get("/meals.get", (req, res) -> {
+            System.out.println("received request for meals: " + req.queryParams("param"));
+            String param = req.queryParams("param");
+
+            List<Meal> search = meDao.search(param);
+
+            return search;
         }, json());
 
         get("/addnutritionalinfo", (req, res) -> {
@@ -189,7 +225,7 @@ public class WebMethods {
         get("/logout", (req, res) -> {
             HashMap map = new HashMap();
             req.session().removeAttribute("user");
-            if (req.cookies().containsKey("sessioncontrolid"))  {
+            if (req.cookies().containsKey("sessioncontrolid")) {
                 req.cookies().remove("sessioncontrolid");
                 secDao.deleteSession(req.cookie("sessioncontrolid"));
             }
@@ -238,24 +274,6 @@ public class WebMethods {
             return new ModelAndView(map, "fail");
         }, new ThymeleafTemplateEngine());
 
-        get("/find", (req, res) -> {
-            HashMap map = new HashMap<>();
-            map.put("user", req.session().attribute("user"));
-            if (req.queryParams("all").equals("true")) {
-                HashMap searchTerms = new HashMap<>();
-                for (String queryParam : req.queryParams()) {
-                    if (queryParam.equals("all")) {
-                        continue;
-                    }
-                    searchTerms.put(Param.parseParam(queryParam), req.queryParams(queryParam));
-                }
-                map.put("items", itemDao.findBy(searchTerms));
-
-            } else {
-            }
-            return new ModelAndView(map, "list");
-        }, new ThymeleafTemplateEngine());
-
         get("/tags", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("user", req.session().attribute("user"));
@@ -298,7 +316,7 @@ public class WebMethods {
             float totalMass = 0;
 
             for (String s : req.queryParamsValues("ingredients[]")) {
-                s = s.substring(4);
+                s = s.substring(5);
                 String massStr = s.substring(0, s.indexOf(","));
                 float mass = Float.parseFloat(massStr);
                 totalMass += mass;
@@ -382,7 +400,7 @@ public class WebMethods {
                 System.out.println(s);
             }
             String name = req.queryParams("name");
-            Type type = Type.parseType(req.queryParams("type"));
+            Type type = Type.getType(req.queryParams("type"));
             String serialNumber = req.queryParams("serialNumber");
             String uuid = UUID.randomUUID().toString();
             String location = req.queryParams("location");
