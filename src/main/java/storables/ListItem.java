@@ -5,76 +5,55 @@
  */
 package storables;
 
-import util.Incrementer;
 
 /**
  *
  * @author Janne
  */
-public class ListItem implements Objectify {
+public class ListItem {
     private int id;
     private int shoppingList;
-    private String serialNumber;
-    private String itemName;
+    private Item item;
     private int amount;
 
-    public ListItem(int id, int shoppingList, String serialNumber, String itemName, int amount) {
+    public ListItem(int id, int shoppingList, Item item, int amount) {
         this.id = id;
         this.shoppingList = shoppingList;
-        this.serialNumber = serialNumber;
-        this.itemName = itemName;
+        this.item = item;
         this.amount = amount;
-    }
-
-
-    public int getShoppingList() {
-        return shoppingList;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    @Override
-    public Object[] getObjs() {
-        Object[] objs = new Object[3];
-        Incrementer inc = new Incrementer();
-        objs[inc.next()] = this.shoppingList;
-        objs[inc.next()] = this.serialNumber;
-        objs[inc.next()] = this.amount;
-        return objs;
-    }
-
-    @Override
-    public Object[] getObjsId() {
-        Object[] objs = new Object[4];
-        Incrementer inc = new Incrementer();
-        objs[inc.next()] = this.shoppingList;
-        objs[inc.next()] = this.serialNumber;
-        objs[inc.next()] = this.amount;
-        objs[inc.next()] = this.id;
-        return objs;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getItemName() {
-        return itemName;
+    public void setId(int id) {
+        this.id = id;
     }
-    
-    @Override
-    public String toString() {
-        return "id: " + id + "; "
-                + "list_id: " + shoppingList + "; "
-                + "serial: " + serialNumber + "; "
-                + "name: " + itemName + "; "
-                + "amount: " + amount;
+
+    public int getShoppingList() {
+        return shoppingList;
     }
-    
+
+    public void setShoppingList(int shoppingList) {
+        this.shoppingList = shoppingList;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+   
 }

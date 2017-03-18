@@ -148,6 +148,18 @@
 			"FOREIGN1":"KEY(user_id) REFERENCES Users(id)"
 		}
 		]
+	},
+	{
+		"name": "BugReport",
+		"columns":
+		[
+		{
+			"description": "TEXT NOT NULL",
+			"user_id": "TEXT NOT NULL",
+			"subject": "TEXT NOT NULL",
+			"date": "TIMESTAMP NOT NULL"
+		}
+		]
 	}
 	]
 }

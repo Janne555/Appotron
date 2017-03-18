@@ -52,13 +52,4 @@ public class SessionControl {
     public void genNewSessionId() {
         setSessionId(UUID.randomUUID().toString());
     }
-
-    public Object[] getObjs() {
-        Object[] objs = new Object[3];
-        Incrementer inc = new Incrementer();
-        objs[inc.next()] = sessionId;
-        objs[inc.next()] = userId;
-        objs[inc.next()] = date;
-        return objs;
-    }
 }

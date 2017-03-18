@@ -38,53 +38,65 @@ public class Testdata {
         for (JsonElement element : asJsonArray) {
             JsonObject o = element.getAsJsonObject();
             String sql = "INSERT INTO ";
-            switch (o.get("type").getAsString()) {
-                case "item":
-                    sql += "Item(uuid, name, serial_number, location, created_on, expiration, type, deleted)"
+            switch (o.get("table").getAsString()) {
+                case "ItemInfo":
+                    sql += "ItemInfo(name, type, identifier)"
                             + " VALUES("
-                            + o.get("uuid").getAsString() + ", "
                             + o.get("name").getAsString() + ", "
-                            + o.get("serial_number").getAsString() + ", "
-                            + o.get("location").getAsString() + ", "
-                            + o.get("created_on").getAsString() + ", "
-                            + o.get("expiration").getAsString() + ", "
-                            + o.get("main").getAsString() + ", "
-                            + "'false')";
+                            + o.get("type").getAsString() + ", "
+                            + o.get("identifier").getAsString() + ")";
                     break;
-                case "tag":
-                    sql += "Tag(identifier, key, value, type)"
+                case "Item":
+                    sql += "Item(id, iteminfo_identifier, location, owner, date, expiration, deleted)"
+                            + " VALUES("
+                            + o.get("id").getAsString() + ", "
+                            + o.get("iteminfo_identifier").getAsString() + ", "
+                            + o.get("owner").getAsString() + ", "
+                            + new Timestamp(System.currentTimeMillis()).toString() + ", "
+                            + new Timestamp(System.currentTimeMillis() + 1000000).toString() + ", "
+                            + "'false'" + ")";
+                    break;
+                case "ItemInfoTag":
+                    sql += "ItemInfoTag(identifier, key, value)"
                             + " VALUES("
                             + o.get("identifier").getAsString() + ", "
                             + o.get("key").getAsString() + ", "
-                            + o.get("value").getAsString() + ", "
-                            + o.get("main").getAsString() + ")";
+                            + o.get("value").getAsString() + ")";
                     break;
-                case "shoppinglist":
-                    sql += "ShoppingList(id, name, created_on, deleted)"
+                case "ItemSpecificTag":
+                    sql += "ItemSpecificTag(identifier, key, value)"
+                            + " VALUES("
+                            + o.get("identifier").getAsString() + ", "
+                            + o.get("key").getAsString() + ", "
+                            + o.get("value").getAsString() + ")";
+                    break;
+                case "ShoppingList":
+                    sql += "ShoppingList(id, name, date, deleted)"
                             + " VALUES("
                             + o.get("id").getAsString() + ", "
                             + o.get("name").getAsString() + ", "
-                            + o.get("created_on").getAsString() + ", "
+                            + o.get("date").getAsString() + ", "
                             + "'false'" + ")";
                     break;
-                case "listitem":
-                    sql += "ListItem(shopping_list, serial_number, amount)"
+                case "ListItem":
+                    sql += "ListItem(iteminfo_identifier, shoppinglist_id, amount)"
                             + " VALUES("
-                            + o.get("shopping_list").getAsString() + ", "
-                            + o.get("serial_number").getAsString() + ", "
+                            + o.get("iteminfo_identifier").getAsString() + ", "
+                            + o.get("shoppinglist_id").getAsString() + ", "
                             + o.get("amount").getAsString() + ")";
                     break;
-                case "user":
-                    sql += "Users(id, name, password, apikey, deleted)"
+                case "Users":
+                    sql += "Users(id, name, email, password, apikey, deleted)"
                             + " VALUES("
                             + o.get("id").getAsString() + ", "
                             + o.get("name").getAsString() + ", "
+                            + o.get("email").getAsString() + ", "
                             + o.get("password").getAsString() + ", "
                             + o.get("apikey").getAsString() + ", "
                             + "'false'" + ")";
                     break;
-                case "serving":
-                    sql += "Serving(user_uuid, identifier, mass, date, deleted)"
+                case "Serving":
+                    sql += "Serving(meal_identifier, users_id, mass, date, deleted)"
                             + " VALUES("
                             + o.get("user_uuid").getAsString() + ", "
                             + o.get("identifier").getAsString() + ", "

@@ -31,7 +31,7 @@
                     <th>Serial Number</th>
                     <th>Created</th>
                 </tr>
-                <tr class="clickable-row" th:each="item : ${items}" th:attr="data-href=@{~/view?uuid={uuid}&#38;type={type} (uuid=${item.uuid}, type=${item.type.type})}">
+                <tr class="clickable-row" th:each="item : ${items}" th:attr="data-href=@{~/view?uuid={uuid}&#38;type={type} (uuid=${item.uuid}, type=${item.type})}">
                     <td th:text="${item.name}"></td>
                     <td th:text="${item.type}"></td>
                     <td th:text="${item.location}"></td>

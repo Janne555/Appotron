@@ -1,0 +1,106 @@
+{"data":
+[
+{
+	"table": "ItemInfo",
+	"name": "tiskiaine",
+	"type": "item",
+	"identifier": "t1sk1aine"
+},
+{
+	"table": "ItemInfo",
+	"name": "banaani",
+	"type": "foodstuff",
+	"identifier": "b4n44ni"
+},
+{
+	"table": "ItemInfo",
+	"name": "persikka",
+	"type": "foodstuff",
+	"identifier": "f00dstuff"
+},
+{
+	"table": "Item",
+	"id": "23",
+	"iteminfo_identifier": "t1sk1aine",
+	"location": "siivouskaappi",
+	"owner": "0"
+},
+{
+	"table": "Item",
+	"id": "45",
+	"iteminfo_identifier": "b4n44ni",
+	"location": "jaakaappi",
+	"owner": "0"
+},
+{
+	"table": "Users",
+	"id": "3793471d-8943-4f0d-b0a1-f6bfe6b16603",
+	"name": "janne",
+	"email": "lavila.j@gmail.com",
+	"password": "",
+	"apikey": "9bda8daf-5921-48c7-99ed-ed4a7ca0f511"
+},
+{
+	"table": "Groups",
+	"name": "vaino auerin katu",
+	"id": "1"
+},
+{
+	"table": "Members",
+	"groups_id": "1",
+	"users_id": "3793471d-8943-4f0d-b0a1-f6bfe6b16603"
+},
+{
+	"table": "NutritionalInfo",
+	"iteminfo_identifier": "b4n44ni",
+	"energy": "528.67",
+	"carbohydrate": "27,3",
+	"fat": "32.7",
+	"protein": "40.0"
+},
+{
+	"table": "ItemInfoTag",
+	"iteminfo_identifier": "t1sk1aine",
+	"key": "description",
+	"value": "non-scented"
+},
+{
+	"table": "ItemSpecificTag",
+	"item_id": "45",
+	"key": "syoty",
+	"value": "puolet"
+},
+{
+	"table": "Meal",
+	"identifier": "44mup4l4",
+	"name": "aamupala",
+	"mealtype": "valipala"
+},
+{
+	"table": "Ingredient",
+	"meal_id": "44mup4l4",
+	"fraction": "0.4"
+},
+{
+	"table": "Ingredient",
+	"meal_id": "44mup4l4",
+	"fraction": "0.6"
+},
+{
+	"table": "ShoppingList",
+	"id": "59",
+	"name": "jannen lista"
+},
+{
+	"table": "ListItem",
+	"iteminfo_identifier": "b4n44ni",
+	"shoppinglist_id": "59",
+	"amount": "3"
+},
+{
+	"table": "Serving",
+	"meal_identifier": "44mup4l4",
+	"users_id": "3793471d-8943-4f0d-b0a1-f6bfe6b16603",
+	"mass": "145.32"
+}
+]}

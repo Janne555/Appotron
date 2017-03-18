@@ -5,23 +5,22 @@
  */
 package storables;
 
-import util.Incrementer;
 
 /**
  *
  * @author Janne
  */
-public class Ingredient {
+public class MealComponent {
     private String mealId;
     private String itemId;
-    private float percentage;
+    private float mass;
     private Item item;
     private NutritionalInfo nutritionalInfo;
 
-    public Ingredient(String mealId, String itemId, float percentage, Item item, NutritionalInfo nutritionalInfo) {
+    public MealComponent(String mealId, String itemId, float mass, Item item, NutritionalInfo nutritionalInfo) {
         this.mealId = mealId;
         this.itemId = itemId;
-        this.percentage = percentage;
+        this.mass = mass;
         this.item = item;
         this.nutritionalInfo = nutritionalInfo;
     }
@@ -42,12 +41,12 @@ public class Ingredient {
         this.itemId = itemId;
     }
 
-    public float getPercentage() {
-        return percentage;
+    public float getMass() {
+        return mass;
     }
 
-    public void setPercentage(float percentage) {
-        this.percentage = percentage;
+    public void setMass(float mass) {
+        this.mass = mass;
     }
 
     public Item getItem() {
@@ -66,13 +65,5 @@ public class Ingredient {
         this.nutritionalInfo = nutritionalInfo;
     }
     
-    public Object[] getObjs() {
-        Object[] objs = new Object[4];
-        Incrementer inc = new Incrementer();
-        objs[inc.next()] = mealId;
-        objs[inc.next()] = itemId;
-        objs[inc.next()] = percentage;
-        objs[inc.next()] = false;
-        return objs;
-    }
+    
 }

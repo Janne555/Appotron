@@ -1,17 +1,19 @@
 package sql.db;
 
-import java.sql.*;
 import java.util.*;
+import storables.User;
 
 public interface Dao<T, K> {
 
-    T create(T t) throws SQLException;
+    T store(T t, User user) throws Exception;
 
-    T findOne(K key) throws SQLException;
+    List<T> search(User user, Object... searchWords) throws Exception;
 
-    List<T> findAll() throws SQLException;
+    T findOne(K key, User user) throws Exception;
 
-    void update(T t) throws SQLException;
+    List<T> findAll(User user) throws Exception;
 
-    void delete(K key) throws SQLException;
+    void update(T t, User user) throws Exception;
+
+    void delete(K key, User user) throws Exception;
 }

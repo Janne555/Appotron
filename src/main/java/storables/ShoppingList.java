@@ -7,13 +7,12 @@ package storables;
 
 import java.sql.Timestamp;
 import java.util.List;
-import util.Incrementer;
 
 /**
  *
  * @author Janne
  */
-public class ShoppingList implements Objectify {
+public class ShoppingList {
     private int id;
     private String name;
     private Timestamp createdOn;
@@ -41,24 +40,4 @@ public class ShoppingList implements Objectify {
     public List<ListItem> getListItems() {
         return listItems;
     }
-
-    @Override
-    public Object[] getObjs() {
-        Object[] objs = new Object[2];
-        Incrementer inc = new Incrementer();
-        objs[inc.next()] = this.name;
-        objs[inc.next()] = this.createdOn.toString();
-        return objs;
-    }
-
-    @Override
-    public Object[] getObjsId() {
-        Object[] objs = new Object[3];
-        Incrementer inc = new Incrementer();
-        objs[inc.next()] = this.name;
-        objs[inc.next()] = this.createdOn;
-        objs[inc.next()] = this.id;
-        return objs;
-    }
-    
 }

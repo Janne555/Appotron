@@ -13,11 +13,11 @@ import storables.Meal;
 public class MealDao {
 
     private Database db;
-    private IngredientDao ingDao;
+    private MealComponentDao ingDao;
 
     public MealDao(Database db) {
         this.db = db;
-        this.ingDao = new IngredientDao(db);
+        this.ingDao = new MealComponentDao(db);
     }
 
     public void create(Meal meal) throws SQLException {
@@ -32,11 +32,35 @@ public class MealDao {
         return queryAndCollect;
     }
 
-    public List<Meal> search(String searchTerm) throws SQLException {
-        searchTerm = "%" + searchTerm + "%";
-        List<Meal> queryAndCollect = db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND name LIKE ? OR type LIKE ? OR id LIKE ?", rs -> {
+    public List<Meal> search(String... searchWords) throws SQLException {
+        if (searchWords.length == 0) {
+            return null;
+        }
+
+        String sql = "SELECT * FROM "
+                + "(SELECT mealname AS name, mealtype AS type, mealid AS id, "
+                + "to_tsvector(mealname) || "
+                + "to_tsvector(mealtype) || "
+                + "to_tsvector(mealid) || "
+                + "to_tsvector(ingredientname) "
+                + "AS document "
+                + "FROM (SELECT "
+                + "meal.name AS mealname, "
+                + "meal.type AS mealtype, "
+                + "meal.id AS mealid, "
+                + "itemname AS ingredientname "
+                + "FROM meal LEFT JOIN("
+                + "SELECT item.name AS itemname, ingredient.* FROM ingredient LEFT JOIN item ON item.serial_number = ingredient.item_identifier) AS firstquery "
+                + "ON meal.id = firstquery.meal_id) AS secondquery) AS m_search "
+                + "WHERE m_search.document @@ to_tsquery(?);";
+
+        for (int i = 0; i < searchWords.length - 1; i++) {
+            sql += " AND i_search.document @@ to_tsquery(?)";
+        }
+
+        List<Meal> queryAndCollect = db.queryAndCollect(sql, rs -> {
             return new Meal(rs.getString("id"), rs.getString("name"), rs.getString("type"), ingDao.findByMealId(rs.getString("id")).toArray());
-        }, searchTerm, searchTerm, searchTerm);
+        }, searchWords);
 
         return queryAndCollect;
     }

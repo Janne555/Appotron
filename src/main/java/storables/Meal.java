@@ -5,30 +5,24 @@
  */
 package storables;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.sql.Timestamp;
 import java.util.List;
-import util.Incrementer;
 
 /**
  *
  * @author Janne
  */
 public class Meal {
-
     private String id;
-    private String name;
-    private String type;
-    private List<Ingredient> ingredients;
+    private User user;
+    private Timestamp date;
+    private List<MealComponent> components;
 
-    public Meal(String id, String name, String type, Object... ingredients) {
+    public Meal(String id, User user, Timestamp date, List<MealComponent> components) {
         this.id = id;
-        this.name = name;
-        this.type = type;
-        this.ingredients = new ArrayList<>();
-        for (Object o : ingredients) {
-            this.ingredients.add((Ingredient) o);
-        }
+        this.user = user;
+        this.date = date;
+        this.components = components;
     }
 
     public String getId() {
@@ -39,78 +33,63 @@ public class Meal {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public User getUser() {
+        return user;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getType() {
-        return type;
+    public Timestamp getDate() {
+        return date;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setDate(Timestamp date) {
+        this.date = date;
     }
 
-    public List<Ingredient> getIngredients() {
-        return ingredients;
+    public List<MealComponent> getComponents() {
+        return components;
     }
 
-    public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
-    }
-
-    public void addIngredient(Ingredient ingredient) {
-        this.ingredients.add(ingredient);
+    public void setComponents(List<MealComponent> components) {
+        this.components = components;
     }
 
     public float getEnergy() {
         float sum = 0;
-        for (Ingredient i : ingredients) {
-            sum += i.getPercentage() * i.getNutritionalInfo().getEnergy();
+        for (MealComponent i : components) {
+            sum += i.getMass() * i.getNutritionalInfo().getEnergy();
         }
 
-        return sum / 100;
+        return sum;
     }
 
     public float getCarbohydrate() {
         float sum = 0;
-        for (Ingredient i : ingredients) {
-            sum += i.getPercentage() * i.getNutritionalInfo().getCarbohydrates();
+        for (MealComponent i : components) {
+            sum += i.getMass()* i.getNutritionalInfo().getCarbohydrates();
         }
 
-        return sum / 100;
+        return sum;
     }
 
     public float getFat() {
         float sum = 0;
-        for (Ingredient i : ingredients) {
-            sum += i.getPercentage() * i.getNutritionalInfo().getFat();
+        for (MealComponent i : components) {
+            sum += i.getMass()* i.getNutritionalInfo().getFat();
         }
 
-        return sum / 100;
+        return sum;
     }
 
     public float getProtein() {
         float sum = 0;
-        for (Ingredient i : ingredients) {
-            sum += i.getPercentage() * i.getNutritionalInfo().getProtein();
+        for (MealComponent i : components) {
+            sum += i.getMass()* i.getNutritionalInfo().getProtein();
         }
 
-        return sum / 100;
+        return sum;
     }
-
-    public Object[] getObjs() {
-        Object[] objs = new Object[4];
-        Incrementer inc = new Incrementer();
-        objs[inc.next()] = id;
-        objs[inc.next()] = name;
-        objs[inc.next()] = type;
-        objs[inc.next()] = false;
-        return objs;
-    }
-
 }

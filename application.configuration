@@ -1,7 +1,4 @@
 postgre_address=jdbc:postgresql://localhost:5432/inventordev
-postgre_user=devaajat
+postgre_user=postgres
 postgre_password=salasana
-standalone=false
-insertdata=false
-createtables=false
-cleardatabase=false
+standalone=true

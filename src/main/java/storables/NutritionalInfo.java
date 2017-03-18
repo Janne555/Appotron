@@ -65,15 +65,4 @@ public class NutritionalInfo {
     public void setProtein(float protein) {
         this.protein = protein;
     }
-
-    public Object[] getObjs() {
-        Object[] objs = new Object[5];
-        Incrementer inc = new Incrementer();
-        objs[inc.next()] = getIdentifier();
-        objs[inc.next()] = getEnergy();
-        objs[inc.next()] = getCarbohydrates();
-        objs[inc.next()] = getFat();
-        objs[inc.next()] = getProtein();
-        return objs;
-    }
 }

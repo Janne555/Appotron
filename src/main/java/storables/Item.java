@@ -8,91 +8,61 @@ package storables;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import util.Incrementer;
-import util.Type;
 
 /**
  *
  * @author Janne
  */
-public class Item implements Comparable<Item>, SearchResult {
+public class Item implements Comparable<Item> {
 
-    private String uuid;
-    private String name;
-    private String serialNumber;
+    private int id;
     private String location;
-    private Timestamp createdOn;
+    private ItemInfo itemInfo;
+    private Timestamp date;
     private Timestamp expiration;
     private List<Tag> tags;
-    private Type type;
 
-    public Item(String uuid,
-            String name,
-            String serialNumber,
+    public Item(int id,
             String location,
             Timestamp createdOn,
             Timestamp expiration,
-            List<Tag> uuidTags,
             List<Tag> tags,
-            Type type) {
+            ItemInfo itemInfo) {
 
-        if (tags == null) {
-            tags = new ArrayList<>();
-        } else if (uuidTags != null) {
-            tags.addAll(uuidTags);
-        }
-
-        this.uuid = uuid;
-        this.name = name;
-        this.serialNumber = serialNumber;
-        this.location = location;
-        this.createdOn = createdOn;
-        this.expiration = expiration;
         this.tags = tags;
-        this.type = type;
+        this.location = location;
+        this.id = id;
+        this.itemInfo = itemInfo;
+        this.date = createdOn;
+        this.expiration = expiration;
     }
 
-    public Item(String uuid,
-            String name,
-            String serialNumber,
-            String location,
-            Timestamp createdOn,
-            Timestamp expiration,
-            List<Tag> tags,
-            Type type) {
-        this(uuid, name, serialNumber, location, createdOn, expiration, null, tags, type);
+    public String getIdentifier() {
+        return itemInfo.getIdentifier();
     }
 
-    @Override
-    public String getUuid() {
-        return uuid;
+    public void setIdentifier(String identifier) {
+        this.itemInfo.setIdentifier(identifier);
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public int getId() {
+        return id;
     }
 
-    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getName() {
-        return name;
+        return this.itemInfo.getName();
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.itemInfo.setName(name);
     }
 
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    @Override
     public String getLocation() {
         return location;
     }
@@ -101,25 +71,38 @@ public class Item implements Comparable<Item>, SearchResult {
         this.location = location;
     }
 
-    public Timestamp getCreatedOn() {
-        return createdOn;
+    public Timestamp date() {
+        return date;
     }
 
-    public void setCreatedOn(Timestamp createdOn) {
-        this.createdOn = createdOn;
+    public void setDate(Timestamp date) {
+        this.date = date;
     }
 
-    public List<Tag> getTags() {
+    public List<Tag> getSpecificTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
+    public List<Tag> getItemInfoTags() {
+        return this.itemInfo.getTags();
     }
 
-    @Override
-    public Type getType() {
-        return type;
+    public List<Tag> getTags() {
+        List<Tag> alltags = tags;
+        alltags.addAll(this.itemInfo.getTags());
+        return alltags;
+    }
+
+    public void setSpecificTags(List<Tag> specificTags) {
+        this.tags = specificTags;
+    }
+
+    public void setItemInfoTags(List<Tag> itemInfoTags) {
+        this.itemInfo.setTags(itemInfoTags);
+    }
+
+    public String getType() {
+        return itemInfo.getType();
     }
 
     public Timestamp getExpiration() {
@@ -130,8 +113,8 @@ public class Item implements Comparable<Item>, SearchResult {
         this.expiration = expiration;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setType(String type) {
+        this.itemInfo.setType(type);
     }
 
     public String getExpires() {
@@ -154,31 +137,17 @@ public class Item implements Comparable<Item>, SearchResult {
         }
     }
 
-    public Object[] getObjs() {
-        Object[] objs = new Object[8];
-        Incrementer inc = new Incrementer();
-        objs[inc.next()] = uuid;
-        objs[inc.next()] = name;
-        objs[inc.next()] = serialNumber;
-        objs[inc.next()] = location;
-        objs[inc.next()] = createdOn;
-        objs[inc.next()] = expiration;
-        objs[inc.next()] = type.getType();
-        objs[inc.next()] = false;
-        return objs;
-    }
-
     @Override
     public String toString() {
         String result
-                = "UUID: " + uuid + ", "
-                + "NAME: " + name + ", "
-                + "SERIAL: " + serialNumber + ", "
+                = "UUID: " + id + ", "
+                + "NAME: " + itemInfo.getName() + ", "
+                + "SERIAL: " + itemInfo.getIdentifier() + ", "
                 + "Location: " + location + ", "
                 + "EXPIRES: " + expiration + ", "
-                + "CREATED: " + createdOn + ", ";
+                + "CREATED: " + date + ", ";
 
-        for (Tag tag : tags) {
+        for (Tag tag : getTags()) {
             result += ", " + tag;
         }
         return result;
@@ -186,42 +155,46 @@ public class Item implements Comparable<Item>, SearchResult {
 
     @Override
     public int compareTo(Item t) {
-        return name.compareTo(t.getName());
+        return getName().compareTo(t.getName());
     }
-    
+
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if(!(o instanceof Item)) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Item)) {
             return false;
         }
         Item item = (Item) o;
-        
-        return this.uuid.equals(item.uuid)
-                && this.name.equals(item.name)
-                && this.serialNumber.equals(item.serialNumber)
+
+        return this.id == item.id
+                && getName().equals(item.getName())
+                && getIdentifier().equals(item.getIdentifier())
                 && this.location.equals(item.location);
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 67 * hash + Objects.hashCode(this.uuid);
-        hash = 67 * hash + Objects.hashCode(this.name);
-        hash = 67 * hash + Objects.hashCode(this.serialNumber);
+        hash = 67 * hash + Objects.hashCode(this.id);
+        hash = 67 * hash + Objects.hashCode(this.itemInfo.getName());
+        hash = 67 * hash + Objects.hashCode(this.itemInfo.getIdentifier());
         hash = 67 * hash + Objects.hashCode(this.location);
-        hash = 67 * hash + Objects.hashCode(this.createdOn);
+        hash = 67 * hash + Objects.hashCode(this.date);
         hash = 67 * hash + Objects.hashCode(this.expiration);
         return hash;
     }
 
-    @Override
-    public String getIdentifier() {
-        return this.getSerialNumber();
+    public Timestamp getDate() {
+        return date;
     }
 
-    @Override
-    public Timestamp getDate() {
-        return this.getCreatedOn();
+    public ItemInfo getItemInfo() {
+        return itemInfo;
+    }
+
+    public void setItemInfo(ItemInfo itemInfo) {
+        this.itemInfo = itemInfo;
     }
 }

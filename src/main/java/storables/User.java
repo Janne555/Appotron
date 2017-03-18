@@ -6,19 +6,26 @@
 package storables;
 
 public class User {
-    private String uuid;
-
+    private String id;
     private String username;
-
     private String password;
-    
     private String apikey;
+    private String email;
 
-    public User(String uuid, String username, String password, String apikey) {
-        this.uuid = uuid;
+    public User(String id, String username, String password, String apikey, String email) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.apikey = apikey;
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getApikey() {
@@ -29,12 +36,12 @@ public class User {
         this.apikey = apikey;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getId() {
+        return id;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setId(String id) {
+        this.id = id;
     }
 
 

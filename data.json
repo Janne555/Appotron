@@ -470,25 +470,25 @@
 {
 	"type": "ingredient",
 	"meal_id": "'b4703ab4-bae4'",
-	"item_identifier": "'b1738bb4-bae5-42ca-bb55-a3365f87df48'",
+	"item_identifier": "'4n4n45'",
 	"percentage": "0.30"
 },
 {
 	"type": "ingredient",
 	"meal_id": "'b4703ab4-bae4'",
-	"item_identifier": "'b5208bb4-bae3-42ca-bb57-a6365ff6df68'",
+	"item_identifier": "'b4n44n1'",
 	"percentage": "0.24"
 },
 {
 	"type": "ingredient",
 	"meal_id": "'b4703ab4-bae4'",
-	"item_identifier": "'d5486bec-c2b5-4f52-9955-43d1252ad0c3'",
+	"item_identifier": "'p3r51kk4'",
 	"percentage": "0.46"
 },
 {
 	"type": "nutritionalinfo",
 	"energy": "530",
-	"identifier": "'b1738bb4-bae5-42ca-bb55-a3365f87df48'",
+	"identifier": "'4n4n45'",
 	"carbohydrate": "67",
 	"fat": "23",
 	"protein": "10"
@@ -496,7 +496,7 @@
 {
 	"type": "nutritionalinfo",
 	"energy": "515",
-	"identifier": "'b5208bb4-bae3-42ca-bb57-a6365ff6df68'",
+	"identifier": "'b4n44n1'",
 	"carbohydrate": "57",
 	"fat": "33",
 	"protein": "20"
@@ -504,7 +504,7 @@
 {
 	"type": "nutritionalinfo",
 	"energy": "945",
-	"identifier": "'d5486bec-c2b5-4f52-9955-43d1252ad0c3'",
+	"identifier": "'p3r51kk4'",
 	"carbohydrate": "54",
 	"fat": "16",
 	"protein": "30"
