@@ -13,25 +13,30 @@ import java.util.List;
  * @author Janne
  */
 public class Meal {
-    private String id;
+    private int id;
     private User user;
     private Timestamp date;
     private List<MealComponent> components;
 
-    public Meal(String id, User user, Timestamp date, List<MealComponent> components) {
+    public Meal(int id, User user, Timestamp date, List<MealComponent> components) {
         this.id = id;
         this.user = user;
         this.date = date;
         this.components = components;
     }
+    
+    public String getUserId() {
+        return this.getUser().getId();
+    }
 
-    public String getId() {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public User getUser() {
         return user;

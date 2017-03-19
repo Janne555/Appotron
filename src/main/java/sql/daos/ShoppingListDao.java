@@ -24,8 +24,10 @@ public class ShoppingListDao {
         this.liDao = new ListItemDao(db);
     }
     
-    public ShoppingList create(ShoppingList t) throws SQLException {
-        db.update("INSERT INTO ShoppingList(name, created_on) VALUES(?,?)", t.getObjs());
+    public ShoppingList store(ShoppingList t) throws SQLException {
+        int update = db.update("INSERT INTO ShoppingList(name, date, deleted) VALUES(?,?,?)",
+                t.getName(), t.getDate(), false);
+        t.setId(update);
         return t;
     }
 
@@ -33,24 +35,14 @@ public class ShoppingListDao {
         List<ShoppingList> queryAndCollect = db.queryAndCollect("SELECT * FROM ShoppingList WHERE id = ?", rs -> {
             return new ShoppingList(Integer.parseInt(rs.getString("id")),
                     rs.getString("name"),
-                    rs.getTimestamp("created_on"), 
-                    liDao.findAllByShoppingList(key));
+                    rs.getTimestamp("date"), 
+                    liDao.findAllByShoppingListId(key));
         }, key);
         if (queryAndCollect.isEmpty()) {
             return null;
         } else {
             return queryAndCollect.get(0);
         }
-    }
-
-    public List<ShoppingList> findAll() throws SQLException {
-        List<ShoppingList> queryAndCollect = db.queryAndCollect("SELECT * FROM ShoppingList", rs -> {
-            return new ShoppingList(rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getTimestamp("created_on"), 
-                    liDao.findAllByShoppingList(rs.getInt("id")));
-        });
-        return queryAndCollect;
     }
 
     public void update(ShoppingList t) throws SQLException {

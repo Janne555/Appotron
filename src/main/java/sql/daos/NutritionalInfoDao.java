@@ -13,15 +13,17 @@ import storables.NutritionalInfo;
 public class NutritionalInfoDao {
 
     private Database db;
+    private ItemInfoDao infoDao;
 
     public NutritionalInfoDao(Database db) {
         this.db = db;
+        this.infoDao = new ItemInfoDao(db);
     }
 
-    public NutritionalInfo findOne(String identifier) throws SQLException {
-        List<NutritionalInfo> queryAndCollect = db.queryAndCollect("SELECT * FROM NutritionalInfo WHERE identifier = ?", rs -> {
-            return new NutritionalInfo(identifier, rs.getFloat("energy"), rs.getFloat("carbohydrate"), rs.getFloat("fat"), rs.getFloat("protein"));
-        }, identifier);
+    public NutritionalInfo findOneByItemInfoId(int itemInfoId) throws SQLException {
+        List<NutritionalInfo> queryAndCollect = db.queryAndCollect("SELECT * FROM NutritionalInfo WHERE iteminfo_id = ?", rs -> {
+            return new NutritionalInfo(infoDao.findOne(rs.getInt("iteminfo_id")), rs.getFloat("energy"), rs.getFloat("carbohydrate"), rs.getFloat("fat"), rs.getFloat("protein"));
+        }, itemInfoId);
         
         if (queryAndCollect.isEmpty()) {
             return null;
@@ -30,7 +32,12 @@ public class NutritionalInfoDao {
         }
     }
     
-    public void create(NutritionalInfo nuInfo) throws SQLException {
-        db.update("INSERT INTO NutritionalInfo(identifier, energy, carbohydrate, fat, protein) VALUES(?,?,?,?,?)", nuInfo.getObjs());
+    public void store(NutritionalInfo nuInfo) throws SQLException {
+        db.update("INSERT INTO NutritionalInfo(iteminfo_id, energy, carbohydrate, fat, protein) VALUES(?,?,?,?,?)", 
+                nuInfo.getItemInfoId(),
+                nuInfo.getEnergy(),
+                nuInfo.getCarbohydrates(),
+                nuInfo.getFat(),
+                nuInfo.getProtein());
     }
 }

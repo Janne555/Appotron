@@ -24,18 +24,19 @@ public class SessionControlDao {
         this.uDao = new UserDao(db);
     }
     
-    public void createSession(SessionControl session) throws SQLException {
-        db.update("INSERT INTO Session(session_id, user_id, date) VALUES(?,?,?)", session.getObjs());
+    public void store(SessionControl session) throws SQLException {
+        db.update("INSERT INTO SessionControl(id, users_id, date) VALUES(?,?,?)",
+                session.getSessionId(), session.getUserId(), session.getDate());
     }
     
-    public User getUser(String sessionId) throws SQLException {
-        List<String> list = db.queryAndCollect("SELECT * FROM Session, age(CURRENT_TIMESTAMP, session.date) WHERE age < interval '1 day' AND session_id = ?", rs ->{
-            return rs.getString("user_id");
+    public SessionControl findValidSessionById(String sessionId) throws SQLException {
+        List<SessionControl> list = db.queryAndCollect("SELECT * FROM Session, age(CURRENT_TIMESTAMP, session.date) WHERE age < interval '1 day' AND id = ?", rs ->{
+            return new SessionControl(rs.getString("id"), rs.getString("users_id"), rs.getTimestamp("date"));
         }, sessionId);
         
         if (list.isEmpty()) return null;
         
-        return uDao.findUserById(list.get(0));
+        return list.get(0);
     }
     
     public void deleteSession(String sessioncontrolid) throws SQLException {

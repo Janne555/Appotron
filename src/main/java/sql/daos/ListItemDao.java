@@ -14,78 +14,24 @@ import storables.ListItem;
 public class ListItemDao {
 
     private Database db;
+    private ItemInfoDao infoDao;
 
     public ListItemDao(Database db) {
         this.db = db;
+        this.infoDao = new ItemInfoDao(db);
     }
 
-    public ListItem create(ListItem t) throws SQLException {
-        db.update("INSERT INTO ListItem(shopping_list, serial_number, amount) VALUES(?,?,?)", t.getObjs());
+    public ListItem store(ListItem t) throws SQLException {
+        int update = db.update("INSERT INTO ListItem(iteminfo_id, shoppinglist_id, amount) VALUES(?,?,?)",
+                t.getIteminfoId(),
+                t.getShoppingListId());
+        t.setId(update);
         return t;
     }
 
-    public ListItem findOne(int key) throws SQLException {
-        List<ListItem> queryAndCollect = db.queryAndCollect("SELECT ListItem.id AS id, "
-                + "ListItem.shopping_list AS shopping_list, "
-                + "ListItem.serial_number AS sernum, "
-                + "ListItem.amount AS amount, "
-                + "Item.name AS name "
-                + "FROM ListItem "
-                + "LEFT JOIN Item ON ListItem.serial_number = Item.serial_number WHERE id = ?", rs -> {
-            return new ListItem(rs.getInt("id"),
-                    rs.getInt("shopping_list"),
-                    rs.getString("sernum"),
-                    rs.getString("name"),
-                    rs.getInt("amount"));
-        }, key);
-
-        if (queryAndCollect.isEmpty()) {
-            return null;
-        } else {
-            return queryAndCollect.get(0);
-        }
-    }
-
-    public List<ListItem> findAll() throws SQLException {
-        List<ListItem> queryAndCollect = db.queryAndCollect("SELECT ListItem.id AS id, "
-                + "ListItem.shopping_list AS shopping_list, "
-                + "ListItem.serial_number AS sernum, "
-                + "ListItem.amount AS amount, "
-                + "Item.name AS name "
-                + "FROM ListItem "
-                + "LEFT JOIN Item ON ListItem.serial_number = Item.serial_number", rs -> {
-            return new ListItem(rs.getInt("id"),
-                    rs.getInt("shopping_list"),
-                    rs.getString("sernum"),
-                    rs.getString("name"),
-                    rs.getInt("amount"));
+    public List<ListItem> findAllByShoppingListId(int shoppingListId) throws SQLException {
+        return db.queryAndCollect("SELECT * FROM ListItem WHERE shoppinglist_id = ?", rs -> {
+            return new ListItem(rs.getInt("id"), rs.getInt("shoppinglist_id"), infoDao.findOne(rs.getInt("iteminfo_id")), rs.getInt("amount"));
         });
-        return queryAndCollect;
     }
-    
-    public List<ListItem> findAllByShoppingList(int shoppingListId) throws SQLException {
-        List<ListItem> queryAndCollect = db.queryAndCollect("SELECT ListItem.id AS id, "
-                + "ListItem.shopping_list AS shopping_list, "
-                + "ListItem.serial_number AS sernum, "
-                + "ListItem.amount AS amount, "
-                + "Item.name AS name "
-                + "FROM ListItem "
-                + "LEFT JOIN Item ON ListItem.serial_number = Item.serial_number WHERE shopping_list = ?", rs -> {
-            return new ListItem(rs.getInt("id"),
-                    rs.getInt("shopping_list"),
-                    rs.getString("sernum"),
-                    rs.getString("name"),
-                    rs.getInt("amount"));
-        }, shoppingListId);
-        return queryAndCollect;
-    }
-
-    public void update(ListItem t) throws SQLException {
-        db.update("UPDATE ListItem SET shopping_list = ?, serial_number = ?, amount = ? WHERE id = ?", t.getObjsId());
-    }
-
-    public void delete(String key) throws SQLException {
-        db.update("DELETE FROM ListItem WHERE id = ?", key);
-    }
-
 }

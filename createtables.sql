@@ -30,7 +30,8 @@ CREATE TABLE NutritionalInfo (
 	energy FLOAT NOT NULL,
 	carbohydrate FLOAT NOT NULL,
 	fat FLOAT NOT NULL,
-	protein FLOAT NOT NULL
+	protein FLOAT NOT NULL,
+	CONSTRAINT NutritionalInfo_unique UNIQUE(iteminfo_id)
 ) WITH (
   OIDS=FALSE
 );

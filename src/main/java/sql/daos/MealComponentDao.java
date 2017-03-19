@@ -10,31 +10,37 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sql.db.Database;
+import storables.ItemInfo;
 import storables.MealComponent;
 
 public class MealComponentDao {
 
     private Database db;
-    private ItemDao iDao;
+    private ItemInfoDao infodao;
     private NutritionalInfoDao nuDao;
 
     public MealComponentDao(Database db) {
         this.db = db;
-        this.iDao = new ItemDao(db);
+        this.infodao = new ItemInfoDao(db);
         this.nuDao = new NutritionalInfoDao(db);
     }
 
-    public void createIngredient(MealComponent ingredient) throws SQLException {
-        db.update("INSERT INTO Ingredient(meal_id, item_identifier, percentage, deleted) VALUES(?,?,?,?)", ingredient.getObjs());
+    public MealComponent store(MealComponent mealComponent) throws SQLException {
+        int update = db.update("INSERT INTO MealComponent(meal_id, iteminfo_id, mass) VALUES(?,?,?)", 
+                mealComponent.getMealId(),
+                mealComponent.getItemId(),
+                mealComponent.getMass());
+        mealComponent.setId(update);
+        return mealComponent;
     }
     
     public List<MealComponent> findByMealId(String mealId) throws SQLException {
-        List<MealComponent> queryAndCollect = db.queryAndCollect("SELECT * FROM Ingredient WHERE deleted = 'false' AND meal_id = ?", rs -> {
-            return new MealComponent(rs.getString("meal_id"),
-                    rs.getString("item_identifier"),
-                    rs.getFloat("percentage"),
-                    iDao.findOneBySerial(rs.getString("item_identifier")),
-                    nuDao.findOne(rs.getString("item_identifier")));
+        List<MealComponent> queryAndCollect = db.queryAndCollect("SELECT * FROM MealComponent WHERE meal_id = ?", rs -> {
+            return new MealComponent(rs.getInt("id"),
+                    rs.getInt("meal_id"),
+                    rs.getFloat("mass"),
+                    infodao.findOne(rs.getInt("iteminfo_id")),
+                    nuDao.findOneByItemInfoId(rs.getInt("iteminfo_id")));
         },mealId);
         return queryAndCollect;
     }

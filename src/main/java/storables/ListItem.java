@@ -12,17 +12,20 @@ package storables;
  */
 public class ListItem {
     private int id;
-    private int shoppingList;
-    private Item item;
+    private int shoppingListId;
+    private ItemInfo itemInfo;
     private int amount;
 
-    public ListItem(int id, int shoppingList, Item item, int amount) {
+    public ListItem(int id, int shoppingList, ItemInfo itemInfo, int amount) {
         this.id = id;
-        this.shoppingList = shoppingList;
-        this.item = item;
+        this.shoppingListId = shoppingList;
+        this.itemInfo = itemInfo;
         this.amount = amount;
     }
 
+    public int getIteminfoId() {
+        return this.getItemInfo().getId();
+    }
     public int getId() {
         return id;
     }
@@ -31,20 +34,20 @@ public class ListItem {
         this.id = id;
     }
 
-    public int getShoppingList() {
-        return shoppingList;
+    public int getShoppingListId() {
+        return shoppingListId;
     }
 
-    public void setShoppingList(int shoppingList) {
-        this.shoppingList = shoppingList;
+    public void setShoppingListId(int shoppingListId) {
+        this.shoppingListId = shoppingListId;
     }
 
-    public Item getItem() {
-        return item;
+    public ItemInfo getItemInfo() {
+        return itemInfo;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setItemInfo(ItemInfo itemInfo) {
+        this.itemInfo = itemInfo;
     }
 
     public int getAmount() {

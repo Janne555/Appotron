@@ -11,34 +11,26 @@ package storables;
  * @author Janne
  */
 public class MealComponent {
-    private String mealId;
-    private String itemId;
+    private int id;
+    private int mealId;
     private float mass;
-    private Item item;
+    private ItemInfo item;
     private NutritionalInfo nutritionalInfo;
 
-    public MealComponent(String mealId, String itemId, float mass, Item item, NutritionalInfo nutritionalInfo) {
+    public MealComponent(int id, int mealId, float mass, ItemInfo item, NutritionalInfo nutritionalInfo) {
+        this.id = id;
         this.mealId = mealId;
-        this.itemId = itemId;
         this.mass = mass;
         this.item = item;
         this.nutritionalInfo = nutritionalInfo;
     }
 
-    public String getMealId() {
-        return mealId;
+    public int getId() {
+        return id;
     }
 
-    public void setMealId(String mealId) {
-        this.mealId = mealId;
-    }
-
-    public String getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public float getMass() {
@@ -49,12 +41,12 @@ public class MealComponent {
         this.mass = mass;
     }
 
-    public Item getItem() {
-        return item;
+    public void setItem(ItemInfo item) {
+        this.item = item;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public ItemInfo getItem() {
+        return item;
     }
 
     public NutritionalInfo getNutritionalInfo() {
@@ -65,5 +57,16 @@ public class MealComponent {
         this.nutritionalInfo = nutritionalInfo;
     }
     
+    public int getItemId() {
+        return item.getId();
+    }
+    
+    public int getMealId() {
+        return mealId;
+    }
+
+    public void setMealId(int mealId) {
+        this.mealId = mealId;
+    }
     
 }

@@ -12,26 +12,22 @@ import util.Incrementer;
  * @author Janne
  */
 public class NutritionalInfo {
-    private String identifier;
+    private ItemInfo itemInfo;
     private float energy;
     private float carbohydrates;
     private float fat;
     private float protein;
 
-    public NutritionalInfo(String identifier, float energy, float carbohydrates, float fat, float protein) {
-        this.identifier = identifier;
+    public NutritionalInfo(ItemInfo itemInfo, float energy, float carbohydrates, float fat, float protein) {
+        this.itemInfo = itemInfo;
         this.energy = energy;
         this.carbohydrates = carbohydrates;
         this.fat = fat;
         this.protein = protein;
     }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    
+    public int getItemInfoId() {
+        return this.itemInfo.getId();
     }
 
     public float getEnergy() {
@@ -64,5 +60,13 @@ public class NutritionalInfo {
 
     public void setProtein(float protein) {
         this.protein = protein;
+    }
+
+    public void setItemInfo(ItemInfo itemInfo) {
+        this.itemInfo = itemInfo;
+    }
+
+    public ItemInfo getItemInfo() {
+        return itemInfo;
     }
 }

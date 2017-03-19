@@ -106,7 +106,7 @@ public class WebMethods {
             SessionControl sessionControl = new SessionControl(null, user.getId(), new Timestamp(System.currentTimeMillis()));
 
             sessionControl.genNewSessionId();
-            secDao.createSession(sessionControl);
+            secDao.store(sessionControl);
             res.cookie("sessioncontrolid", sessionControl.getSessionId());
             res.redirect(req.queryParams("redirect"));
             return "";

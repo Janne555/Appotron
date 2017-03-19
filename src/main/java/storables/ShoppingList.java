@@ -15,13 +15,13 @@ import java.util.List;
 public class ShoppingList {
     private int id;
     private String name;
-    private Timestamp createdOn;
+    private Timestamp date;
     private List<ListItem> listItems;
 
-    public ShoppingList(int id, String name, Timestamp createdOn, List<ListItem> listItems) {
+    public ShoppingList(int id, String name, Timestamp date, List<ListItem> listItems) {
         this.id = id;
         this.name = name;
-        this.createdOn = createdOn;
+        this.date = date;
         this.listItems = listItems;
     }
 
@@ -33,11 +33,28 @@ public class ShoppingList {
         return name;
     }
 
-    public Timestamp getCreatedOn() {
-        return createdOn;
+    public Timestamp getDate() {
+        return date;
     }
 
     public List<ListItem> getListItems() {
         return listItems;
     }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setListItems(List<ListItem> listItems) {
+        this.listItems = listItems;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
 }
