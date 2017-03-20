@@ -55,4 +55,20 @@ public class ItemInfoDao {
         return queryAndCollect.get(0);
     }
     
+    public List<ItemInfo> search(Object... searchWords) throws SQLException {
+        String sql = "SELECT * FROM (SELECT *, "
+                + "to_tsvector(name) || "
+                + "to_tsvector(identifier) || "
+                + "to_tsvector(type) AS document FROM ItemInfo) AS query "
+                + "WHERE query.document @@ to_tsquery(?)";
+        
+        for (int i = 0; i < searchWords.length - 1; i++) {
+            sql += " AND query.document @@ to_tsquery(?)";
+        }
+        
+        return db.queryAndCollect(sql, rs -> {
+            return new ItemInfo(rs.getInt("id"), rs.getString("name"), rs.getString("type"), rs.getString("identifier"), ifDao.findAll(rs.getInt("id")));
+        }, searchWords);
+    }
+    
 }

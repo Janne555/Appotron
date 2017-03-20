@@ -101,6 +101,7 @@ public class Item implements Comparable<Item>, SearchResult {
         this.itemInfo.setTags(itemInfoTags);
     }
 
+    @Override
     public String getType() {
         return itemInfo.getType();
     }

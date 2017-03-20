@@ -36,6 +36,7 @@ public class ItemSpecificTagDao {
     }
 
     public List<Tag> store(List<Tag> tags) throws Exception {
+        if (tags == null) return null;
         for (Tag t : tags) {
             store(t);
         }

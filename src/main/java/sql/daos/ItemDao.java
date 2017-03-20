@@ -17,6 +17,7 @@ import storables.User;
  * @author Janne
  */
 public class ItemDao {
+
     private Database db;
     private ItemInfoDao infoDao;
     private ItemSpecificTagDao tagDao;
@@ -38,7 +39,7 @@ public class ItemDao {
 
         //we store the item in the database
         int update = db.update("INSERT INTO Item(iteminfo_id, location, date, expiration, deleted) VALUES(?, ?, ?, ?, ?)",
-                t.getItemInfo().getId(), t.getLocation(), t.getDate(), t.getExpiration(), "false");
+                t.getItemInfo().getId(), t.getLocation(), t.getDate(), t.getExpiration(), false);
 
         t.setId(update);
 
@@ -91,18 +92,29 @@ public class ItemDao {
     }
 
     public Item findOne(Integer key, User user) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String sql = "SELECT i.* FROM Item as i, AccessControl as a, Users as u WHERE i.deleted = 'false' AND i.id = a.item_id AND u.id = a.users_id AND u.id = ? AND i.id = ?";
+        List<Item> queryAndCollect = db.queryAndCollect(sql, rs -> {
+            return new Item(rs.getInt("id"),
+                    rs.getString("location"),
+                    rs.getTimestamp("date"),
+                    rs.getTimestamp("expiration"),
+                    tagDao.findAll(rs.getInt("id")),
+                    infoDao.findOne(rs.getInt("iteminfo_id")));
+        }, user.getId(), key);
+        
+        if (queryAndCollect.isEmpty()) return null;
+        return queryAndCollect.get(0);
     }
 
     public List<Item> findAll(User user) throws SQLException {
-        String sql = "SELECT i.* FROM Item as i, AccessControl as a, Users as u WHERE AND i.deleted = 'false' AND i.id = a.item_id AND u.id = a.users_id AND u.id = ?";
+        String sql = "SELECT i.* FROM Item as i, AccessControl as a, Users as u WHERE i.deleted = 'false' AND i.id = a.item_id AND u.id = a.users_id AND u.id = ?";
         return db.queryAndCollect(sql, rs -> {
-            return new Item(rs.getInt("i.id"),
-                    rs.getString("i.location"),
-                    rs.getTimestamp("i.date"),
-                    rs.getTimestamp("i.expiration"),
-                    tagDao.findAll(rs.getInt("i.id")),
-                    infoDao.findOne(rs.getInt("i.iteminfo_id")));
+            return new Item(rs.getInt("id"),
+                    rs.getString("location"),
+                    rs.getTimestamp("date"),
+                    rs.getTimestamp("expiration"),
+                    tagDao.findAll(rs.getInt("id")),
+                    infoDao.findOne(rs.getInt("iteminfo_id")));
         }, user.getId());
     }
 
@@ -115,19 +127,19 @@ public class ItemDao {
     }
 
     public List<Item> getExpiring(User user, int limit) throws SQLException {
-        String sql = "SELECT i.* FROM Item as i, AccessControl as a, Users as u WHERE AND i.deleted = 'false' AND i.id = a.item_id AND u.id = a.users_id AND u.id = ? AND i.expiration IS NOT NULL ORDER BY i.expiration ASC LIMIT ?";
+        String sql = "SELECT i.* FROM Item as i, AccessControl as a, Users as u WHERE i.deleted = 'false' AND i.id = a.item_id AND u.id = a.users_id AND u.id = ? AND i.expiration IS NOT NULL ORDER BY i.expiration ASC LIMIT ?";
         return db.queryAndCollect(sql, rs -> {
-            return new Item(rs.getInt("i.id"),
-                    rs.getString("i.location"),
-                    rs.getTimestamp("i.date"),
-                    rs.getTimestamp("i.expiration"),
-                    tagDao.findAll(rs.getInt("i.id")),
-                    infoDao.findOne(rs.getInt("i.iteminfo_id")));
+            return new Item(rs.getInt("id"),
+                    rs.getString("location"),
+                    rs.getTimestamp("date"),
+                    rs.getTimestamp("expiration"),
+                    tagDao.findAll(rs.getInt("id")),
+                    infoDao.findOne(rs.getInt("iteminfo_id")));
         }, user.getId(), limit);
     }
 
     public List<String> getLocations(User user) throws SQLException {
-        String sql = "SELECT i.* FROM Item as i, AccessControl as a, Users as u WHERE AND i.deleted = 'false' AND i.id = a.item_id AND u.id = a.users_id AND u.id = ? ORDER BY location ASC";
+        String sql = "SELECT i.* FROM Item as i, AccessControl as a, Users as u WHERE i.deleted = 'false' AND i.id = a.item_id AND u.id = a.users_id AND u.id = ? ORDER BY location ASC";
         return db.queryAndCollect(sql, rs -> {
             return rs.getString("location");
         }, user.getId());

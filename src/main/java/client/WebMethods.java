@@ -149,7 +149,7 @@ public class WebMethods {
                 halt();
             }
 
-            if (type.equals("item")) {
+            if (type.equals("item") || type.equals("foodstuff") || type.equals("book")) {
                 Item item = itemDao.findOne(id, user);
                 map.put("item", item);
                 map.put("title", item.getName());
@@ -183,35 +183,20 @@ public class WebMethods {
             return new ModelAndView(map, "list");
         }, new ThymeleafTemplateEngine());
 
-//        get("/addmeal", (req, res) -> {
-//            HashMap map = new HashMap<>();
-//            User user = (User) req.session().attribute("user");
-//            map.put("user", user);
-//
-//            //in case of return link from barcode reader app
-//            if (serial != null) {
-//                map.put("serialfield", serial);
-//            } else {
-//                map.put("serialfield", "");
-//            }
-//
-//            List<String> list = new ArrayList<>();
-//            map.put("ingredients", list);
-//
-//            return new ModelAndView(map, "addmeal");
-//        }, new ThymeleafTemplateEngine());
-//        get("/ingredients.get", (req, res) -> {
-//            System.out.println("received request for ingredients: " + req.queryParams("param"));
-//            String param = req.queryParams("param");
-//
-//            List<Item> list = itemDao.search("foodstuff", param);
-//            List<String> names = new ArrayList<>();
-//
-//            for (Item it : list) {
-//                System.out.println(it);
-//            }
-//            return list;
-//        }, json());
+        get("/addmeal", (req, res) -> {
+            HashMap map = new HashMap<>();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+
+            return new ModelAndView(map, "addmeal");
+        }, new ThymeleafTemplateEngine());
+        get("/addmealsearch.get", (req, res) -> {
+            User user = (User) req.session().attribute("user");
+            String param = req.queryParams("param");
+
+            List<ItemInfo> list = infoDao.search(param);
+            return list;
+        }, json());
 //
 ////        get("/meals.get", (req, res) -> {
 ////            System.out.println("received request for meals: " + req.queryParams("param"));
@@ -398,7 +383,6 @@ public class WebMethods {
             return "";
         });
 
-
         post("/login", (req, res) -> {
             String username = req.queryParams("username");
             String password = req.queryParams("password");
@@ -424,32 +408,33 @@ public class WebMethods {
             }
         });
 
-//        post("/additem.post", (req, res) -> {
-//            String name = req.queryParams("name");
-//            String type = req.queryParams("type");
-//            String identifier = req.queryParams("identifier");
-//            String location = req.queryParams("location");
-//            String expirationstr = req.queryParams("expiration");
-//            Timestamp expiration = null;
-//            if (!expirationstr.isEmpty()) {
-//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//                LocalDate time = LocalDate.parse(expirationstr, formatter);
-//                expiration = Timestamp.valueOf(time.atStartOfDay());
-//            }
-//
-//            List<Tag> tags = ItemHelper.parseTags(req, uuid);
-//
-//            Item item = new Item(uuid, name, identifier, location, new Timestamp(System.currentTimeMillis()), expiration, tags, type);
-//            System.out.println(item);
-//
-//            try {
-//                itemDao.create(item);
-//            } catch (SQLException ex) {
-//                res.redirect("/fail?msg=" + ex.toString());
-//            }
-//            res.redirect("/");
-//            return "ok";
-//        });
+        post("/additem.post", (req, res) -> {
+            User user = (User) req.session().attribute("user");
+
+            String name = req.queryParams("name");
+            String type = req.queryParams("type");
+            String identifier = req.queryParams("identifier");
+            String location = req.queryParams("location");
+            String expirationstr = req.queryParams("expiration");
+            Timestamp expiration = null;
+            if (!expirationstr.isEmpty()) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate time = LocalDate.parse(expirationstr, formatter);
+                expiration = Timestamp.valueOf(time.atStartOfDay());
+            }
+
+            ItemInfo itemInfo;
+            if ((itemInfo = infoDao.findOne(name, identifier)) == null) {
+                itemInfo = new ItemInfo(0, name, type, identifier, null);
+                itemInfo = infoDao.store(itemInfo);
+            }
+
+            Item item = new Item(0, location, new Timestamp(System.currentTimeMillis()), expiration, null, itemInfo);
+            itemDao.store(item, user);
+
+            res.redirect("/view?id=" + item.getIdentifier() + "&type=item");
+            return "ok";
+        });
     }
 
     private void checkLogin(Request req, Response res, String redirect) {

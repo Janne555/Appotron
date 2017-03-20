@@ -24,11 +24,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import sql.daos.ItemDao;
+import sql.daos.UserDao;
 import sql.db.Database;
 import sql.db.DatabaseCreator;
 import sql.db.Testdata;
 import storables.Item;
 import storables.User;
+import util.PasswordUtil;
 import util.Type;
 
 /**
@@ -81,7 +83,9 @@ public class Main {
                 "bugreport",
                 "meal",
                 "accesscontrol",
-                "mealcomponent"};
+                "mealcomponent",
+                "recipe",
+                "ingredient"};
 
             for (String s : strings) {
                 try {
@@ -97,47 +101,47 @@ public class Main {
                 System.out.println(s);
                 database.update(s);
             }
+            UserDao udao = new UserDao(database);
+            udao.store(new User("jannetar", "janne", PasswordUtil.hashPassword("salis"), null, null));
         }
 
-        database.update("INSERT INTO Users(id, name, password, date, deleted) VALUES(?,?,?,?,?)", "jannetar", "janne", "salis", new Timestamp(System.currentTimeMillis()), false);
-        database.update("INSERT INTO Users(id, name, password, date, deleted) VALUES(?,?,?,?,?)", "salakaveri", "kaveri", "salis", new Timestamp(System.currentTimeMillis()), false);
-
-        database.update("INSERT INTO ItemInfo(type, name, identifier) VALUES(?,?,?)", "item", "tavara", "tavarainen");
-        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 1, "muoto", "littana");
-        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 1, "arvo", "turha");
-        database.update("INSERT INTO Item(iteminfo_id, location, date, deleted) VALUES(?,?,?,?)", 1, "kaappi", new Timestamp(System.currentTimeMillis()), false);
-        database.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", 1, "arvio", "mahtava");
-        database.update("INSERT INTO AccessControl VALUES(?,?,?)", 1, "jannetar", 1);
-
-        database.update("INSERT INTO ItemInfo(type, name, identifier) VALUES(?,?,?)", "item", "salainen tavara", "salatar");
-        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 2, "muoto", "kulmikas");
-        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 2, "arvo", "mittaamattoman kallis");
-        database.update("INSERT INTO Item(iteminfo_id, location, date, deleted) VALUES(?,?,?,?)", 2, "kaappi", new Timestamp(System.currentTimeMillis()), false);
-        database.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", 2, "arvosana", "huono");
-        database.update("INSERT INTO AccessControl VALUES(?,?,?)", 2, "salakaveri", 1);
-
-        database.update("INSERT INTO ItemInfo(type, name, identifier) VALUES(?,?,?)", "item", "duplikaatti", "duplikoiva");
-        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 3, "muoto", "taiteellinen");
-        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 3, "arvo", "semikallis");
-        database.update("INSERT INTO Item(iteminfo_id, location, date, deleted) VALUES(?,?,?,?)", 3, "kaappi", new Timestamp(System.currentTimeMillis()), false);
-        database.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", 3, "kunto", "rikki");
-        database.update("INSERT INTO AccessControl VALUES(?,?,?)", 3, "salakaveri", 1);
-
-        database.update("INSERT INTO Item(iteminfo_id, location, date, deleted) VALUES(?,?,?,?)", 3, "kaappi", new Timestamp(System.currentTimeMillis()), false);
-        database.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", 4, "kunto", "ehyt");
-        database.update("INSERT INTO AccessControl VALUES(?,?,?)", 4, "jannetar", 1);
-
+//        database.update("INSERT INTO Users(id, name, password, date, deleted) VALUES(?,?,?,?,?)", "jannetar", "janne", "salis", new Timestamp(System.currentTimeMillis()), false);
+//        database.update("INSERT INTO Users(id, name, password, date, deleted) VALUES(?,?,?,?,?)", "salakaveri", "kaveri", "salis", new Timestamp(System.currentTimeMillis()), false);
+//
+//        database.update("INSERT INTO ItemInfo(type, name, identifier) VALUES(?,?,?)", "item", "tavara", "tavarainen");
+//        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 1, "muoto", "littana");
+//        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 1, "arvo", "turha");
+//        database.update("INSERT INTO Item(iteminfo_id, location, date, deleted) VALUES(?,?,?,?)", 1, "kaappi", new Timestamp(System.currentTimeMillis()), false);
+//        database.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", 1, "arvio", "mahtava");
+//        database.update("INSERT INTO AccessControl VALUES(?,?,?)", 1, "jannetar", 1);
+//
+//        database.update("INSERT INTO ItemInfo(type, name, identifier) VALUES(?,?,?)", "item", "salainen tavara", "salatar");
+//        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 2, "muoto", "kulmikas");
+//        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 2, "arvo", "mittaamattoman kallis");
+//        database.update("INSERT INTO Item(iteminfo_id, location, date, deleted) VALUES(?,?,?,?)", 2, "kaappi", new Timestamp(System.currentTimeMillis()), false);
+//        database.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", 2, "arvosana", "huono");
+//        database.update("INSERT INTO AccessControl VALUES(?,?,?)", 2, "salakaveri", 1);
+//
+//        database.update("INSERT INTO ItemInfo(type, name, identifier) VALUES(?,?,?)", "item", "duplikaatti", "duplikoiva");
+//        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 3, "muoto", "taiteellinen");
+//        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 3, "arvo", "semikallis");
+//        database.update("INSERT INTO Item(iteminfo_id, location, date, deleted) VALUES(?,?,?,?)", 3, "kaappi", new Timestamp(System.currentTimeMillis()), false);
+//        database.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", 3, "kunto", "rikki");
+//        database.update("INSERT INTO AccessControl VALUES(?,?,?)", 3, "salakaveri", 1);
+//
+//        database.update("INSERT INTO Item(iteminfo_id, location, date, deleted) VALUES(?,?,?,?)", 3, "kaappi", new Timestamp(System.currentTimeMillis()), false);
+//        database.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", 4, "kunto", "ehyt");
+//        database.update("INSERT INTO AccessControl VALUES(?,?,?)", 4, "jannetar", 1);
 //        User user = new User("jannetar", "janne", "salis", null, null, null, null);
 //        ItemDao itemDao = new ItemDao(database);
 //        
 //        for (Item it : itemDao.search(user, "kaappi", "littana")) {
 //            System.out.println(it);
 //        }
-        
 //        List<Item> search = itemDao.search(user, "poyta");
 //        for (Item it : search) {
 //            System.out.println(it);
 //        }
-//        new WebMethods(database);
+        new WebMethods(database);
     }
 }

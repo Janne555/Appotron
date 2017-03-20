@@ -11,13 +11,6 @@
             });
 
             $(document).ready(function(){
-                $("#tagstable").on("click", "tr", function(){
-                    if ($(this).attr("class") != "header") {
-                        $(this).addClass('w3-grey').siblings().removeClass('w3-grey');
-                    }
-            })});
-
-            $(document).ready(function(){
                 $("#scanbutton").click(function(){
                     var name = $("#name").val();
                     // console.log(encodeURIComponent(window.location.href));
@@ -59,9 +52,9 @@
             $(document).ready(function(){
                 $("#searchbutton").click(function(){
                     var xhr = new XMLHttpRequest();
-                    var param = $("#search").val();
+                    var param = $("#searchfield").val();
                     console.log(param);
-                    xhr.open('GET', "/ingredients.get?param=" + param, true);
+                    xhr.open('GET', "/addmealsearch.get?param=" + param, true);
                     xhr.send();
                     xhr.addEventListener("readystatechange", processRequest, false);
                     xhr.onreadystatechange = processRequest;
@@ -71,11 +64,10 @@
                         if (xhr.readyState == 4 && xhr.status == 200 && boolean) {
                             var response = JSON.parse(xhr.responseText);
                             for (i in response) {
-                                var list = document.getElementById("searchresults");
-                                var option = document.createElement("option");
-                                option.innerHTML = response[i].name;
-                                option.setAttribute("name", response[i].serialNumber);
-                                list.appendChild(option);
+                                var name = response[i].name;
+                                var identifier = response[i].identifier;
+                                var result = "<li id='" + identifier + "' class='w3-list-item' data-identifier='" + identifier + "' data-itemname='" + name + "' onClick='chooseThis(this)'>" + name + ", " + identifier +"</li>";
+                                $("#searchresults").append(result);
                             }
                             boolean = !boolean;
                             
@@ -84,6 +76,10 @@
 
                 })
             });
+            
+            function chooseThis(something) {
+                
+            }
             /*]]>*/
 
         </script>
@@ -93,55 +89,33 @@
     </div>
     <div class="w3-main">
     <div class="w3-col m6 l4 w3-card-4 w3-margin">
+        <div class="w3-container w3-green">
+            <h2>Meal</h2>
+        </div>
+
+        <div class="w3-card-4 w3-margin w3-padding">
+            <div class="w3-container w3-cell" style="width: 90%">
+                <label for="searchfield">Search for Foodstuffs</label>
+                <input class="w3-input" type="text" name="searchfield" id="searchfield" />
+            </div>
+            <div class="w3-container w3-cell">   
+                <button class="w3-button" id="searchbutton" >Search</button>
+            </div>
+
+            <div>
+                <ul id="searchresults"></ul>
+            </div>
+        </div>
+
+
+
         <form class="w3-container" action="/addmeal.post" method="post">
-        <br />
-            <div class="w3-container w3-green">
-                <h2>Basic Info</h2>
-            </div>
-            <label class="w3-label" for="name">Name:</label>
-            <input class="w3-input" type="text" name="name" required="true" id="name" th:value="${namefield}" /><br />
-            <label class="w3-label" for="type">Type:</label>
-            <input class="w3-input" list="typelist" required="true" name="type" id="type" /><br />
-            <datalist id="typelist">    
-                <option th:each="type: ${types}" th:value="${type}" />
-            </datalist>
-            <div class="w3-container w3-green">
-            	<h2>Ingredients</h2>
-            </div>
-            <label class="w3-label" for="search">Search for Ingredients:</label><br />
-            <input class="w3-input" type="text" name="search" required="true" id="search"/><br />
-            <div class="w3-row-padding">
-				 <div class="w3-half">
-				    <input class="w3-input w3-border w3-teal" type="button" id="scanbutton" disabled="true" value="Scan for Barcode" />
-				 </div>
-				 <div class="w3-half">
-				    <input class="w3-input w3-border w3-teal" type="button" id="searchbutton" value="Search" />
-				 </div>
-			</div><br />
-
-			<div class="w3-row-padding">
-				<div class="w3-third">
-					<label class="w3-label" for="searchresults">Search Results:</label>
-                	<select class="w3-select" name="type" id="searchresults" required="true">
-                  		<option value="" disabled="true" selected="true">Choose type</option>
-                	</select><br/>
-				</div>
-				<div class="w3-third">
-					<label class="w3-label" for="mass">Mass (grams):</label>
-				    <input class="w3-input" type="number" name="mass" id="mass" step="0.01" min="0" /><br/>
-				</div>
-				<div class="w3-third">
-					<label class="w3-label">lol</label>
-					<input class="w3-input w3-border w3-teal" type="button" id="addbutton" value="Add" />
-				</div>
-
-			</div>
-			<label class="w3-label" for="search">List of Ingredients:</label><br />
-            <ul class="w3-ul" id="ingredientslist">
-            	<li th:each="ingredient: ${ingredients}" th:text="${ingredient}">
-            		<input type="text" name="ingredients[]" hidden="true" th:value="${ingredient}" />
-            	</li>
-            </ul>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Mass</th>
+                </tr>
+            </table>
             <input class="w3-button w3-block w3-teal" type="submit" name="submit" value="Submit" /> <br />
             <input class="w3-button w3-block w3-teal" type="reset" name="reset" value="Reset" /> <br />
         </form>

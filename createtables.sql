@@ -52,9 +52,11 @@ CREATE TABLE ItemInfoTag (
 
 
 CREATE TABLE ListItem (
+	id serial NOT NULL,
 	iteminfo_id integer NOT NULL,
 	shoppinglist_id integer NOT NULL,
-	amount integer NOT NULL
+	amount integer NOT NULL,
+	CONSTRAINT ListItem_pk PRIMARY KEY(id)
 ) WITH (
   OIDS=FALSE
 );
@@ -90,7 +92,7 @@ CREATE TABLE Loan (
 	users_id varchar(255) NOT NULL,
 	item_id integer NOT NULL,
 	date TIMESTAMP NOT NULL,
-	returned TIMESTAMP,
+	returnDate TIMESTAMP,
 	isreturned BOOLEAN NOT NULL DEFAULT 'false',
 	deleted BOOLEAN NOT NULL DEFAULT 'false'
 ) WITH (
@@ -115,10 +117,10 @@ CREATE TABLE Users (
 
 
 CREATE TABLE SessionControl (
-	sessionid varchar(255) NOT NULL,
+	id varchar(255) NOT NULL,
 	users_id varchar(255) NOT NULL,
 	date TIMESTAMP NOT NULL,
-	CONSTRAINT SessionControl_pk PRIMARY KEY (sessionid)
+	CONSTRAINT SessionControl_pk PRIMARY KEY (id)
 ) WITH (
   OIDS=FALSE
 );
@@ -137,8 +139,6 @@ CREATE TABLE BugReport (
 
 CREATE TABLE Meal (
 	id serial NOT NULL,
-	name varchar(255) NOT NULL,
-	mass DECIMAL NOT NULL,
 	date TIMESTAMP NOT NULL,
 	deleted BOOLEAN NOT NULL DEFAULT 'false',
 	users_id varchar(255) NOT NULL,
@@ -148,9 +148,11 @@ CREATE TABLE Meal (
 );
 
 CREATE TABLE MealComponent (
+	id serial NOT NULL,
 	meal_id integer NOT NULL,
 	iteminfo_id integer NOT NULL,
-	fraction FLOAT NOT NULL
+	mass DECIMAL NOT NULL,
+	CONSTRAINT MealComponent_pk PRIMARY KEY (id)
 ) WITH (
   OIDS=FALSE
 );
@@ -166,6 +168,32 @@ CREATE TABLE AccessControl (
   OIDS=FALSE
 );
 
+CREATE TABLE Recipe (
+	id serial NOT NULL,
+	name varchar(255) NOT NULL,
+	directions TEXT NOT NULL,
+	description TEXT NOT NULL,
+	type varchar(255) NOT NULL,
+	deleted BOOLEAN NOT NULL DEFAULT 'false',
+	CONSTRAINT Recipe_pk PRIMARY KEY (id)
+) WITH (
+  OIDS=FALSE
+);
+
+
+
+CREATE TABLE Ingredient (
+	id serial NOT NULL,
+	iteminfo_id integer NOT NULL,
+	recipe_id integer NOT NULL,
+	amount FLOAT NOT NULL,
+	unit varchar(255) NOT NULL,
+	ordernumber integer NOT NULL,
+	CONSTRAINT Ingredient_pk PRIMARY KEY (id),
+	CONSTRAINT Ingredient_unique UNIQUE(iteminfo_id, recipe_id)
+) WITH (
+  OIDS=FALSE
+);
 
 
 
@@ -200,4 +228,9 @@ ALTER TABLE MealComponent ADD CONSTRAINT MealComponent_fk1 FOREIGN KEY (iteminfo
 ALTER TABLE AccessControl ADD CONSTRAINT AccessControl_fk0 FOREIGN KEY (item_id) REFERENCES Item(id);
 
 ALTER TABLE AccessControl ADD CONSTRAINT AccessControl_fk1 FOREIGN KEY (users_id) REFERENCES Users(id);
+
+
+ALTER TABLE Ingredient ADD CONSTRAINT Ingredient_fk0 FOREIGN KEY (iteminfo_id) REFERENCES ItemInfo(id);
+
+ALTER TABLE Ingredient ADD CONSTRAINT Ingredient_fk1 FOREIGN KEY (recipe_id) REFERENCES Recipe(id);
 
