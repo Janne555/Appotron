@@ -16,7 +16,5 @@ public interface SearchResult {
     public String getName();
     public String getLocation();
     public String getType();
-    public String getIdentifier();
     public Timestamp getDate();
-    public String getUuid();
 }

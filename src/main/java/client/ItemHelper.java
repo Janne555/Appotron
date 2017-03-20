@@ -20,15 +20,15 @@ public class ItemHelper {
     public ItemHelper() {
     }
 
-    public static List<Tag> parseTags(Request req, String uuid) {
-        List<Tag> tags = new ArrayList<>();
-        for (String s : req.queryParams()) {
-            if (s.contains("tag:")) {
-                String key = s.substring(4);
-                String value = req.queryParams(s);
-                tags.add(new Tag(0, req.queryParams("serialNumber"), key, value, Type.SERIAL));
-            }
-        }
-        return tags;
-    }
+//    public static List<Tag> parseTags(Request req, String uuid) {
+//        List<Tag> tags = new ArrayList<>();
+//        for (String s : req.queryParams()) {
+//            if (s.contains("tag:")) {
+//                String key = s.substring(4);
+//                String value = req.queryParams(s);
+//                tags.add(new Tag(0, req.queryParams("serialNumber"), key, value, Type.SERIAL));
+//            }
+//        }
+//        return tags;
+//    }
 }

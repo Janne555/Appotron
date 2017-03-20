@@ -50,4 +50,14 @@ public class MealDao {
         }, user.getId(), from, to);
     }
 
+    public Meal findOne(User user, int id) throws SQLException {
+        List<Meal> queryAndCollect = db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND users_id = ? AND id = ?", rs -> {
+            return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getString("id")));
+        }, user.getId(), id);
+        
+        if (queryAndCollect.isEmpty()) return null;
+        
+        return queryAndCollect.get(0);
+    }
+
 }

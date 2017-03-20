@@ -30,7 +30,7 @@ public class SessionControlDao {
     }
     
     public SessionControl findValidSessionById(String sessionId) throws SQLException {
-        List<SessionControl> list = db.queryAndCollect("SELECT * FROM Session, age(CURRENT_TIMESTAMP, session.date) WHERE age < interval '1 day' AND id = ?", rs ->{
+        List<SessionControl> list = db.queryAndCollect("SELECT * FROM SessionControl, age(CURRENT_TIMESTAMP, session.date) WHERE age < interval '1 day' AND id = ?", rs ->{
             return new SessionControl(rs.getString("id"), rs.getString("users_id"), rs.getTimestamp("date"));
         }, sessionId);
         
@@ -39,7 +39,16 @@ public class SessionControlDao {
         return list.get(0);
     }
     
-    public void deleteSession(String sessioncontrolid) throws SQLException {
-        db.update("DELETE FROM Session WHERE session_id = ?", sessioncontrolid);
+    public User getValidUser(String sessionId) throws SQLException {
+        SessionControl session = findValidSessionById(sessionId);
+        String userId = session.getUserId();
+        User findById = uDao.findById(userId);
+        return findById;
     }
+    
+    public boolean invalidateSession(String sessionId) throws SQLException {
+        db.update("DELETE FROM SessionControl WHERE id = ?", sessionId);
+        return true;
+    }
+    
 }

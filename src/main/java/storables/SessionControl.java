@@ -49,7 +49,7 @@ public class SessionControl {
         this.userId = userId;
     }
 
-    public void genNewSessionId() {
+    public void genSessionId() {
         setSessionId(UUID.randomUUID().toString());
     }
 }

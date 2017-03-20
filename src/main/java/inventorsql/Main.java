@@ -42,22 +42,6 @@ public class Main {
      * @throws java.io.FileNotFoundException
      */
     public static void main(String[] args) throws Exception {
-        System.out.println("SELECT * FROM "
-                + "(SELECT query.*, "
-                + "to_tsvector(location) || "
-                + "to_tsvector(type) || "
-                + "to_tsvector(name) || "
-                + "to_tsvector(identifier) || "
-                + "to_tsvector(coalesce((string_agg(infotag, '')), '')) || "
-                + "to_tsvector(coalesce((string_agg(specifictag, '')), '')) as document "
-                + "FROM (SELECT iteminfo.id as info_id, date, expiration, item.id as id, location, type, name, identifier, iteminfotag.value as infotag, itemspecifictag.value as specifictag "
-                + "FROM (SELECT i.* FROM Item as i, AccessControl as a, Users as u WHERE i.id = a.item_id AND u.id = a.users_id AND u.id = 'jannetar') AS item "
-                + "LEFT JOIN iteminfo ON item.iteminfo_id = iteminfo.id "
-                + "LEFT JOIN iteminfotag ON item.iteminfo_id = iteminfotag.iteminfo_id "
-                + "LEFT JOIN itemspecifictag ON item.id = itemspecifictag.item_id "
-                + "WHERE deleted = false) AS query GROUP BY query.date, query.expiration, query.info_id, query.location, query.type, query.name, query.identifier, query.id, query.infotag, query.specifictag) AS mainquery "
-                + "WHERE mainquery.document @@ to_tsquery(?);");
-
         InputStream input;
 
         List<String> makeTables = new ArrayList<>();

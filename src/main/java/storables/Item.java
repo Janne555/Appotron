@@ -15,7 +15,7 @@ import java.util.Objects;
  *
  * @author Janne
  */
-public class Item implements Comparable<Item> {
+public class Item implements Comparable<Item>, SearchResult {
 
     private int id;
     private String location;

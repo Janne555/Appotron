@@ -18,7 +18,7 @@ public class Service {
 
     public static LoginResult checkUser(User user, UserDao userDao) throws SQLException {
         LoginResult result = new LoginResult();
-        User userFound = userDao.findUserByName(user.getUsername());
+        User userFound = userDao.findByName(user.getUsername());
         if (userFound == null) {
             result.setError("Invalid username");
         } else if (!PasswordUtil.verifyPassword(user.getPassword(), userFound.getPassword())) {

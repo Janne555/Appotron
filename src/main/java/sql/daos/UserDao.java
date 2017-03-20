@@ -31,7 +31,7 @@ public class UserDao {
         return t;
     }
 
-    public User findById(String id) throws Exception {
+    public User findById(String id) throws SQLException {
         List<User> queryAndCollect = db.queryAndCollect("SELECT * FROM Users WHERE id = ?", rs -> {
             return new User(rs.getString("id"),
                     rs.getString("name"),
@@ -47,7 +47,7 @@ public class UserDao {
         return queryAndCollect.get(0);
     }
 
-    public User findByName(String name) throws Exception {
+    public User findByName(String name) throws SQLException {
         List<User> queryAndCollect = db.queryAndCollect("SELECT * FROM Users WHERE name = ?", rs -> {
             return new User(rs.getString("id"),
                     rs.getString("name"),
