@@ -24,7 +24,7 @@ public class IngredientDao {
     }
     
     public Ingredient store(Ingredient ingredient) throws SQLException {
-        int update = db.update("INSERT INTO Ingredient(iteminfo_id, recipe_id, amount, unit, ordernumber) VALUES(?,?,?,?)",
+        int update = db.update("INSERT INTO Ingredient(iteminfo_id, recipe_id, amount, unit, ordernumber) VALUES(?,?,?,?)", true,
                 ingredient.getItemInfoId(), ingredient.getRecipeId(), ingredient.getAmount(), ingredient.getUnit(), ingredient.getOrderNumber());
         ingredient.setId(update);
         return ingredient;

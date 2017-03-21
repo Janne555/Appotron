@@ -8,6 +8,8 @@ package client;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +66,9 @@ public class WebMethods {
     }
 
     private void setupRoutes() {
+        /**
+         * filter for all requests
+         */
         before("/*", (req, res) -> {
             if (req.cookies().containsKey("sessioncontrolid")) {
                 String cookie = req.cookie("sessioncontrolid");
@@ -78,6 +83,9 @@ public class WebMethods {
             }
         });
 
+        /**
+         * login page
+         */
         get("/login", (req, res) -> {
             HashMap map = new HashMap();
             map.put("user", req.session().attribute("user"));
@@ -85,6 +93,9 @@ public class WebMethods {
             return new ModelAndView(map, "login");
         }, new ThymeleafTemplateEngine());
 
+        /**
+         * login post
+         */
         post("/login", (req, res) -> {
             String username = req.queryParams("username");
             String password = req.queryParams("password");
@@ -107,12 +118,19 @@ public class WebMethods {
             res.redirect(req.queryParams("redirect"));
             return "";
         });
+
+        /**
+         * filter for login page
+         */
         before("/login", (req, res) -> {
             if (req.session().attribute("user") != null) {
                 halt("Already logged in");
             }
         });
 
+        /**
+         * index page
+         */
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
             User user = (User) req.session().attribute("user");
@@ -128,6 +146,9 @@ public class WebMethods {
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
 
+        /**
+         * bug reporting page
+         */
         get("/bugreport", (req, res) -> {
             HashMap map = new HashMap<>();
             User user = (User) req.session().attribute("user");
@@ -135,6 +156,13 @@ public class WebMethods {
             return new ModelAndView(map, "bugreport");
         }, new ThymeleafTemplateEngine());
 
+        /**
+         * page for viewing items
+         *
+         * expects id and type as attributes example
+         *
+         * /view?id=something&type=something
+         */
         get("/view", (req, res) -> {
             HashMap map = new HashMap<>();
             User user = (User) req.session().attribute("user");
@@ -165,6 +193,13 @@ public class WebMethods {
             return new ModelAndView(map, "view");
         }, new ThymeleafTemplateEngine());
 
+        /**
+         * searchresults page
+         *
+         * expects query as an attribute
+         *
+         * example /search?query=one&query=two&...&query=nth
+         */
         get("/search", (req, res) -> {
             HashMap map = new HashMap<>();
             User user = (User) req.session().attribute("user");
@@ -183,6 +218,9 @@ public class WebMethods {
             return new ModelAndView(map, "list");
         }, new ThymeleafTemplateEngine());
 
+        /**
+         * add meal page
+         */
         get("/addmeal", (req, res) -> {
             HashMap map = new HashMap<>();
             User user = (User) req.session().attribute("user");
@@ -190,63 +228,98 @@ public class WebMethods {
 
             return new ModelAndView(map, "addmeal");
         }, new ThymeleafTemplateEngine());
+
+        /**
+         * get request for foodstuffs
+         *
+         * expects query as an attribute
+         *
+         * example /addmealsearch.get?query=one
+         */
         get("/addmealsearch.get", (req, res) -> {
             User user = (User) req.session().attribute("user");
-            String param = req.queryParams("param");
 
-            List<ItemInfo> list = infoDao.search(param);
+            Object[] split = req.queryParams("param").split(" ");
+
+            List<ItemInfo> list = infoDao.search(split);
             return list;
         }, json());
-//
-////        get("/meals.get", (req, res) -> {
-////            System.out.println("received request for meals: " + req.queryParams("param"));
-////            String param = req.queryParams("param");
-////
-////            List<Meal> search = meDao.search(param);
-////
-////            return search;
-////        }, json());
-//        get("/addnutritionalinfo", (req, res) -> {
-//            HashMap map = new HashMap<>();
-//            map.put("user", req.session().attribute("user"));
-//            String serial = req.queryParams("serial");
-//
-//            //in case of return link from barcode reader app
-//            if (serial != null) {
-//                map.put("serialfield", serial);
-//            } else {
-//                map.put("serialfield", "");
-//            }
-//
-//            return new ModelAndView(map, "addnutritionalinfo");
-//        }, new ThymeleafTemplateEngine());
-//
-//        get("/mealdiary", (req, res) -> {
-//            HashMap map = new HashMap<>();
-//            map.put("user", req.session().attribute("user"));
-//            checkLogin(req, res, "/mealdiary");
-//            List<Serving> findTodaysByUser = seDao.findTodaysByUser((User) req.session().attribute("user"));
-//            map.put("servings", findTodaysByUser);
-//            float energy = 0;
-//            float protein = 0;
-//            float carbs = 0;
-//            float fat = 0;
-//
-//            for (Serving s : findTodaysByUser) {
-//                energy += s.getEnergy();
-//                protein += s.getProtein();
-//                carbs += s.getCarbohydrate();
-//                fat += s.getFat();
-//            }
-//
-//            map.put("energy", energy + " kcal");
-//            map.put("protein", protein + " g");
-//            map.put("carbs", carbs + " g");
-//            map.put("fat", fat + " g");
-//
-//            return new ModelAndView(map, "mealdiary");
-//        }, new ThymeleafTemplateEngine());
-//
+
+        /**
+         * add nutritional info page
+         *
+         * expects id as an attribute
+         *
+         * example /addnutritionalinfo?id=something
+         */
+        get("/addnutritionalinfo", (req, res) -> {
+            HashMap map = new HashMap<>();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+            int id = Integer.parseInt(req.queryParams("id"));
+            ItemInfo itemInfo = infoDao.findOne(id);
+            map.put("iteminfo", itemInfo);
+
+            return new ModelAndView(map, "addnutritionalinfo");
+        }, new ThymeleafTemplateEngine());
+
+        /**
+         * meal diary page
+         *
+         * shows meals had that day
+         *
+         * can take attributes from and to as timedate-strings or today=true to
+         * give results for today
+         */
+        get("/mealdiary", (req, res) -> {
+            HashMap map = new HashMap<>();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+
+            List<Meal> findAll = null;
+            String today = req.queryParams("today");
+            String from = req.queryParams("from");
+            String to = req.queryParams("to");
+
+            if (today.equals("true")) {
+                Timestamp beginning = Timestamp.valueOf(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0));
+                Timestamp end = Timestamp.valueOf(LocalDateTime.now().withHour(23).withMinute(59).withSecond(59));
+                findAll = meDao.findAll(user, beginning, end);
+            } else if (from != null && to != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate fromDate = LocalDate.parse(from, formatter);
+                LocalDate toDate = LocalDate.parse(to, formatter);
+                Timestamp fromTimestamp = Timestamp.valueOf(fromDate.atStartOfDay());
+                Timestamp toTimestamp = Timestamp.valueOf(toDate.atTime(23, 59, 59));
+                findAll = meDao.findAll(user, fromTimestamp, toTimestamp);
+            } else {
+                findAll = meDao.findAll(user);
+            }
+
+            map.put("meals", findAll);
+            float energy = 0;
+            float protein = 0;
+            float carbs = 0;
+            float fat = 0;
+
+            for (Meal m : findAll) {
+                energy += m.getEnergy();
+                protein += m.getProtein();
+                carbs += m.getCarbohydrate();
+                fat += m.getFat();
+            }
+
+            map.put("energy", energy + " cal");
+            map.put("protein", protein + " g");
+            map.put("carbs", carbs + " g");
+            map.put("fat", fat + " g");
+
+            return new ModelAndView(map, "mealdiary");
+        }, new ThymeleafTemplateEngine());
+
+        /**
+         * logout page
+         */
         get("/logout", (req, res) -> {
             HashMap map = new HashMap();
             req.session().removeAttribute("user");
@@ -257,17 +330,27 @@ public class WebMethods {
             res.redirect("/");
             return new ModelAndView(map, "login");
         });
+
+        /**
+         * filter for logout page
+         */
         before("/logout", (req, res) -> {
             if (req.session().attribute("user") == null) {
                 halt("No user logged in");
             }
         });
 
+        /**
+         * returns json object of 5 expiring foodstuff
+         */
         get("/expiring.get", (req, res) -> {
             User user = (User) req.session().attribute("user");
             return itemDao.getExpiring(user, 5);
         }, json());
 
+        /**
+         * returns json object of item specific tags
+         */
         get("/tags.get", (req, res) -> {
             List<Tag> list = null;
             try {
@@ -278,22 +361,34 @@ public class WebMethods {
             return list;
         }, json());
 
+        /**
+         * add item page
+         *
+         * if attributes name and serial are given the page will contain those
+         * in their respective fields
+         */
         get("/additem", (req, res) -> {
             HashMap map = new HashMap();
             User user = (User) req.session().attribute("user");
             map.put("user", user);
+
             map.put("locations", itemDao.getLocations(user));
             String name = "";
-            String serialNumber = "";
+            String identifier = "";
             if (!req.queryParams().isEmpty()) {
                 name += req.queryParams("name");
-                serialNumber += req.queryParams("serial");
+                identifier += req.queryParams("serial");
             }
             map.put("namefield", name);
-            map.put("serialfield", serialNumber);
+            map.put("identifierfield", identifier);
             return new ModelAndView(map, "additem");
         }, new ThymeleafTemplateEngine());
-
+        
+        /**
+         * fail page
+         * 
+         * in case of something going wrong
+         */
         get("/fail", (req, res) -> {
             HashMap map = new HashMap();
             User user = (User) req.session().attribute("user");
@@ -301,7 +396,14 @@ public class WebMethods {
             map.put("msg", req.queryParams("msg"));
             return new ModelAndView(map, "fail");
         }, new ThymeleafTemplateEngine());
-
+        
+        /**
+         * profile page
+         * 
+         * takes username as an attribute
+         * 
+         * example /profile/user
+         */
         get("/profile/:username", (req, res) -> {
             HashMap map = new HashMap();
             User user = (User) req.session().attribute("user");
@@ -314,8 +416,9 @@ public class WebMethods {
 
             return new ModelAndView(map, "profile");
         }, new ThymeleafTemplateEngine());
-//
+
 //        post("/addmeal.post", (req, res) -> {
+//            User user = (User) req.session().attribute("user");
 //            String name = req.queryParams("name");
 //            String type = req.queryParams("type");
 //            List<Ingredient> ingredients = new ArrayList<>();
@@ -351,8 +454,6 @@ public class WebMethods {
 ////        post("/", (req, res) -> {
 ////            return "";
 ////        });
-//
-//
         post("/bugreport.post", (req, res) -> {
             User user = (User) req.session().attribute("user");
             String subject = req.queryParams("subject");

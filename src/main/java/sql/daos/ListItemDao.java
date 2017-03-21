@@ -22,7 +22,7 @@ public class ListItemDao {
     }
 
     public ListItem store(ListItem t) throws SQLException {
-        int update = db.update("INSERT INTO ListItem(iteminfo_id, shoppinglist_id, amount) VALUES(?,?,?)",
+        int update = db.update("INSERT INTO ListItem(iteminfo_id, shoppinglist_id, amount) VALUES(?,?,?)", true, 
                 t.getIteminfoId(),
                 t.getShoppingListId());
         t.setId(update);

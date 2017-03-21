@@ -102,14 +102,14 @@ CREATE TABLE Loan (
 
 
 CREATE TABLE Users (
-	id varchar(255) NOT NULL,
+	usersid varchar(255) NOT NULL,
 	name varchar(255) NOT NULL UNIQUE,
 	email varchar(255) UNIQUE,
 	password varchar(255) NOT NULL,
 	apikey varchar(255) UNIQUE,
 	date TIMESTAMP NOT NULL,
 	deleted BOOLEAN NOT NULL DEFAULT 'false',
-	CONSTRAINT Users_pk PRIMARY KEY (id)
+	CONSTRAINT Users_pk PRIMARY KEY (usersid)
 ) WITH (
   OIDS=FALSE
 );
@@ -117,10 +117,10 @@ CREATE TABLE Users (
 
 
 CREATE TABLE SessionControl (
-	id varchar(255) NOT NULL,
+	sessionid varchar(255) NOT NULL,
 	users_id varchar(255) NOT NULL,
 	date TIMESTAMP NOT NULL,
-	CONSTRAINT SessionControl_pk PRIMARY KEY (id)
+	CONSTRAINT SessionControl_pk PRIMARY KEY (sessionid)
 ) WITH (
   OIDS=FALSE
 );
@@ -210,16 +210,16 @@ ALTER TABLE ListItem ADD CONSTRAINT ListItem_fk1 FOREIGN KEY (shoppinglist_id) R
 
 ALTER TABLE ItemSpecificTag ADD CONSTRAINT ItemSpecificTag_fk0 FOREIGN KEY (item_id) REFERENCES Item(id);
 
-ALTER TABLE Loan ADD CONSTRAINT Loan_fk0 FOREIGN KEY (users_id) REFERENCES Users(id);
+ALTER TABLE Loan ADD CONSTRAINT Loan_fk0 FOREIGN KEY (users_id) REFERENCES Users(usersid);
 
 ALTER TABLE Loan ADD CONSTRAINT Loan_fk1 FOREIGN KEY (item_id) REFERENCES Item(id);
 
 
-ALTER TABLE SessionControl ADD CONSTRAINT SessionControl_fk0 FOREIGN KEY (users_id) REFERENCES Users(id);
+ALTER TABLE SessionControl ADD CONSTRAINT SessionControl_fk0 FOREIGN KEY (users_id) REFERENCES Users(usersid);
 
-ALTER TABLE BugReport ADD CONSTRAINT BugReport_fk0 FOREIGN KEY (users_id) REFERENCES Users(id);
+ALTER TABLE BugReport ADD CONSTRAINT BugReport_fk0 FOREIGN KEY (users_id) REFERENCES Users(usersid);
 
-ALTER TABLE Meal ADD CONSTRAINT Meal_fk0 FOREIGN KEY (users_id) REFERENCES Users(id);
+ALTER TABLE Meal ADD CONSTRAINT Meal_fk0 FOREIGN KEY (users_id) REFERENCES Users(usersid);
 
 ALTER TABLE MealComponent ADD CONSTRAINT MealComponent_fk0 FOREIGN KEY (meal_id) REFERENCES Meal(id);
 
@@ -227,7 +227,7 @@ ALTER TABLE MealComponent ADD CONSTRAINT MealComponent_fk1 FOREIGN KEY (iteminfo
 
 ALTER TABLE AccessControl ADD CONSTRAINT AccessControl_fk0 FOREIGN KEY (item_id) REFERENCES Item(id);
 
-ALTER TABLE AccessControl ADD CONSTRAINT AccessControl_fk1 FOREIGN KEY (users_id) REFERENCES Users(id);
+ALTER TABLE AccessControl ADD CONSTRAINT AccessControl_fk1 FOREIGN KEY (users_id) REFERENCES Users(usersid);
 
 
 ALTER TABLE Ingredient ADD CONSTRAINT Ingredient_fk0 FOREIGN KEY (iteminfo_id) REFERENCES ItemInfo(id);

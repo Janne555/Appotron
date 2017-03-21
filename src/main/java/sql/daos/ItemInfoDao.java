@@ -25,7 +25,7 @@ public class ItemInfoDao {
     }
 
     public ItemInfo store(ItemInfo itemInfo) throws SQLException {
-        int update = db.update("INSERT INTO ItemInfo(name, identifier, type) VALUES(?,?,?)",
+        int update = db.update("INSERT INTO ItemInfo(name, identifier, type) VALUES(?,?,?)", true,
                 itemInfo.getName(), itemInfo.getIdentifier(), itemInfo.getType());
         itemInfo.setId(update);
         return itemInfo;

@@ -23,7 +23,7 @@ public class MealDao {
     }
 
     public Meal store(Meal meal) throws SQLException {
-        int update = db.update("INSERT INTO Meal(users_id, date, deleted) VALUES(?,?,?)",
+        int update = db.update("INSERT INTO Meal(users_id, date, deleted) VALUES(?,?,?)", true,
                 meal.getUserId(),
                 meal.getDate(),
                 false);
@@ -59,5 +59,5 @@ public class MealDao {
         
         return queryAndCollect.get(0);
     }
-
+    
 }

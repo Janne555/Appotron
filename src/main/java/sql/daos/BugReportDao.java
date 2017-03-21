@@ -21,6 +21,6 @@ public class BugReportDao {
     }
     
     public void create(BugReport bugReport) throws SQLException {
-        db.update("INSERT INTO bugreport(subject, description, users_id, date) VALUES(?, ?, ?, ?)", bugReport.getObjs());
+        db.update("INSERT INTO bugreport(subject, description, users_id, date) VALUES(?, ?, ?, ?)", false, bugReport.getObjs());
     }
 }

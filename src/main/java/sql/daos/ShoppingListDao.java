@@ -25,7 +25,7 @@ public class ShoppingListDao {
     }
     
     public ShoppingList store(ShoppingList t) throws SQLException {
-        int update = db.update("INSERT INTO ShoppingList(name, date, deleted) VALUES(?,?,?)",
+        int update = db.update("INSERT INTO ShoppingList(name, date, deleted) VALUES(?,?,?)", true,
                 t.getName(), t.getDate(), false);
         t.setId(update);
         return t;

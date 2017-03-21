@@ -43,14 +43,8 @@ public class Database {
         return DriverManager.getConnection(address, username, password);
     }
     
-    /**
-     * 
-     * @param sql
-     * @param params
-     * @return generated id
-     * @throws SQLException 
-     */
-    public int update(String sql, Object... params) throws SQLException {
+
+    public int update(String sql, boolean returnId, Object... params) throws SQLException {
         int id = 0;
         try (Connection connection = getConnection()) {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -59,7 +53,7 @@ public class Database {
             }
             ps.executeUpdate();
             ResultSet generatedKeys = ps.getGeneratedKeys();
-            if (generatedKeys.next()) {
+            if (generatedKeys.next() && returnId) {
                 id = generatedKeys.getInt(1);
             }
             ps.close();

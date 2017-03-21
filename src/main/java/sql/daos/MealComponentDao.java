@@ -26,7 +26,7 @@ public class MealComponentDao {
     }
 
     public MealComponent store(MealComponent mealComponent) throws SQLException {
-        int update = db.update("INSERT INTO MealComponent(meal_id, iteminfo_id, mass) VALUES(?,?,?)", 
+        int update = db.update("INSERT INTO MealComponent(meal_id, iteminfo_id, mass) VALUES(?,?,?)", true,
                 mealComponent.getMealId(),
                 mealComponent.getItemId(),
                 mealComponent.getMass());

@@ -53,7 +53,6 @@
                 $("#searchbutton").click(function(){
                     var xhr = new XMLHttpRequest();
                     var param = $("#searchfield").val();
-                    console.log(param);
                     xhr.open('GET', "/addmealsearch.get?param=" + param, true);
                     xhr.send();
                     xhr.addEventListener("readystatechange", processRequest, false);
@@ -62,6 +61,7 @@
 
                     function processRequest(e) {
                         if (xhr.readyState == 4 && xhr.status == 200 && boolean) {
+                            $("#searchresults").empty();
                             var response = JSON.parse(xhr.responseText);
                             for (i in response) {
                                 var name = response[i].name;
@@ -78,7 +78,14 @@
             });
             
             function chooseThis(something) {
-                
+                var itemname = something.dataset.itemname;
+                var identifier = something.dataset.identifier;
+                var row = "<tr id='row" + identifier + "'><td>" + itemname + "<input name='" + identifier + "' hidden='true' /> </td><td><input required='true' name='massforid:" + identifier + "' type='number' min='0' step='0.1' placeholder='grams' /></td><td><button class='w3-button' onClick='removeThis(" + '"row' + identifier + '"' + ")' type='button'>Remove</button></tr>";
+                $("#selectionstable").append(row);
+            }
+
+            function removeThis(identifier) {
+                $("#" + identifier).remove();
             }
             /*]]>*/
 
@@ -88,37 +95,56 @@
     <div th:replace="fragments :: navigation">
     </div>
     <div class="w3-main">
-    <div class="w3-col m6 l4 w3-card-4 w3-margin">
+    <div class="w3-col m10 l4 w3-card-4 w3-margin">
         <div class="w3-container w3-green">
             <h2>Meal</h2>
         </div>
 
-        <div class="w3-card-4 w3-margin w3-padding">
+        <div class="w3-container w3-margin w3-padding">
+            <div class="w3-container w3-green">
+                <h3>Search for Foodstuffs</h3>
+            </div>
+            <br />
             <div class="w3-container w3-cell" style="width: 90%">
-                <label for="searchfield">Search for Foodstuffs</label>
                 <input class="w3-input" type="text" name="searchfield" id="searchfield" />
             </div>
             <div class="w3-container w3-cell">   
                 <button class="w3-button" id="searchbutton" >Search</button>
             </div>
-
+            <br />
             <div>
-                <ul id="searchresults"></ul>
+                <ul class="w3-ul w3-hoverable" id="searchresults"></ul>
             </div>
         </div>
 
 
-
+        <div class="w3-container w3-margin">
+        <div class="w3-container w3-green">
+                <h3>Selected</h3>
+        </div>
+        <br />
         <form class="w3-container" action="/addmeal.post" method="post">
-            <table>
+            <div class="w3-responsive">
+            <table id="selectionstable" class="w3-table-all">
                 <tr>
                     <th>Name</th>
                     <th>Mass</th>
+                    <th></th>
                 </tr>
             </table>
-            <input class="w3-button w3-block w3-teal" type="submit" name="submit" value="Submit" /> <br />
-            <input class="w3-button w3-block w3-teal" type="reset" name="reset" value="Reset" /> <br />
+            <br />
+            </div>
+            <div class="w3-row-padding">
+                <div class="w3-half w3">
+                    <input class="w3-button w3-block w3-teal" type="reset" name="reset" value="Reset" />
+                </div>
+                <div class="w3-half">
+                    <input class="w3-button w3-block w3-teal" type="submit" name="submit" value="Submit" />
+                </div>
+            </div>
+            <br />
         </form>
+        </div>
     </div>
     </div>
     </body>

@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import sql.daos.ItemDao;
 import sql.daos.UserDao;
 import sql.db.Database;
-import sql.db.DatabaseCreator;
 import sql.db.Testdata;
 import storables.Item;
 import storables.User;
@@ -89,7 +88,7 @@ public class Main {
 
             for (String s : strings) {
                 try {
-                    database.update("drop table " + s + " cascade");
+                    database.update("drop table " + s + " cascade", false);
                 } catch (Exception e) {
 
                 }
@@ -99,7 +98,7 @@ public class Main {
         if (System.getProperties().getProperty("standalone").equals("true")) {
             for (String s : makeTables) {
                 System.out.println(s);
-                database.update(s);
+                database.update(s, false);
             }
             UserDao udao = new UserDao(database);
             udao.store(new User("jannetar", "janne", PasswordUtil.hashPassword("salis"), null, null));

@@ -20,7 +20,7 @@ public class UserDao {
     }
 
     public User store(User t) throws Exception {
-        db.update("INSERT INTO Users(id, name, email, password, apikey, date, deleted) VALUES(?,?,?,?,?,?,?)",
+        db.update("INSERT INTO Users(usersid, name, email, password, apikey, date, deleted) VALUES(?,?,?,?,?,?,?)", false,
                 t.getId(),
                 t.getUsername(),
                 t.getEmail(),
@@ -32,8 +32,8 @@ public class UserDao {
     }
 
     public User findById(String id) throws SQLException {
-        List<User> queryAndCollect = db.queryAndCollect("SELECT * FROM Users WHERE id = ?", rs -> {
-            return new User(rs.getString("id"),
+        List<User> queryAndCollect = db.queryAndCollect("SELECT * FROM Users WHERE usersid = ?", rs -> {
+            return new User(rs.getString("usersid"),
                     rs.getString("name"),
                     rs.getString("password"),
                     rs.getString("apikey"),
@@ -49,7 +49,7 @@ public class UserDao {
 
     public User findByName(String name) throws SQLException {
         List<User> queryAndCollect = db.queryAndCollect("SELECT * FROM Users WHERE name = ?", rs -> {
-            return new User(rs.getString("id"),
+            return new User(rs.getString("usersid"),
                     rs.getString("name"),
                     rs.getString("password"),
                     rs.getString("apikey"),
@@ -65,7 +65,7 @@ public class UserDao {
 
     public User findByApiKey(String apikey) throws SQLException {
         List<User> queryAndCollect = db.queryAndCollect("SELECT * FROM Users WHERE apikey = ?", rs -> {
-            return new User(rs.getString("id"),
+            return new User(rs.getString("usersid"),
                     rs.getString("name"),
                     rs.getString("password"),
                     rs.getString("apikey"),

@@ -29,7 +29,7 @@ public class RecipeDao {
         for (Ingredient ingredient : recipe.getIngredients()) {
             ingDao.store(ingredient);
         }
-        int update = db.update("INSERT INTO recipe(name, directions, description, type, deleted) VALUES(?,?,?,?,?)",
+        int update = db.update("INSERT INTO recipe(name, directions, description, type, deleted) VALUES(?,?,?,?,?)", true, 
                 recipe.getName(), recipe.getDirections(), recipe.getDescription(), recipe.getType(), false);
         recipe.setId(update);
         return recipe;
@@ -40,7 +40,8 @@ public class RecipeDao {
                 + "to_tsvector(r.name) || "
                 + "to_tsvector(r.type) || "
                 + "to_tsvector(i.name) AS document "
-                + "FROM recipe AS r JOIN ingredient AS g ON g.recipe_id = r.id JOIN iteminfo AS i ON g.iteminfo_id = i.id WHERE deleted = 'false'";
+                + "FROM recipe AS r JOIN ingredient AS g ON g.recipe_id = r.id JOIN iteminfo AS i ON g.iteminfo_id = i.id WHERE deleted = 'false' "
+                + "AND document @@ to_tsquery(?)";
 
         for (int i = 0; i < searchWords.length; i++) {
             sql += " AND document @@ to_tsquery(?)";

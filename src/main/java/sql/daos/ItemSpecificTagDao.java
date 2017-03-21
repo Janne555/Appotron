@@ -23,7 +23,7 @@ public class ItemSpecificTagDao {
     }
 
     public Tag store(Tag t) throws SQLException {
-        db.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", t.getItemId(), t.getKey(), t.getValue());
+        db.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", false, t.getItemId(), t.getKey(), t.getValue());
         return t;
     }
 
