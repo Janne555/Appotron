@@ -23,32 +23,6 @@
                     $("tr").remove(".w3-grey");
             })});
 
-
-            //BUG YOU CAN ENTER MULTIPLE TAGS WITH THE SAME KEY!!!
-            $(document).ready(function(){
-                $("#addbutton").click(function(){
-                    var item = $("#searchresults option:selected");
-                    var mass = $("#mass").val();
-                    if (mass > 0) {
-                    	var list = $("#ingredientslist");
-                    	var listitem = document.createElement("li");
-                    	listitem.innerHTML = mass + " g. " + item.text() + ", " + item.attr("name") + "<input type='text' name='ingredients[]' hidden='true' value='mass:" + mass + ",serialNumber:" + item.attr("name") + "' />";
-                    	list.append(listitem);
-                    } else {
-                        alert("Field(s) can't be empty!")
-                    }
-            })});
-
-            $(document).ready(function(){
-                $("#typechooser").change(function(){
-                    var val = $("#typechooser").val();
-                    if (val == "foodstuff") {
-                        $("#datepicker").show();
-                    } else {
-                        $("#datepicker").hide();
-                    }
-            })});
-
             $(document).ready(function(){
                 $("#searchbutton").click(function(){
                     var xhr = new XMLHttpRequest();
@@ -65,7 +39,7 @@
                             var response = JSON.parse(xhr.responseText);
                             for (i in response) {
                                 var name = response[i].name;
-                                var identifier = response[i].identifier;
+                                var identifier = response[i].id;
                                 var result = "<li id='" + identifier + "' class='w3-list-item' data-identifier='" + identifier + "' data-itemname='" + name + "' onClick='chooseThis(this)'>" + name + ", " + identifier +"</li>";
                                 $("#searchresults").append(result);
                             }
@@ -80,7 +54,7 @@
             function chooseThis(something) {
                 var itemname = something.dataset.itemname;
                 var identifier = something.dataset.identifier;
-                var row = "<tr id='row" + identifier + "'><td>" + itemname + "<input name='" + identifier + "' hidden='true' /> </td><td><input required='true' name='massforid:" + identifier + "' type='number' min='0' step='0.1' placeholder='grams' /></td><td><button class='w3-button' onClick='removeThis(" + '"row' + identifier + '"' + ")' type='button'>Remove</button></tr>";
+                var row = "<tr id='row" + identifier + "'><td>" + itemname + "<input name='mealcomponents' value='" + identifier + "' hidden='true' /> </td><td><input class='w3-input' required='true' name='massforid:" + identifier + "' type='number' min='0' step='0.1' placeholder='grams' /></td><td><button class='w3-button' onClick='removeThis(" + '"row' + identifier + '"' + ")' type='button'>Remove</button></tr>";
                 $("#selectionstable").append(row);
             }
 
@@ -95,7 +69,7 @@
     <div th:replace="fragments :: navigation">
     </div>
     <div class="w3-main">
-    <div class="w3-col m10 l4 w3-card-4 w3-margin">
+    <div class="w3-col m10 l5 w3-card-4">
         <div class="w3-container w3-green">
             <h2>Meal</h2>
         </div>

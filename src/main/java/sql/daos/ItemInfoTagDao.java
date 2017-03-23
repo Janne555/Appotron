@@ -43,7 +43,7 @@ public class ItemInfoTagDao {
     }
 
     public List<Tag> findAll(int itemId) throws SQLException {
-        List<Tag> queryAndCollect = db.queryAndCollect("SELECT * FROM ItemInfoTag WHERE iteminfo_id = ?", rs -> {
+        List<Tag> queryAndCollect = db.queryAndCollect("SELECT DISTINCT ON (id) * FROM ItemInfoTag WHERE iteminfo_id = ?", rs -> {
             return new Tag(rs.getInt("id"),
                     rs.getInt("iteminfo_id"),
                     rs.getString("key"),
@@ -92,4 +92,10 @@ public class ItemInfoTagDao {
 //    public void delete(int id) throws SQLException {
 //        db.update("DELETE FROM Tag WHERE id = ?", id);
 //    }
+
+    public Object getGenres() throws SQLException {
+        return db.queryAndCollect("SELECT DISTINCT ON (value) value FROM ItemInfoTag WHERE key = 'genre'", rs -> {
+            return rs.getString("value");
+        });
+    }
 }

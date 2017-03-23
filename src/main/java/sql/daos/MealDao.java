@@ -34,25 +34,25 @@ public class MealDao {
 
     public List<Meal> findAll(User user) throws SQLException {
         return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND users_id = ? ORDER BY date DESC", rs -> {
-            return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getString("id")));
+            return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
         }, user.getId());
     }
 
     public List<Meal> findAll(User user, int limit) throws SQLException {
         return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND users_id = ? ORDER BY date DESC LIMIT ?", rs -> {
-            return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getString("id")));
+            return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
         }, user.getId(), limit);
     }
 
     public List<Meal> findAll(User user, Timestamp from, Timestamp to) throws SQLException {
         return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND users_id = ? AND date > ? AND date < ? ORDER BY date DESC", rs -> {
-            return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getString("id")));
+            return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
         }, user.getId(), from, to);
     }
 
     public Meal findOne(User user, int id) throws SQLException {
         List<Meal> queryAndCollect = db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND users_id = ? AND id = ?", rs -> {
-            return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getString("id")));
+            return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
         }, user.getId(), id);
         
         if (queryAndCollect.isEmpty()) return null;

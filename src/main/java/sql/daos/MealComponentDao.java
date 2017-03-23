@@ -34,7 +34,7 @@ public class MealComponentDao {
         return mealComponent;
     }
     
-    public List<MealComponent> findByMealId(String mealId) throws SQLException {
+    public List<MealComponent> findByMealId(int mealId) throws SQLException {
         List<MealComponent> queryAndCollect = db.queryAndCollect("SELECT * FROM MealComponent WHERE meal_id = ?", rs -> {
             return new MealComponent(rs.getInt("id"),
                     rs.getInt("meal_id"),

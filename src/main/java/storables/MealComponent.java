@@ -69,4 +69,8 @@ public class MealComponent {
         this.mealId = mealId;
     }
     
+    public String getName() {
+        return getItem().getName();
+    }
+    
 }

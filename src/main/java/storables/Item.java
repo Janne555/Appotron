@@ -198,4 +198,40 @@ public class Item implements Comparable<Item>, SearchResult {
     public void setItemInfo(ItemInfo itemInfo) {
         this.itemInfo = itemInfo;
     }
+
+    public String getProducer() {
+        for (Tag t : getItemInfoTags()) {
+            if (t.getKey().equals("producer")) {
+                return t.getValue();
+            }
+        }
+        return "";
+    }
+
+    public String getAuthor() {
+        for (Tag t : getItemInfoTags()) {
+            if (t.getKey().equals("author")) {
+                return t.getValue();
+            }
+        }
+        return "";
+    }
+
+    public String getPublisher() {
+        for (Tag t : getItemInfoTags()) {
+            if (t.getKey().equals("publisher")) {
+                return t.getValue();
+            }
+        }
+        return "";
+    }
+
+    public String getYear() {
+        for (Tag t : getItemInfoTags()) {
+            if (t.getKey().equals("publishing year")) {
+                return t.getValue();
+            }
+        }
+        return "";
+    }
 }

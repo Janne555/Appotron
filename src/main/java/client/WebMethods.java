@@ -9,23 +9,18 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import spark.ModelAndView;
-import spark.Request;
-import spark.Response;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import storables.*;
 import sql.daos.*;
 import sql.db.Database;
-import sql.db.LoginResult;
 import static util.JsonUtil.json;
 import util.PasswordUtil;
-import util.Service;
 
 /**
  *
@@ -42,9 +37,9 @@ public class WebMethods {
     UserDao uDao;
     NutritionalInfoDao nutDao;
     MealDao meDao;
-    MealComponentDao ingDao;
+    MealComponentDao mecoDao;
     SessionControlDao secDao;
-    BugReportDao bugDao;
+    BugReportDao bugDao;    
 
     private Database db;
 
@@ -57,7 +52,7 @@ public class WebMethods {
         this.uDao = new UserDao(db);
         this.nutDao = new NutritionalInfoDao(db);
         this.meDao = new MealDao(db);
-        this.ingDao = new MealComponentDao(db);
+        this.mecoDao = new MealComponentDao(db);
         this.secDao = new SessionControlDao(db);
         this.bugDao = new BugReportDao(db);
         this.specTagdao = new ItemSpecificTagDao(db);
@@ -66,6 +61,10 @@ public class WebMethods {
     }
 
     private void setupRoutes() {
+        userRoutes();
+        addItemRoutes();
+        mealRoutes();
+        searchRoutes();
         /**
          * filter for all requests
          */
@@ -82,6 +81,219 @@ public class WebMethods {
                 res.redirect("/fail?msg=alreadyloggedin");
             }
         });
+
+        /**
+         * index page
+         */
+        get("/", (req, res) -> {
+            HashMap map = new HashMap<>();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+
+            map.put("items", itemDao.getExpiring(user, 5));
+            ShoppingList sl = slDao.findOne(0);
+
+            if (sl != null) {
+                map.put("listitems", sl.getListItems());
+            }
+
+            return new ModelAndView(map, "index");
+        }, new ThymeleafTemplateEngine());
+
+        /**
+         * bug reporting page
+         */
+        get("/bugreport", (req, res) -> {
+            HashMap map = new HashMap<>();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+            return new ModelAndView(map, "bugreport");
+        }, new ThymeleafTemplateEngine());
+
+        /**
+         * add nutritional info page
+         *
+         * expects id as an attribute
+         *
+         * example /addnutritionalinfo?id=something
+         */
+        get("/addnutritionalinfo", (req, res) -> {
+            HashMap map = new HashMap<>();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+            int id = Integer.parseInt(req.queryParams("id"));
+            ItemInfo itemInfo = infoDao.findOne(id);
+            map.put("iteminfo", itemInfo);
+
+            return new ModelAndView(map, "addnutritionalinfo");
+        }, new ThymeleafTemplateEngine());
+
+        /**
+         * returns json object of 5 expiring foodstuff
+         */
+        get("/expiring.get", (req, res) -> {
+            User user = (User) req.session().attribute("user");
+            return itemDao.getExpiring(user, 5);
+        }, json());
+
+        /**
+         * returns json object of item specific tags
+         */
+        get("/tags.get", (req, res) -> {
+            List<Tag> list = null;
+            try {
+                list = specTagdao.findAll(Integer.parseInt(req.queryParams("param")));
+            } catch (NumberFormatException | SQLException e) {
+                halt();
+            }
+            return list;
+        }, json());
+
+        /**
+         * fail page
+         *
+         * in case of something going wrong
+         */
+        get("/fail", (req, res) -> {
+            HashMap map = new HashMap();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+            map.put("msg", req.queryParams("msg"));
+            return new ModelAndView(map, "fail");
+        }, new ThymeleafTemplateEngine());
+
+        post("/bugreport.post", (req, res) -> {
+            User user = (User) req.session().attribute("user");
+            String subject = req.queryParams("subject");
+            System.out.println(subject);
+            String description = req.queryParams("description");
+            Timestamp date = new Timestamp(System.currentTimeMillis());
+
+            bugDao.create(new BugReport(user.getId(), user, subject, description, date));
+
+            res.redirect("/");
+
+            return "";
+        });
+
+        post("/addnutritionalinfo.post", (req, res) -> {
+            try {
+                int id = Integer.parseInt(req.queryParams("identifier"));
+                float energy = Float.parseFloat(req.queryParams("energy"));
+                float carbohydrate = Float.parseFloat(req.queryParams("energy"));
+                float fat = Float.parseFloat(req.queryParams("fat"));
+                float protein = Float.parseFloat(req.queryParams("protein"));
+                nutDao.store(new NutritionalInfo(infoDao.findOne(id), energy, carbohydrate, fat, protein));
+            } catch (NumberFormatException | SQLException e) {
+                res.redirect("/fail?msg" + e.getMessage());
+            }
+            res.redirect("/");
+
+            return "";
+        });
+        
+    }
+
+    private void addItemRoutes() {
+        /**
+         * add item page
+         */
+        get("/additem", (req, res) -> {
+            HashMap map = new HashMap();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+            String type = req.queryParams("type");
+            if (null == type) {
+                res.redirect("/");
+                halt();
+            } else {
+                switch (type) {
+                    case "item":
+                        map.put("title", "Add Item");
+                        map.put("labelname", "Name");
+                        map.put("labelidentifier", "Serial Number");
+                        map.put("item", true);
+                        break;
+                    case "foodstuff":
+                        map.put("title", "Add Foodstuff");
+                        map.put("labelname", "Name");
+                        map.put("labelidentifier", "Serial Number");
+                        map.put("foodstuff", true);
+                        break;
+                    case "book":
+                        map.put("title", "Add Book");
+                        map.put("labelname", "Title");
+                        map.put("labelidentifier", "ISBN");
+                        map.put("book", true);
+                        map.put("genrelist", infoTagDao.getGenres());
+                        break;
+                    default:
+                        res.redirect("/");
+                        break;
+                }
+            }
+            
+            map.put("action", "/additem.post");
+            map.put("type", type);
+            map.put("locations", itemDao.getLocations(user));
+            return new ModelAndView(map, "additem");
+        }, new ThymeleafTemplateEngine());
+
+        post("/additem.post", (req, res) -> {
+            User user = (User) req.session().attribute("user");
+
+            String name = req.queryParams("name");
+            String type = req.queryParams("type");
+            String identifier = req.queryParams("identifier");
+            String location = req.queryParams("location");
+            int copies = 1;
+            Timestamp expiration = null;
+            ItemInfo itemInfo;
+
+            if ((itemInfo = infoDao.findOne(name, identifier)) == null) {
+                itemInfo = new ItemInfo(0, name, type, identifier, null);
+                itemInfo = infoDao.store(itemInfo);
+            }
+
+            switch (type) {
+                case "book":
+                    Tag author = new Tag(0, itemInfo.getId(), "author", req.queryParams("author"));
+                    Tag publisher = new Tag(0, itemInfo.getId(), "publisher", req.queryParams("publisher"));
+                    Tag pubYear = new Tag(0, itemInfo.getId(), "publishing year", req.queryParams("year"));
+                    Tag genre = new Tag(0, itemInfo.getId(), "genre", req.queryParams("genre"));
+                    infoTagDao.store(author, publisher, pubYear, genre);
+                    break;
+
+                case "foodstuff":
+                    String expirationstr = req.queryParams("expiration");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDate time = LocalDate.parse(expirationstr, formatter);
+                    expiration = Timestamp.valueOf(time.atStartOfDay());
+                    Tag producer = new Tag(0, itemInfo.getId(), "producer", req.queryParams("producer"));
+                    infoTagDao.store(producer);
+                    break;
+
+                case "item":
+                    break;
+            }
+
+            String copystr = req.queryParams("copies");
+            if (copystr != null) {
+                copies = Integer.parseInt(req.queryParams("copies"));
+            }
+
+            Item item = null;
+            for (int i = 0; i < copies; i++) {
+                item = new Item(0, location, new Timestamp(System.currentTimeMillis()), expiration, null, itemInfo);
+                itemDao.store(item, user);
+            }
+
+            res.redirect("/view?id=" + item.getId() + "&type=" + type);
+            return "ok";
+        });
+    }
+
+    private void userRoutes() {
 
         /**
          * login page
@@ -129,95 +341,51 @@ public class WebMethods {
         });
 
         /**
-         * index page
+         * logout page
          */
-        get("/", (req, res) -> {
-            HashMap map = new HashMap<>();
-            User user = (User) req.session().attribute("user");
-            map.put("user", user);
-
-            map.put("items", itemDao.getExpiring(user, 5));
-            ShoppingList sl = slDao.findOne(0);
-
-            if (sl != null) {
-                map.put("listitems", sl.getListItems());
+        get("/logout", (req, res) -> {
+            HashMap map = new HashMap();
+            req.session().removeAttribute("user");
+            if (req.cookies().containsKey("sessioncontrolid")) {
+                req.cookies().remove("sessioncontrolid");
+                secDao.invalidateSession(req.cookie("sessioncontrolid"));
             }
-
-            return new ModelAndView(map, "index");
-        }, new ThymeleafTemplateEngine());
+            res.redirect("/");
+            return new ModelAndView(map, "login");
+        });
 
         /**
-         * bug reporting page
+         * filter for logout page
          */
-        get("/bugreport", (req, res) -> {
-            HashMap map = new HashMap<>();
-            User user = (User) req.session().attribute("user");
-            map.put("user", user);
-            return new ModelAndView(map, "bugreport");
-        }, new ThymeleafTemplateEngine());
+        before("/logout", (req, res) -> {
+            if (req.session().attribute("user") == null) {
+                halt("No user logged in");
+            }
+        });
 
         /**
-         * page for viewing items
+         * profile page
          *
-         * expects id and type as attributes example
+         * takes username as an attribute
          *
-         * /view?id=something&type=something
+         * example /profile/user
          */
-        get("/view", (req, res) -> {
-            HashMap map = new HashMap<>();
+        get("/profile/:username", (req, res) -> {
+            HashMap map = new HashMap();
             User user = (User) req.session().attribute("user");
             map.put("user", user);
+            String username = req.params(":username");
 
-            String type = req.queryParams("type");
-            int id = 0;
-
-            try {
-                id = Integer.parseInt(req.queryParams("id"));
-            } catch (NumberFormatException e) {
-                halt();
+            if (!user.getUsername().equals(username)) {
+                res.redirect("/");
             }
 
-            if (type.equals("item") || type.equals("foodstuff") || type.equals("book")) {
-                Item item = itemDao.findOne(id, user);
-                map.put("item", item);
-                map.put("title", item.getName());
-                map.put("isItem", true);
-            } else if (type.equals("meal")) {
-                Meal meal = meDao.findOne(user, id);
-                map.put("item", meal);
-                map.put("title", meal.getDate());
-                map.put("isMeal", true);
-            }
-
-            map.put("type", type);
-            return new ModelAndView(map, "view");
+            return new ModelAndView(map, "profile");
         }, new ThymeleafTemplateEngine());
 
-        /**
-         * searchresults page
-         *
-         * expects query as an attribute
-         *
-         * example /search?query=one&query=two&...&query=nth
-         */
-        get("/search", (req, res) -> {
-            HashMap map = new HashMap<>();
-            User user = (User) req.session().attribute("user");
-            map.put("user", user);
+    }
 
-            Object[] split = req.queryParams("query").split(" ");
-            List<Item> items = itemDao.search(user, split);
-
-            List<SearchResult> search = new ArrayList<>();
-            items.forEach((it) -> {
-                search.add((SearchResult) it);
-            });
-
-            map.put("items", search);
-
-            return new ModelAndView(map, "list");
-        }, new ThymeleafTemplateEngine());
-
+    private void mealRoutes() {
         /**
          * add meal page
          */
@@ -244,24 +412,6 @@ public class WebMethods {
             List<ItemInfo> list = infoDao.search(split);
             return list;
         }, json());
-
-        /**
-         * add nutritional info page
-         *
-         * expects id as an attribute
-         *
-         * example /addnutritionalinfo?id=something
-         */
-        get("/addnutritionalinfo", (req, res) -> {
-            HashMap map = new HashMap<>();
-            User user = (User) req.session().attribute("user");
-            map.put("user", user);
-            int id = Integer.parseInt(req.queryParams("id"));
-            ItemInfo itemInfo = infoDao.findOne(id);
-            map.put("iteminfo", itemInfo);
-
-            return new ModelAndView(map, "addnutritionalinfo");
-        }, new ThymeleafTemplateEngine());
 
         /**
          * meal diary page
@@ -317,236 +467,181 @@ public class WebMethods {
             return new ModelAndView(map, "mealdiary");
         }, new ThymeleafTemplateEngine());
 
-        /**
-         * logout page
-         */
-        get("/logout", (req, res) -> {
-            HashMap map = new HashMap();
-            req.session().removeAttribute("user");
-            if (req.cookies().containsKey("sessioncontrolid")) {
-                req.cookies().remove("sessioncontrolid");
-                secDao.invalidateSession(req.cookie("sessioncontrolid"));
-            }
-            res.redirect("/");
-            return new ModelAndView(map, "login");
-        });
-
-        /**
-         * filter for logout page
-         */
-        before("/logout", (req, res) -> {
-            if (req.session().attribute("user") == null) {
-                halt("No user logged in");
-            }
-        });
-
-        /**
-         * returns json object of 5 expiring foodstuff
-         */
-        get("/expiring.get", (req, res) -> {
+        post("/addmeal.post", (req, res) -> {
             User user = (User) req.session().attribute("user");
-            return itemDao.getExpiring(user, 5);
-        }, json());
-
-        /**
-         * returns json object of item specific tags
-         */
-        get("/tags.get", (req, res) -> {
-            List<Tag> list = null;
-            try {
-                list = specTagdao.findAll(Integer.parseInt(req.queryParams("param")));
-            } catch (NumberFormatException | SQLException e) {
-                halt();
-            }
-            return list;
-        }, json());
-
-        /**
-         * add item page
-         *
-         * if attributes name and serial are given the page will contain those
-         * in their respective fields
-         */
-        get("/additem", (req, res) -> {
-            HashMap map = new HashMap();
-            User user = (User) req.session().attribute("user");
-            map.put("user", user);
-
-            map.put("locations", itemDao.getLocations(user));
-            String name = "";
-            String identifier = "";
-            if (!req.queryParams().isEmpty()) {
-                name += req.queryParams("name");
-                identifier += req.queryParams("serial");
-            }
-            map.put("namefield", name);
-            map.put("identifierfield", identifier);
-            return new ModelAndView(map, "additem");
-        }, new ThymeleafTemplateEngine());
-        
-        /**
-         * fail page
-         * 
-         * in case of something going wrong
-         */
-        get("/fail", (req, res) -> {
-            HashMap map = new HashMap();
-            User user = (User) req.session().attribute("user");
-            map.put("user", user);
-            map.put("msg", req.queryParams("msg"));
-            return new ModelAndView(map, "fail");
-        }, new ThymeleafTemplateEngine());
-        
-        /**
-         * profile page
-         * 
-         * takes username as an attribute
-         * 
-         * example /profile/user
-         */
-        get("/profile/:username", (req, res) -> {
-            HashMap map = new HashMap();
-            User user = (User) req.session().attribute("user");
-            map.put("user", user);
-            String username = req.params(":username");
-
-            if (!user.getUsername().equals(username)) {
-                res.redirect("/");
+            for (String s : req.queryParamsValues("mealcomponents")) {
+                System.out.println(s);
             }
 
-            return new ModelAndView(map, "profile");
-        }, new ThymeleafTemplateEngine());
+            Meal meal = new Meal(0, user, new Timestamp(System.currentTimeMillis()), null);
+            meal = meDao.store(meal);
 
-//        post("/addmeal.post", (req, res) -> {
-//            User user = (User) req.session().attribute("user");
-//            String name = req.queryParams("name");
-//            String type = req.queryParams("type");
-//            List<Ingredient> ingredients = new ArrayList<>();
-//
-//            float totalMass = 0;
-//
-//            for (String s : req.queryParamsValues("ingredients[]")) {
-//                s = s.substring(5);
-//                String massStr = s.substring(0, s.indexOf(","));
-//                float mass = Float.parseFloat(massStr);
-//                totalMass += mass;
-//                s = s.substring(s.indexOf(":") + 1);
-//                String serialNumber = s;
-//                Item item = itemDao.findOneBySerial(serialNumber);
-//                NutritionalInfo nuInfo = nuDao.findOne(serialNumber);
-//                ingredients.add(new Ingredient(null, null, mass, item, nuInfo));
-//            }
-//
-//            String uuid = UUID.randomUUID().toString().substring(0, 11);
-//            for (Ingredient i : ingredients) {
-//                float percentage = i.getPercentage() / totalMass;
-//                i.setPercentage(percentage);
-//                i.setItemId(i.getItem().getSerialNumber());
-//                i.setMealId(uuid);
-//            }
-//
-//            Meal meal = new Meal(uuid, name, type, ingredients.toArray());
-//
-////            res.redirect("/");
-//            return "";
-//        });
-//
-////        post("/", (req, res) -> {
-////            return "";
-////        });
-        post("/bugreport.post", (req, res) -> {
-            User user = (User) req.session().attribute("user");
-            String subject = req.queryParams("subject");
-            System.out.println(subject);
-            String description = req.queryParams("description");
-            Timestamp date = new Timestamp(System.currentTimeMillis());
+            List<MealComponent> components = new ArrayList<>();
+            for (String s : req.queryParamsValues("mealcomponents")) {
+                int id = Integer.parseInt(s);
+                System.out.println(req.queryParams("massforid:" + s));
+                float mass = Float.parseFloat(req.queryParams("massforid:" + s));
+                MealComponent component = new MealComponent(0, meal.getId(), mass, infoDao.findOne(id), nutDao.findOneByItemInfoId(id));
+                mecoDao.store(component);
+            }
 
-            bugDao.create(new BugReport(user.getId(), user, subject, description, date));
-
-            res.redirect("/");
-
+            res.redirect("/view?id=" + meal.getId() + "&type=meal");
             return "";
-        });
-
-        post("/addnutritionalinfo.post", (req, res) -> {
-            try {
-                int id = Integer.parseInt(req.queryParams("identifier"));
-                float energy = Float.parseFloat(req.queryParams("energy"));
-                float carbohydrate = Float.parseFloat(req.queryParams("energy"));
-                float fat = Float.parseFloat(req.queryParams("fat"));
-                float protein = Float.parseFloat(req.queryParams("protein"));
-                nutDao.store(new NutritionalInfo(infoDao.findOne(id), energy, carbohydrate, fat, protein));
-            } catch (NumberFormatException | SQLException e) {
-                res.redirect("/fail?msg" + e.getMessage());
-            }
-            res.redirect("/");
-
-            return "";
-        });
-
-        post("/login", (req, res) -> {
-            String username = req.queryParams("username");
-            String password = req.queryParams("password");
-
-            LoginResult checkUser = Service.checkUser(new User(null, username, password, null, null), uDao);
-
-            if (checkUser.getUser() == null) {
-                res.redirect("fail?msg=" + checkUser.getError());
-                halt();
-            }
-
-            req.session(true).attribute("user", checkUser.getUser());
-            SessionControl sessionControl = new SessionControl(null, checkUser.getUser().getId(), new Timestamp(System.currentTimeMillis()));
-            sessionControl.genSessionId();
-            secDao.store(sessionControl);
-            res.cookie("sessioncontrolid", sessionControl.getSessionId());
-            res.redirect(req.queryParams("redirect"));
-            return "";
-        });
-        before("/login", (req, res) -> {
-            if (req.session().attribute("user") != null) {
-                halt("Already logged in");
-            }
-        });
-
-        post("/additem.post", (req, res) -> {
-            User user = (User) req.session().attribute("user");
-
-            String name = req.queryParams("name");
-            String type = req.queryParams("type");
-            String identifier = req.queryParams("identifier");
-            String location = req.queryParams("location");
-            String expirationstr = req.queryParams("expiration");
-            Timestamp expiration = null;
-            if (!expirationstr.isEmpty()) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                LocalDate time = LocalDate.parse(expirationstr, formatter);
-                expiration = Timestamp.valueOf(time.atStartOfDay());
-            }
-
-            ItemInfo itemInfo;
-            if ((itemInfo = infoDao.findOne(name, identifier)) == null) {
-                itemInfo = new ItemInfo(0, name, type, identifier, null);
-                itemInfo = infoDao.store(itemInfo);
-            }
-
-            Item item = new Item(0, location, new Timestamp(System.currentTimeMillis()), expiration, null, itemInfo);
-            itemDao.store(item, user);
-
-            res.redirect("/view?id=" + item.getIdentifier() + "&type=item");
-            return "ok";
         });
     }
 
-    private void checkLogin(Request req, Response res, String redirect) {
-        User user = (User) req.session().attribute("user");
+    private void searchRoutes() {
+        /**
+         * page for viewing items
+         *
+         * expects id and type as attributes example
+         *
+         * /view?id=something&type=something
+         */
+        get("/view", (req, res) -> {
+            HashMap map = new HashMap<>();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
 
-        if (user == null) {
-            res.redirect("/login?redirect=" + redirect);
-            halt();
-        } else if (req.params(":username") != null && !user.getUsername().equals(req.params(":username"))) {
-            res.redirect("/fail?msg=access_denied");
-            halt();
-        }
+            String type = req.queryParams("type");
+            int id = 0;
+
+            try {
+                id = Integer.parseInt(req.queryParams("id"));
+            } catch (NumberFormatException e) {
+                halt();
+            }
+
+            Item item = itemDao.findOne(id, user);
+            List<String> tags = new ArrayList<>();
+
+            if (item != null) {
+                switch (type) {
+                    case "item":
+                        map.put("item", item);
+                        map.put("title", item.getName());
+                        map.put("isItem", true);
+                        for (Tag t : item.getTags()) {
+                            tags.add(t.getKey() + ": " + t.getValue());
+                        }
+                        map.put("tags", tags);
+                        break;
+                    case "foodstuff":
+                        map.put("item", item);
+                        map.put("title", item.getName());
+                        map.put("isItem", true);
+                        map.put("isFoodstuff", true);
+                        for (Tag t : item.getTags()) {
+                            if (t.getKey().equals("producer")) {
+                                map.put("producer", t.getValue());
+                            } else {
+                                tags.add(t.getKey() + ": " + t.getValue());
+                            }
+                        }
+                        map.put("tags", tags);
+                        break;
+
+                    case "book":
+                        map.put("item", item);
+                        map.put("title", item.getName());
+                        map.put("isBook", true);
+                        for (Tag t : item.getTags()) {
+                            switch (t.getKey()) {
+                                case "author":
+                                    map.put("author", t.getValue());
+                                    break;
+                                case "publisher":
+                                    map.put("publisher", t.getValue());
+                                    break;
+                                case "publishing year":
+                                    map.put("year", t.getValue());
+                                    break;
+                                case "genre":
+                                    map.put("genre", t.getValue());
+                                    break;
+                                default:
+                                    tags.add(t.getKey() + ": " + t.getValue());
+                                    break;
+                            }
+                        }
+                        map.put("tags", tags);
+                        break;
+                    default:
+                        throw new AssertionError();
+                }
+            }
+
+            map.put("type", type);
+            return new ModelAndView(map, "view");
+        }, new ThymeleafTemplateEngine());
+
+        /**
+         * searchresults page
+         *
+         * expects query as an attribute
+         *
+         * example /search?query=one&query=two&...&query=nth
+         */
+        get("/search", (req, res) -> {
+            HashMap map = new HashMap<>();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+
+            String type = req.queryParams("type");
+            String all = req.queryParams("all");
+
+            List<Item> results = null;
+
+            if (type != null && all != null) {
+                if (type.equals("foodstuff") && all.equals("true")) {
+                    results = itemDao.findAllByType(user, "foodstuff");
+                    map.put("foodstuffs", results);
+                    map.put("foodstuff", true);
+                }
+            } else {
+                if (req.queryParams("query") == null) {
+                    res.redirect("/");
+                    halt();
+                }
+                Object[] split = req.queryParams("query").split(" ");
+                results = itemDao.search(user, split);
+                List<Item> items = new ArrayList<>();
+                List<Item> foodstuffs = new ArrayList<>();
+                List<Item> books = new ArrayList<>();
+                boolean item = false;
+                boolean foodstuff = false;
+                boolean book = false;
+
+                for (Item i : results) {
+                    switch (i.getType()) {
+                        case "item":
+                            items.add(i);
+                            item = true;
+                            break;
+
+                        case "foodstuff":
+                            foodstuffs.add(i);
+                            foodstuff = true;
+                            break;
+
+                        case "book":
+                            books.add(i);
+                            book = true;
+                            break;
+
+                        default:
+                    }
+                }
+
+                map.put("items", items);
+                map.put("item", item);
+                map.put("foodstuffs", foodstuffs);
+                map.put("foodstuff", foodstuff);
+                map.put("books", books);
+                map.put("book", book);
+            }
+
+            return new ModelAndView(map, "list");
+        }, new ThymeleafTemplateEngine());
     }
 }

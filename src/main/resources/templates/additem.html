@@ -18,15 +18,24 @@
                     window.location.href = url;
             })});
 
-            // $(document).ready(function(){
-            //     $("#typechooser").change(function(){
-            //         var val = $("#typechooser").val();
-            //         if (val == "foodstuff") {
-            //             $("#datepicker").show();
-            //         } else {
-            //             $("#datepicker").hide();
-            //         }
-            // })});
+            function myFunction(id) {
+                var x = document.getElementById(id);
+                if (x.className.indexOf("w3-show") == -1) {
+                    x.className += " w3-show";
+                } else { 
+                    x.className = x.className.replace(" w3-show", "");
+                }
+            }
+
+            $(document).ready(function(){
+                $("#typechooser").change(function(){
+                    var val = $("#typechooser").val();
+                    if (val == "foodstuff") {
+                        $("#datepicker").show();
+                    } else {
+                        $("#datepicker").hide();
+                    }
+            })});
             /*]]>*/
 
         </script>
@@ -35,30 +44,66 @@
     <div th:replace="fragments :: navigation">
     </div>
     <div class="w3-main">
-    <div class="w3-col m6 l4 w3-card-4 w3-margin">
-        <form class="w3-container" action="/additem.post" method="post">
-            <div class="w3-container w3-green">
-                <h2>Basic Info</h2>
-            </div>
-            <label class="w3-label" for="typechooser">Type:</label>
-            <select class="w3-select" name="type" id="typechooser" required="true">
-                <option value="" disabled="true" selected="true">Choose type</option>
-                <option value="book">Book</option>
-                <option value="foodstuff">Foodstuff</option>
-                <option value="item">Item</option>
-            </select><br/>
-            <label class="w3-label" for="name">Name:</label>
-            <input class="w3-input" type="text" name="name" required="true" id="name" th:value="${namefield}" /><br/>
+    <div class="w3-col m6 l4 w3-card-4">
+        <div class="w3-container w3-green">
+            <h2 th:text="${title}">Add Item</h2>
+        </div>
+        <form class="w3-container" th:action="${action}" method="post">
+            <input type="text" name="type" th:value="${type}" hidden="true"></input>
+
+            <label class="w3-label" for="name" th:text="${labelname}">Name:</label>
+            <input class="w3-input" type="text" name="name" required="true" id="name" th:value="${name}"/>
+
             <label class="w3-label" for="location">Location:</label>
-            <input class="w3-input" list="locationslist" required="true" name="location" id="location" />
+            <input class="w3-input" list="locationslist" required="true" name="location" id="location" th:value="${location}" />
             <datalist id="locationslist">    
                 <option th:each="location: ${locations}" th:value="${location}" />
             </datalist>
-            <br/>
-            <label class="w3-label" for="identifier">Identifier or Serial Number</label>
-            <input class="w3-input" type="text" name="identifier" required="true" id="identifier" th:value="${identifier}"/>
-            <span>Expiration Date:</span><br/>
-            <input class="w3-input" type="date" name="expiration" /><br/>
+
+            <label class="w3-label" for="identifier" th:text="${labelidentifier}">Identifier or Serial Number</label>
+            <input class="w3-input" type="text" name="identifier" required="true" id="identifier" th:value="${identifier}" />
+
+            <div th:if="${copies}">
+                <label class="w3-label" for="copies">Copies:</label>
+                <input class="w3-input" type="number" name="copies" required="true" id="copies" min="1" />
+            </div>
+
+            <div th:if="${item}">
+            </div>
+
+            <div th:if="${foodstuff}">
+                <label class="w3-label" for="producer">Producer:</label>
+                <input class="w3-input" type="text" name="producer" required="true" id="producer" th:value="${producer}" />
+                <label class="w3-label" for="expiration">Expiration Date:</label>
+                <input class="w3-input" type="date" name="expiration" required="true" th:value="${expiration}" />
+            </div>
+
+            <div th:if="${book}">
+                <label class="w3-label" for="author">Author:</label>
+                <input class="w3-input" type="text" name="author" required="true" id="author" th:value="${author}" />
+                <label class="w3-label" for="publisher">Publisher:</label>
+                <input class="w3-input" type="text" name="publisher" required="true" id="publisher" th:value="${publisher}" />
+                <label class="w3-label" for="year">Publishing Year:</label>
+                <input class="w3-input" type="number" name="year" required="true" id="year" min="0" max="3000" th:value="${year}" />
+                <label class="w3-label" for="genre">Genre:</label>
+                <input class="w3-input" list="genrelist" type="text" name="genre" required="true" id="genre" th:value="${genre}" />
+                <datalist id="genrelist">    
+                    <option th:each="genre: ${genrelist}" th:value="${genre}" />
+                </datalist>
+            </div><br />
+
+            <div th:if="${nutritional}">
+                <input type="text" name="iteminfoid" hidden="true" th:value="${iteminfoid}" />
+                <label class="w3-label" for="energy">Energy:</label>
+                <input class="w3-input" type="text" name="energy" required="true" id="energy" th:value="${energy}" />
+                <label class="w3-label" for="carbohydrate">Carbohydrate:</label>
+                <input class="w3-input" type="text" name="carbohydrate" required="true" id="carbohydrate" th:value="${carbohydrate}" />
+                <label class="w3-label" for="fat">Fat:</label>
+                <input class="w3-input" type="number" name="fat" required="true" id="fat" min="0" max="3000" th:value="${fat}" />
+                <label class="w3-label" for="protein">Protein:</label>
+                <input class="w3-input" type="text" name="protein" required="true" id="protein" th:value="${protein}" />
+            </div><br />
+
             <input class="w3-button w3-block w3-teal" type="submit" name="submit" value="Submit" /> <br />
             <input class="w3-button w3-block w3-teal" type="reset" name="reset" value="Reset" /> <br />
         </form>

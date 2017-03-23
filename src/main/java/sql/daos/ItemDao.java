@@ -101,8 +101,10 @@ public class ItemDao {
                     tagDao.findAll(rs.getInt("id")),
                     infoDao.findOne(rs.getInt("iteminfo_id")));
         }, user.getId(), key);
-        
-        if (queryAndCollect.isEmpty()) return null;
+
+        if (queryAndCollect.isEmpty()) {
+            return null;
+        }
         return queryAndCollect.get(0);
     }
 
@@ -116,6 +118,20 @@ public class ItemDao {
                     tagDao.findAll(rs.getInt("id")),
                     infoDao.findOne(rs.getInt("iteminfo_id")));
         }, user.getId());
+    }
+
+    public List<Item> findAllByType(User user, String type) throws SQLException {
+        String sql = "SELECT DISTINCT ON (i.id) i.* "
+                + "FROM Item as i, AccessControl as a, Users as u, ItemInfo as f "
+                + "WHERE i.deleted = 'false' AND i.id = a.item_id AND u.usersid = a.users_id AND i.iteminfo_id = f.id AND u.usersid = ? AND f.type = ?";
+        return db.queryAndCollect(sql, rs -> {
+            return new Item(rs.getInt("id"),
+                    rs.getString("location"),
+                    rs.getTimestamp("date"),
+                    rs.getTimestamp("expiration"),
+                    tagDao.findAll(rs.getInt("id")),
+                    infoDao.findOne(rs.getInt("iteminfo_id")));
+        }, user.getId(), type);
     }
 
     public void update(Item t, User user) throws SQLException {

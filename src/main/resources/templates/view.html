@@ -13,22 +13,18 @@
     <body>
     <div th:replace="fragments :: navigation">
     </div>
-    <div class="w3-main">
-    <div class="w3-col m8 l6 w3-card-4 w3-margin">
+    <div class="w3-main w3-mobile">
+    <div class="w3-col m8 l5 w3-card-4 w3-mobile">
                 <div class="w3-container w3-green">
                     <h2 th:text="${title}">Basic Info</h2>
-                </div>
-                <div class="w3-margin">
-                    <h3>Name</h3>
-                    <p class="w3-margin" th:text="${item.name}" />
-                </div>
-                <div class="w3-margin">
-                    <h3>Type</h3>
-                    <p class="w3-margin" th:text="${item.type}" />
                 </div>
 
                 <!-- If item show this -->
                 <div th:if="${isItem}">
+                    <div class="w3-margin">
+                        <h3>Name</h3>
+                    <p class="w3-margin" th:text="${item.name}" />
+                    </div>
                     <div class="w3-margin">
                         <h3>Location</h3>
                         <p class="w3-margin" th:text="${item.location}" />
@@ -36,6 +32,10 @@
                     <div class="w3-margin">
                         <h3>Serial Number</h3>
                         <p class="w3-margin" th:text="${item.identifier}" />
+                    </div>
+                    <div class="w3-margin" th:if="${isFoodstuff}">
+                        <h3>Producer</h3>
+                        <p class="w3-margin" th:text="${producer}" />
                     </div>
                     <div class="w3-margin">
                         <h3>Created On</h3>
@@ -45,63 +45,134 @@
                         <h3>Expiration Date</h3>
                         <p class="w3-margin" th:text="${item.expiration}" />
                     </div>
-                    <div class="w3-margin" th:if="${not #lists.isEmpty(item.tags)}">
+                    <div th:if="${isFoodstuff}">
+                        <div th:unless="${nutritionalinfo}">
+                            <a class="w3-button w3-teal w3-block" th:href="@{~/addnutritionalinfo?id={id} (id=${item.identifier})}">Add nutritional info</a>
+                        </div>
+                        <div th:if="${nutritionalinfo}">
+                        <div class="w3-row-padding">
+                             <div class="w3-quarter">
+                                <div class="w3-panel w3-blue w3-card-8 w3-round">
+                                    <p>Energy</p>
+                                    <p th:text="${nutritionalinfo.energy}">joujou</p>
+                                </div>
+                             </div>
+                             <div class="w3-quarter">
+                                <div class="w3-panel w3-blue w3-card-8 w3-round">
+                                    <p>Carbohydrate</p>
+                                    <p th:text="${nutritionalinfo.carbs}" />
+                                </div>
+                             </div>
+                             <div class="w3-quarter">
+                                <div class="w3-panel w3-blue w3-card-8 w3-round">
+                                    <p>Protein</p>
+                                    <p th:text="${nutritionalinfo.protein}" />
+                                </div>
+                             </div>
+                             <div class="w3-quarter">
+                                <div class="w3-panel w3-blue w3-card-8 w3-round">
+                                    <p>Fat</p>
+                                    <p th:text="${nutritionalinfo.fat}" />
+                                </div>
+                             </div>
+                        </div>
+                        </div><br />
+                    </div>
+
+                    <div class="w3-margin" th:if="${not #lists.isEmpty(tags)}">
                         <h3>Tags</h3>
-                        <ul class="w3-margin" th:each="tag : ${item.tags}">
-                            <li><p><span th:text="${tag.key}" />: <span th:text="${tag.value}" /></p></li>
+                        <ul class="w3-margin">
+                            <li th:each="tag : ${tags}"><p th:text="${tag}"></p></li>
                         </ul>
                     </div>
                 </div>
 
+                <!-- If book show this -->
+                <div th:if="${isBook}">
+                    <div class="w3-margin">
+                        <h3>Title</h3>
+                    <p class="w3-margin" th:text="${item.name}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Location</h3>
+                        <p class="w3-margin" th:text="${item.location}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Author</h3>
+                        <p class="w3-margin" th:text="${author}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Publisher</h3>
+                        <p class="w3-margin" th:text="${publisher}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Publishing Year</h3>
+                        <p class="w3-margin" th:text="${year}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Genre</h3>
+                        <p class="w3-margin" th:text="${genre}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>ISBN</h3>
+                        <p class="w3-margin" th:text="${item.identifier}" />
+                    </div>
+                    <div class="w3-margin" th:if="${not #lists.isEmpty(tags)}">
+                        <h3>Tags</h3>
+                        <ul class="w3-margin">
+                            <li th:each="tag : ${tags}"><p th:text="${tag}"></p></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- if meal show this -->
                 <div th:if="${isMeal}">
-                    <div class="w3-margin" th:if="${not #lists.isEmpty(item.ingredients)}">
-                        <h3>Ingredients</h3>
-                        <ul class="w3-margin" th:each="ingredient : ${item.ingredients}">
-                            <li><p><a th:text="${ingredient.item.name}" th:href="@{~/view?uuid={uuid}&#38;type={type} (uuid=${ingredient.item.uuid}, type=${ingredient.item.type})}"/></p></li>
+                    <div class="w3-row-padding">
+                         <div class="w3-half">
+                            <div class="w3-panel w3-blue w3-round">
+                                <p>Energy</p>
+                                <p th:text="${item.energy}">joujou</p>
+                            </div>
+                         </div>
+                         <div class="w3-half">
+                            <div class="w3-panel w3-blue w3-round">
+                                <p>Carbohydrate</p>
+                                <p th:text="${item.carbohydrate}" />
+                            </div>
+                         </div>
+                    </div>
+                    <div class="w3-row-padding">
+                         <div class="w3-half">
+                            <div class="w3-panel w3-blue w3-round">
+                                <p>Protein</p>
+                                <p th:text="${item.protein}" />
+                            </div>
+                         </div>
+                         <div class="w3-half">
+                            <div class="w3-panel w3-blue w3-round">
+                                <p>Fat</p>
+                                <p th:text="${item.fat}" />
+                            </div>
+                         </div>
+                    </div><br />
+                    <div class="w3-container w3-margin">
+                        <ul class="w3-ul w3-hoverable" th:each="component : ${item.components}">
+                            <li><p><span th:text="${component.name}" />: <span class="w3-right-align" th:text="${component.mass}" />g</p></li>
                         </ul>
                     </div>
                 </div>
-
-
-                <!-- <div class="w3-container w3-green">
-                    <h2>Tags</h2>
+            <div class="w3-row-padding">
+                <div class="w3-third">
+                    <a class="w3-button w3-teal w3-block">Delete</a> <br />
                 </div>
-                <div id="tagdiv">
-                    <div class="w3-margin" id="oldtags" style="display: none;">
-                    <label class="w3-label" for="oldtags">Tags Associated with serial number</label>
-                    <div class="w3-responsive">
-                        <table class="w3-table-all" id="oldtagstable">
-                            <tr id="headerold">
-                                <th>Key</th>
-                                <th>Value</th>
-                            </tr>
-                        </table>
-                    </div>
-                    </div>
-                    <label class="w3-label" for="tagkey">Key:</label>
-                    <input class="w3-input" type="text" name="tagkey" id="keyinput" /> <br />
-                    <label class="w3-label" for="tagvalue">Value:</label>
-                    <input class="w3-input" type="text" name="tagvalue" id="valueinput" /><br />
-                    <input class="w3-button w3-block w3-teal" type="button" id="addtagbutton" value="Add Tag" /><br />
-                    <div class="w3-responsive" id="newtags" style="display: none;">
-                        <table class="w3-table-all" id="tagstable">
-                            <tr class="header">
-                                <th>Key</th>
-                                <th>Value</th>
-                            </tr>
-                        </table>
-                        <input class="w3-button w3-block w3-teal" type="button" id="removetagbutton" value="Remove Tag" /><br />
-                    </div>
+                <div class="w3-third">
+                     <a class="w3-button w3-teal w3-block">Edit</a> <br />
                 </div>
-            <div id="datepicker" style="display: none">
-                <span>Expiration Date:</span><br/>
-                <input class="w3-input" type="date" name="expiration" /><br/>
+                <div class="w3-third">
+                    <a class="w3-button w3-teal w3-block">Borrow</a> <br />
+                </div>
             </div>
-            <input class="w3-button w3-block w3-teal" type="submit" name="submit" value="Submit" /> <br />
-            <input class="w3-button w3-block w3-teal" type="reset" name="reset" value="Reset" /> <br /> -->
-            <button class="w3-button w3-teal">Delete</button>
-            <button class="w3-button w3-teal">Edit</button>
-            <button class="w3-button w3-teal">Borrow</button>
+            <br />
             
     </div>
     </div>

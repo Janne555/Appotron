@@ -48,7 +48,7 @@ public class SessionControlDao {
     }
     
     public boolean invalidateSession(String sessionId) throws SQLException {
-        db.update("DELETE FROM SessionControl WHERE id = ?", false, sessionId);
+        db.update("DELETE FROM SessionControl WHERE sessionid = ?", false, sessionId);
         return true;
     }
     

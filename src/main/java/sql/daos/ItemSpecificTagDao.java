@@ -45,7 +45,7 @@ public class ItemSpecificTagDao {
     }
 
     public List<Tag> findAll(int itemId) throws SQLException {
-        List<Tag> queryAndCollect = db.queryAndCollect("SELECT * FROM ItemSpecificTag WHERE item_id = ?", rs -> {
+        List<Tag> queryAndCollect = db.queryAndCollect("SELECT DISTINCT ON (id) * FROM ItemSpecificTag WHERE item_id = ?", rs -> {
             return new Tag(rs.getInt("id"),
                     rs.getInt("item_id"),
                     rs.getString("key"),

@@ -12,7 +12,8 @@ import java.util.List;
  *
  * @author Janne
  */
-public class Meal {
+public class Meal implements SearchResult {
+
     private int id;
     private User user;
     private Timestamp date;
@@ -24,7 +25,7 @@ public class Meal {
         this.date = date;
         this.components = components;
     }
-    
+
     public String getUserId() {
         return this.getUser().getId();
     }
@@ -36,7 +37,6 @@ public class Meal {
     public int getId() {
         return id;
     }
-
 
     public User getUser() {
         return user;
@@ -65,6 +65,9 @@ public class Meal {
     public float getEnergy() {
         float sum = 0;
         for (MealComponent i : components) {
+            if (i.getNutritionalInfo() == null) {
+                continue;
+            }
             sum += i.getMass() * i.getNutritionalInfo().getEnergy();
         }
 
@@ -74,7 +77,10 @@ public class Meal {
     public float getCarbohydrate() {
         float sum = 0;
         for (MealComponent i : components) {
-            sum += i.getMass()* i.getNutritionalInfo().getCarbohydrates();
+            if (i.getNutritionalInfo() == null) {
+                continue;
+            }
+            sum += i.getMass() * i.getNutritionalInfo().getCarbohydrates();
         }
 
         return sum;
@@ -83,7 +89,10 @@ public class Meal {
     public float getFat() {
         float sum = 0;
         for (MealComponent i : components) {
-            sum += i.getMass()* i.getNutritionalInfo().getFat();
+            if (i.getNutritionalInfo() == null) {
+                continue;
+            }
+            sum += i.getMass() * i.getNutritionalInfo().getFat();
         }
 
         return sum;
@@ -92,9 +101,35 @@ public class Meal {
     public float getProtein() {
         float sum = 0;
         for (MealComponent i : components) {
-            sum += i.getMass()* i.getNutritionalInfo().getProtein();
+            if (i.getNutritionalInfo() == null) {
+                continue;
+            }
+            sum += i.getMass() * i.getNutritionalInfo().getProtein();
         }
 
         return sum;
+    }
+
+    @Override
+    public String getName() {
+        return "Meal: " + getDate().toLocalDateTime().getDayOfMonth() + "."
+                + getDate().toLocalDateTime().getMonthValue() + "."
+                + getDate().toLocalDateTime().getYear() + " "
+                + getDate().toLocalDateTime().getHour() + ":"
+                + getDate().toLocalDateTime().getMinute();
+    }
+
+    @Override
+    public String getLocation() {
+        return "";
+    }
+
+    @Override
+    public String getType() {
+        return "meal";
+    }
+    
+    public String getTime() {
+        return this.getDate().toLocalDateTime().toLocalTime().toString();
     }
 }
