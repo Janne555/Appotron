@@ -47,8 +47,13 @@
     <div class="w3-col m6 l4 w3-card-4">
         <div class="w3-container w3-green">
             <h2 th:text="${title}">Add Item</h2>
+            <div th:if="${isAddNutritionalInfo}">
+                <h2 th:text="${title2}">Add Item</h2>
+            </div>
         </div>
         <form class="w3-container" th:action="${action}" method="post">
+            <input type="text" name="itemid" hidden="true" th:value="${itemid}" />
+            <div th:unless="${isAddNutritionalInfo}">
             <input type="text" name="type" th:value="${type}" hidden="true"></input>
 
             <label class="w3-label" for="name" th:text="${labelname}">Name:</label>
@@ -90,18 +95,20 @@
                 <datalist id="genrelist">    
                     <option th:each="genre: ${genrelist}" th:value="${genre}" />
                 </datalist>
-            </div><br />
+            </div>
+            </div>
 
-            <div th:if="${nutritional}">
+            <div th:if="${showNutritionalInfo}">
+
                 <input type="text" name="iteminfoid" hidden="true" th:value="${iteminfoid}" />
-                <label class="w3-label" for="energy">Energy:</label>
-                <input class="w3-input" type="text" name="energy" required="true" id="energy" th:value="${energy}" />
-                <label class="w3-label" for="carbohydrate">Carbohydrate:</label>
-                <input class="w3-input" type="text" name="carbohydrate" required="true" id="carbohydrate" th:value="${carbohydrate}" />
-                <label class="w3-label" for="fat">Fat:</label>
+                <label class="w3-label" for="energy">Energy kcal/100g:</label>
+                <input class="w3-input" type="number" name="energy" required="true" id="energy" th:value="${energy}" />
+                <label class="w3-label" for="carbohydrate">Carbohydrate g/100g:</label>
+                <input class="w3-input" type="number" name="carbohydrate" required="true" id="carbohydrate" th:value="${carbohydrate}" />
+                <label class="w3-label" for="fat">Fat g/100g:</label>
                 <input class="w3-input" type="number" name="fat" required="true" id="fat" min="0" max="3000" th:value="${fat}" />
-                <label class="w3-label" for="protein">Protein:</label>
-                <input class="w3-input" type="text" name="protein" required="true" id="protein" th:value="${protein}" />
+                <label class="w3-label" for="protein">Protein g/100g:</label>
+                <input class="w3-input" type="number" name="protein" required="true" id="protein" th:value="${protein}" />
             </div><br />
 
             <input class="w3-button w3-block w3-teal" type="submit" name="submit" value="Submit" /> <br />

@@ -35,9 +35,14 @@ public class NutritionalInfoDao {
     public void store(NutritionalInfo nuInfo) throws SQLException {
         db.update("INSERT INTO NutritionalInfo(iteminfo_id, energy, carbohydrate, fat, protein) VALUES(?,?,?,?,?)", false,
                 nuInfo.getItemInfoId(),
-                nuInfo.getEnergy(),
-                nuInfo.getCarbohydrates(),
+                nuInfo.getCalories(),
+                nuInfo.getCarbohydrate(),
                 nuInfo.getFat(),
                 nuInfo.getProtein());
+    }
+
+    public void update(NutritionalInfo nutInfo) throws SQLException {
+        db.update("UPDATE NutritionalInfo SET energy = ?, carbohydrate = ?, fat = ?, protein = ? WHERE iteminfo_id = ?", false,
+                nutInfo.getCalories(), nutInfo.getCarbohydrate(), nutInfo.getFat(), nutInfo.getProtein(), nutInfo.getItemInfoId());
     }
 }

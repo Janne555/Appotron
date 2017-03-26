@@ -34,8 +34,15 @@ public class Database {
         this.password = password;
     }
     
-    public boolean canSelect(User user, Item item) {
-        String sql = "SELECT * FROM Item as i, AccessControl as a, Users as u WHERE i.id = a.item_id AND u.id = a.users_id";
+    public boolean canSelect(User user, Item item) throws SQLException {
+        String sql = "SELECT * FROM Item as i, AccessControl as a, Users as u WHERE i.id = a.item_id AND u.usersid = a.users_id AND u.usersid = ? AND i.id = ?";
+        List<String> queryAndCollect = queryAndCollect(sql, rs -> {
+            return rs.getString(1);
+        }, user.getId(), item.getId());
+        
+        if (!queryAndCollect.isEmpty()) {
+            return true;
+        }
         return false;
     }
 

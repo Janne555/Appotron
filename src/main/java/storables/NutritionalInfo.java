@@ -30,7 +30,7 @@ public class NutritionalInfo {
         return this.itemInfo.getId();
     }
 
-    public float getEnergy() {
+    public float getCalories() {
         return energy;
     }
 
@@ -38,7 +38,7 @@ public class NutritionalInfo {
         this.energy = energy;
     }
 
-    public float getCarbohydrates() {
+    public float getCarbohydrate() {
         return carbohydrates;
     }
 

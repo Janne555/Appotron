@@ -1,4 +1,4 @@
-postgre_address=jdbc:postgresql://localhost:5432/inventordev
+postgre_address=jdbc:postgresql://localhost:5432/appotron
 postgre_user=postgres
 postgre_password=salasana
 standalone=false

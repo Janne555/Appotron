@@ -87,6 +87,25 @@
                 </tr>
             </table>
         </div>
+        <div class="w3-responsive" th:if="${recipe}">
+            <div class="w3-container w3-green">
+                <h3>Recipes</h3>
+            </div>
+            <table class="w3-table-all w3-hoverable">
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Calories</th>
+                </tr>
+                <tr class="clickable-row" th:each="item : ${recipes}" th:attr="data-href=@{~/view?id={id}&#38;type=recipe (id=${item.id})}">
+                    <td th:text="${item.name}"></td>
+                    <td th:text="${item.type}"></td>
+                    <td th:text="${item.description}"></td>
+                    <td th:text="${item.calories}"></td>
+                </tr>
+            </table>
+        </div>
     </div>
     </div>
     </body>

@@ -94,4 +94,14 @@ public class ItemSpecificTagDao {
 //    public void delete(int id) throws SQLException {
 //        db.update("DELETE FROM Tag WHERE id = ?", id);
 //    }
+    
+    public void update(Tag tag) throws SQLException {
+        db.update("UPDATE ItemSpecificTag SET value = ? WHERE id = ?", false, tag.getValue(), tag.getId());
+    }
+    
+    public void update(List<Tag> specificTags) throws SQLException {
+        for (Tag t : specificTags) {
+            update(t);
+        }
+    }
 }

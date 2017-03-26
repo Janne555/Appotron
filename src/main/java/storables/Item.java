@@ -143,6 +143,7 @@ public class Item implements Comparable<Item>, SearchResult {
         String result
                 = "UUID: " + id + ", "
                 + "NAME: " + itemInfo.getName() + ", "
+                + "TYPE: " + itemInfo.getType() + ", "
                 + "SERIAL: " + itemInfo.getIdentifier() + ", "
                 + "Location: " + location + ", "
                 + "EXPIRES: " + expiration + ", "
@@ -234,4 +235,28 @@ public class Item implements Comparable<Item>, SearchResult {
         }
         return "";
     }
+
+    public String getGenre() {
+        for (Tag t : getItemInfoTags()) {
+            if (t.getKey().equals("genre")) {
+                return t.getValue();
+            }
+        }
+        return "";
+    }
+
+    public String getExpirationString() {
+        LocalDateTime localDate = getExpiration().toLocalDateTime();
+        return "" + localDate.getYear() + "-" + localDate.getMonthValue() + "-" + localDate.getDayOfMonth();
+    }
+
+    public Tag getInfoTag(String key) {
+        for (Tag t : getItemInfoTags()) {
+            if (t.getKey().equals(key)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
 }

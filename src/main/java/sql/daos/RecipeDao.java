@@ -26,10 +26,12 @@ public class RecipeDao {
     }
 
     public Recipe store(Recipe recipe) throws SQLException {
-        for (Ingredient ingredient : recipe.getIngredients()) {
-            ingDao.store(ingredient);
+        if (recipe.getIngredients() != null) {
+            for (Ingredient ingredient : recipe.getIngredients()) {
+                ingDao.store(ingredient);
+            }
         }
-        int update = db.update("INSERT INTO recipe(name, directions, description, type, deleted) VALUES(?,?,?,?,?)", true, 
+        int update = db.update("INSERT INTO recipe(name, directions, description, type, deleted) VALUES(?,?,?,?,?)", true,
                 recipe.getName(), recipe.getDirections(), recipe.getDescription(), recipe.getType(), false);
         recipe.setId(update);
         return recipe;
@@ -51,7 +53,34 @@ public class RecipeDao {
                     rs.getString("name"),
                     rs.getString("directions"),
                     rs.getString("description"),
-                    rs.getString("type"), 
+                    rs.getString("type"),
+                    ingDao.findAllByRecipeId(rs.getInt("id")));
+        });
+    }
+
+    public Recipe findOne(int id) throws SQLException {
+        List<Recipe> queryAndCollect = db.queryAndCollect("SELECT * FROM Recipe WHERE id = ?", rs -> {
+            return new Recipe(rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("directions"),
+                    rs.getString("description"),
+                    rs.getString("type"),
+                    ingDao.findAllByRecipeId(rs.getInt("id")));
+        }, id);
+
+        if (queryAndCollect.isEmpty()) {
+            return null;
+        }
+        return queryAndCollect.get(0);
+    }
+
+    public List<Recipe> findAll() throws SQLException {
+        return db.queryAndCollect("SELECT * FROM Recipe", rs -> {
+            return new Recipe(rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("directions"),
+                    rs.getString("description"),
+                    rs.getString("type"),
                     ingDao.findAllByRecipeId(rs.getInt("id")));
         });
     }

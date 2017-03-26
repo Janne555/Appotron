@@ -188,9 +188,21 @@ CREATE TABLE Ingredient (
 	recipe_id integer NOT NULL,
 	amount FLOAT NOT NULL,
 	unit varchar(255) NOT NULL,
-	ordernumber integer NOT NULL,
 	CONSTRAINT Ingredient_pk PRIMARY KEY (id),
 	CONSTRAINT Ingredient_unique UNIQUE(iteminfo_id, recipe_id)
+) WITH (
+  OIDS=FALSE
+);
+
+
+CREATE TABLE Conversions (
+	id serial NOT NULL,
+	iteminfo_id integer NOT NULL,
+	unit varchar(255) NOT NULL,
+	asgrams DECIMAL NOT NULL,
+	unitpergram DECIMAL NOT NULL,
+	gramperunit DECIMAL NOT NULL,
+	CONSTRAINT Conversions_pk PRIMARY KEY (id)
 ) WITH (
   OIDS=FALSE
 );
@@ -234,3 +246,4 @@ ALTER TABLE Ingredient ADD CONSTRAINT Ingredient_fk0 FOREIGN KEY (iteminfo_id) R
 
 ALTER TABLE Ingredient ADD CONSTRAINT Ingredient_fk1 FOREIGN KEY (recipe_id) REFERENCES Recipe(id);
 
+ALTER TABLE Conversions ADD CONSTRAINT Conversions_fk0 FOREIGN KEY (iteminfo_id) REFERENCES ItemInfo(id);

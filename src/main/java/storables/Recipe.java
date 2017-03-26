@@ -12,6 +12,7 @@ import java.util.List;
  * @author Janne
  */
 public class Recipe {
+
     private int id;
     private String name;
     private String directions;
@@ -75,6 +76,37 @@ public class Recipe {
     public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
-    
-    
+
+    public float getCalories() {
+        float sum = 0;
+        for (Ingredient i : ingredients) {
+            sum += i.getCalories();
+        }
+        return sum;
+    }
+
+    public float getCarbohydrate() {
+        float sum = 0;
+        for (Ingredient i : ingredients) {
+            sum += i.getCarbohydrate();
+        }
+        return sum;
+    }
+
+    public float getFat() {
+        float sum = 0;
+        for (Ingredient i : ingredients) {
+            sum += i.getFat();
+        }
+        return sum;
+    }
+
+    public float getProtein() {
+        float sum = 0;
+        for (Ingredient i : ingredients) {
+            sum += i.getProtein();
+        }
+        return sum;
+    }
+
 }

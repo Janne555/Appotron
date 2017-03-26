@@ -85,9 +85,17 @@ public class ItemInfoTagDao {
 //        }
 //    }
 //
-//    public void update(Tag t) throws SQLException {
-//        db.update("UPDATE Tag SET identifier = ?, key = ?, value = ?, type = ? WHERE id = ?", t.getObjsId());
-//    }
+    public void update(Tag t) throws SQLException {
+        db.update("UPDATE ItemInfoTag SET value = ? WHERE id = ? AND iteminfo_id = ? AND key = ?", false,
+                t.getValue(), t.getId(), t.getItemId(), t.getKey());
+        
+    }
+    
+    public void update(List<Tag> tags) throws SQLException {
+        for (Tag t : tags) {
+            update(t);
+        }
+    }
 //
 //    public void delete(int id) throws SQLException {
 //        db.update("DELETE FROM Tag WHERE id = ?", id);

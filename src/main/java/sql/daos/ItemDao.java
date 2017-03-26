@@ -5,6 +5,7 @@
  */
 package sql.daos;
 
+import java.nio.file.AccessDeniedException;
 import java.sql.SQLException;
 import java.util.List;
 import sql.db.Database;
@@ -134,8 +135,14 @@ public class ItemDao {
         }, user.getId(), type);
     }
 
-    public void update(Item t, User user) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void update(Item t, User user) throws SQLException, AccessDeniedException {
+        if (!db.canSelect(user, t)) {
+            throw new AccessDeniedException("You don't have access to this entry");
+        }
+        infoDao.update(t.getItemInfo());
+        db.update("UPDATE Item SET location = ?, expiration = ? WHERE id = ?", false, 
+                t.getLocation(), t.getExpiration(), t.getId());
+        tagDao.update(t.getSpecificTags());
     }
 
     public void delete(Integer key, User user) throws SQLException {

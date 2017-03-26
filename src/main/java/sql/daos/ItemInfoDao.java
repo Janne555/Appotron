@@ -71,4 +71,10 @@ public class ItemInfoDao {
         }, searchWords);
     }
     
+    public ItemInfo update(ItemInfo itemInfo) throws SQLException {
+        db.update("UPDATE ItemInfo SET name = ?, identifier = ?, type = ? WHERE id = ?", false,
+                itemInfo.getName(), itemInfo.getIdentifier(), itemInfo.getType(), itemInfo.getId());
+        ifDao.update(itemInfo.getTags());
+        return itemInfo;
+    }
 }

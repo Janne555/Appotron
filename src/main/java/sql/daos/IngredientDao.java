@@ -17,22 +17,30 @@ import storables.Ingredient;
 public class IngredientDao {
     private Database db;
     private ItemInfoDao infoDao;
+    private NutritionalInfoDao nutDao;
 
     public IngredientDao(Database db) {
         this.db = db;
         this.infoDao = new ItemInfoDao(db);
+        this.nutDao = new NutritionalInfoDao(db);
     }
     
     public Ingredient store(Ingredient ingredient) throws SQLException {
-        int update = db.update("INSERT INTO Ingredient(iteminfo_id, recipe_id, amount, unit, ordernumber) VALUES(?,?,?,?)", true,
-                ingredient.getItemInfoId(), ingredient.getRecipeId(), ingredient.getAmount(), ingredient.getUnit(), ingredient.getOrderNumber());
+        int update = db.update("INSERT INTO Ingredient(iteminfo_id, recipe_id, amount, unit) VALUES(?,?,?,?)", true,
+                ingredient.getItemInfoId(), ingredient.getRecipeId(), ingredient.getAmount(), ingredient.getUnit());
         ingredient.setId(update);
         return ingredient;
     }
     
     public List<Ingredient> findAllByRecipeId(int recipeId) throws SQLException {
-        return db.queryAndCollect("SELECT * FROM Ingredient WHERE recipe_id = ? ORDER BY ordernumber ASC", rs -> {
-            return new Ingredient(rs.getInt("id"), rs.getInt("recipe_id"), rs.getFloat("amount"), rs.getString("unit"), infoDao.findOne(rs.getInt("iteminfo_id")), rs.getInt("ordernumber"));
-        });
+        return db.queryAndCollect("SELECT * FROM Ingredient as i, Conversions as c WHERE i.recipe_id = ? AND i.iteminfo_id = c.iteminfo_id", rs -> {
+            return new Ingredient(rs.getInt("i.id"),
+                    rs.getInt("i.recipe_id"),
+                    rs.getFloat("i.amount"),
+                    rs.getString("i.unit"),
+                    infoDao.findOne(rs.getInt("i.iteminfo_id")),
+                    rs.getFloat("c.unitspergram"),
+                    nutDao.findOneByItemInfoId(rs.getInt("i.iteminfo_id")));
+        }, recipeId);
     }
 }

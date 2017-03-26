@@ -68,7 +68,7 @@ public class Meal implements SearchResult {
             if (i.getNutritionalInfo() == null) {
                 continue;
             }
-            sum += i.getMass() * i.getNutritionalInfo().getEnergy();
+            sum += i.getMass() / 100 * i.getNutritionalInfo().getCalories();
         }
 
         return sum;
@@ -80,7 +80,7 @@ public class Meal implements SearchResult {
             if (i.getNutritionalInfo() == null) {
                 continue;
             }
-            sum += i.getMass() * i.getNutritionalInfo().getCarbohydrates();
+            sum += i.getMass() / 100 * i.getNutritionalInfo().getCarbohydrate();
         }
 
         return sum;
@@ -92,7 +92,7 @@ public class Meal implements SearchResult {
             if (i.getNutritionalInfo() == null) {
                 continue;
             }
-            sum += i.getMass() * i.getNutritionalInfo().getFat();
+            sum += i.getMass() / 100 * i.getNutritionalInfo().getFat();
         }
 
         return sum;
@@ -104,7 +104,7 @@ public class Meal implements SearchResult {
             if (i.getNutritionalInfo() == null) {
                 continue;
             }
-            sum += i.getMass() * i.getNutritionalInfo().getProtein();
+            sum += i.getMass() / 100 * i.getNutritionalInfo().getProtein();
         }
 
         return sum;
