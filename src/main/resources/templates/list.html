@@ -20,10 +20,10 @@
     <div class="w3-main">
     <div class="w3-col m11 l10 w3-card-4">
         <div class="w3-container w3-green">
-            <h2>Search Results</h2>
+            <h2 th:value="${title}">Search Results</h2>
         </div>
-        <div class="w3-responsive" th:if="${item}">
-            <div class="w3-container w3-green">
+        <div class="w3-responsive" th:if="${items}">
+            <div class="w3-container w3-green" th:if="${search}">
                 <h3>Items</h3>
             </div>
             <table class="w3-table-all w3-hoverable">
@@ -41,8 +41,8 @@
                 </tr>
             </table>
         </div>
-        <div class="w3-responsive" th:if="${foodstuff}">
-            <div class="w3-container w3-green">
+        <div class="w3-responsive" th:if="${foodstuffs}">
+            <div class="w3-container w3-green" th:if="${search}">
                 <h3>Foodstuffs</h3>
             </div>
             <table class="w3-table-all w3-hoverable">
@@ -54,18 +54,18 @@
                     <th>Created</th>
                     <th>Expiration</th>
                 </tr>
-                <tr class="clickable-row" th:each="item : ${foodstuffs}" th:attr="data-href=@{~/view?id={id}&#38;type={type} (id=${item.id}, type=${item.type})}">
-                    <td th:text="${item.name}"></td>
-                    <td th:text="${item.producer}"></td>
-                    <td th:text="${item.location}"></td>
-                    <td th:text="${item.identifier}"></td>
-                    <td th:text="${item.date}"></td>
-                    <td th:text="${item.expiration}"></td>
+                <tr class="clickable-row" th:each="foodstuff : ${foodstuffs}" th:attr="data-href=@{~/viewfoodstuff?id={id} (id=${foodstuff.id})}">
+                    <td th:text="${foodstuff.name}"></td>
+                    <td th:text="${foodstuff.producer}"></td>
+                    <td th:text="${foodstuff.location}"></td>
+                    <td th:text="${foodstuff.identifier}"></td>
+                    <td th:text="${foodstuff.date}"></td>
+                    <td th:text="${foodstuff.expiration}"></td>
                 </tr>
             </table>
         </div>
-        <div class="w3-responsive" th:if="${book}">
-            <div class="w3-container w3-green">
+        <div class="w3-responsive" th:if="${books}">
+            <div class="w3-container w3-green" th:if="${search}">
                 <h3>Books</h3>
             </div>
             <table class="w3-table-all w3-hoverable">
@@ -87,8 +87,8 @@
                 </tr>
             </table>
         </div>
-        <div class="w3-responsive" th:if="${recipe}">
-            <div class="w3-container w3-green">
+        <div class="w3-responsive" th:if="${recipes}">
+            <div class="w3-container w3-green" th:if="${search}">
                 <h3>Recipes</h3>
             </div>
             <table class="w3-table-all w3-hoverable">

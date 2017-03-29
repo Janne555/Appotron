@@ -31,8 +31,8 @@ public class RecipeDao {
                 ingDao.store(ingredient);
             }
         }
-        int update = db.update("INSERT INTO recipe(name, directions, description, type, deleted) VALUES(?,?,?,?,?)", true,
-                recipe.getName(), recipe.getDirections(), recipe.getDescription(), recipe.getType(), false);
+        int update = db.update("INSERT INTO recipe(name, directions, description, type, totalmass, date, deleted) VALUES(?,?,?,?,?,?,?)", true,
+                recipe.getName(), recipe.getDirections(), recipe.getDescription(), recipe.getType(), recipe.getTotalMass(), recipe.getDate(), false);
         recipe.setId(update);
         return recipe;
     }
@@ -40,9 +40,8 @@ public class RecipeDao {
     public List<Recipe> search(Object[] searchWords) throws SQLException {
         String sql = "SELECT r.*, "
                 + "to_tsvector(r.name) || "
-                + "to_tsvector(r.type) || "
-                + "to_tsvector(i.name) AS document "
-                + "FROM recipe AS r JOIN ingredient AS g ON g.recipe_id = r.id JOIN iteminfo AS i ON g.iteminfo_id = i.id WHERE deleted = 'false' "
+                + "to_tsvector(r.type) AS document "
+                + "FROM recipe AS r JOIN ingredient AS g ON g.recipe_id = r.id WHERE deleted = 'false' "
                 + "AND document @@ to_tsquery(?)";
 
         for (int i = 0; i < searchWords.length; i++) {
@@ -54,6 +53,8 @@ public class RecipeDao {
                     rs.getString("directions"),
                     rs.getString("description"),
                     rs.getString("type"),
+                    rs.getFloat("totalmass"),
+                    rs.getTimestamp("date"),
                     ingDao.findAllByRecipeId(rs.getInt("id")));
         });
     }
@@ -65,6 +66,8 @@ public class RecipeDao {
                     rs.getString("directions"),
                     rs.getString("description"),
                     rs.getString("type"),
+                    rs.getFloat("totalmass"),
+                    rs.getTimestamp("date"),
                     ingDao.findAllByRecipeId(rs.getInt("id")));
         }, id);
 
@@ -81,6 +84,8 @@ public class RecipeDao {
                     rs.getString("directions"),
                     rs.getString("description"),
                     rs.getString("type"),
+                    rs.getFloat("totalmass"),
+                    rs.getTimestamp("date"),
                     ingDao.findAllByRecipeId(rs.getInt("id")));
         });
     }

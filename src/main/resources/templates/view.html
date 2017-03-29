@@ -20,7 +20,7 @@
                 </div>
 
                 <!-- If item show this -->
-                <div th:if="${isItem}">
+                <div th:if="${item}">
                     <div class="w3-margin">
                         <h3>Name</h3>
                         <p class="w3-margin" th:text="${item.name}" />
@@ -106,8 +106,64 @@
                     </div>
                 </div>
 
+                <!-- If foodstuff show this -->
+                <div th:if="${foodstuff}">
+                    <div class="w3-margin">
+                        <h3>Name</h3>
+                        <p class="w3-margin" th:text="${foodstuff.name}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Location</h3>
+                        <p class="w3-margin" th:text="${foodstuff.location}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Serial Number</h3>
+                        <p class="w3-margin" th:text="${foodstuff.identifier}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Producer</h3>
+                        <p class="w3-margin" th:text="${foodstuff.producer}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Created On</h3>
+                        <p class="w3-margin" th:text="${foodstuff.date}" />
+                    </div>
+                    <div class="w3-margin">
+                        <h3>Expiration Date</h3>
+                        <p class="w3-margin" th:text="${foodstuff.expiration}" />
+                    </div>
+                    <div class="w3-row-padding">
+                        <div class="w3-half">
+                            <div class="w3-panel w3-blue w3-card-8 w3-round">
+                                <p>Calories</p>
+                                <p th:text="${calories}">joujou</p>
+                            </div>
+                        </div>
+                        <div class="w3-half">
+                            <div class="w3-panel w3-blue w3-card-8 w3-round">
+                                <p>Carbohydrate</p>
+                                <p th:text="${carbohydrate}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w3-row-padding">
+                        <div class="w3-half">
+                            <div class="w3-panel w3-blue w3-card-8 w3-round">
+                                <p>Protein</p>
+                                <p th:text="${protein}" />
+                            </div>
+                        </div>
+                        <div class="w3-half">
+                            <div class="w3-panel w3-blue w3-card-8 w3-round">
+                                <p>Fat</p>
+                                <p th:text="${fat}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- If book show this -->
-                <div th:if="${isBook}">
+                <div th:if="${book}">
                     <div class="w3-margin">
                         <h3>Title</h3>
                         <p class="w3-margin" th:text="${item.name}" />
@@ -145,7 +201,7 @@
                 </div>
 
                 <!-- If recipe show this -->
-                <div th:if="${isRecipe}">
+                <div th:if="${recipe}">
                     <div class="w3-margin">
                         <h3>Type</h3>
                         <p class="w3-margin" th:text="${item.type}" />
@@ -196,10 +252,10 @@
                             </div>
                         </div>
                     </div>
-                </div><br />
+                </div>
 
                 <!-- if meal show this -->
-                <div th:if="${isMeal}">
+                <div th:if="${meal}">
                     <div class="w3-row-padding">
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-round">
@@ -234,20 +290,20 @@
                         </ul>
                     </div>
                 </div>
+
                 <div class="w3-row-padding">
                     <div class="w3-third">
                         <a class="w3-button w3-teal w3-block">Delete</a> <br />
                     </div>
                     <div class="w3-third" th:unelss="${isMeal}">
-                        <a class="w3-button w3-teal w3-block" th:href="@{~/edit?id={id} (id=${item.id})}">Edit</a> <br />
+                        <a class="w3-button w3-teal w3-block" href="#">Edit</a> <br />
                     </div>
                     <div class="w3-third">
                         <a class="w3-button w3-teal w3-block">Borrow</a> <br />
                     </div>
                 </div>
-                <br />
-
             </div>
         </div>
+
     </body>
 </html>

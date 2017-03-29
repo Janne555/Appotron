@@ -13,7 +13,6 @@ import storables.Meal;
 import storables.User;
 
 public class MealDao {
-
     private Database db;
     private MealComponentDao mecDao;
 
@@ -23,7 +22,7 @@ public class MealDao {
     }
 
     public Meal store(Meal meal) throws SQLException {
-        int update = db.update("INSERT INTO Meal(users_id, date, deleted) VALUES(?,?,?)", true,
+        int update = db.update("INSERT INTO Meal(person_identifier, date, deleted) VALUES(?,?,?)", true,
                 meal.getUserId(),
                 meal.getDate(),
                 false);
@@ -33,25 +32,25 @@ public class MealDao {
     }
 
     public List<Meal> findAll(User user) throws SQLException {
-        return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND users_id = ? ORDER BY date DESC", rs -> {
+        return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND person_identifier = ? ORDER BY date DESC", rs -> {
             return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
         }, user.getId());
     }
 
     public List<Meal> findAll(User user, int limit) throws SQLException {
-        return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND users_id = ? ORDER BY date DESC LIMIT ?", rs -> {
+        return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND person_identifier = ? ORDER BY date DESC LIMIT ?", rs -> {
             return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
         }, user.getId(), limit);
     }
 
     public List<Meal> findAll(User user, Timestamp from, Timestamp to) throws SQLException {
-        return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND users_id = ? AND date > ? AND date < ? ORDER BY date DESC", rs -> {
+        return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND person_identifier = ? AND date > ? AND date < ? ORDER BY date DESC", rs -> {
             return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
         }, user.getId(), from, to);
     }
 
     public Meal findOne(User user, int id) throws SQLException {
-        List<Meal> queryAndCollect = db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND users_id = ? AND id = ?", rs -> {
+        List<Meal> queryAndCollect = db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND person_identifier = ? AND id = ?", rs -> {
             return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
         }, user.getId(), id);
         

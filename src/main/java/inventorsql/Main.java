@@ -23,11 +23,9 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import sql.daos.ItemDao;
 import sql.daos.UserDao;
 import sql.db.Database;
 import sql.db.Testdata;
-import storables.Item;
 import storables.User;
 import util.PasswordUtil;
 import util.Type;
@@ -69,19 +67,15 @@ public class Main {
                 System.getProperties().getProperty("postgre_password"));
 
         if (System.getProperties().getProperty("standalone").equals("true")) {
-            String[] strings = {"iteminfo",
+            String[] strings = {"globalreference",
+                "foodstuffmeta",
+                "bookmeta",
                 "item",
-                "nutritionalinfo",
-                "iteminfotag",
-                "listitem",
-                "shoppinglist",
-                "itemspecifictag",
-                "loan",
-                "users",
+                "permission",
+                "person",
                 "sessioncontrol",
                 "bugreport",
                 "meal",
-                "accesscontrol",
                 "mealcomponent",
                 "recipe",
                 "ingredient"};

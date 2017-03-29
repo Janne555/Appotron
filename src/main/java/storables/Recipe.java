@@ -5,6 +5,7 @@
  */
 package storables;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -18,15 +19,35 @@ public class Recipe {
     private String directions;
     private String description;
     private String type;
+    private float totalMass;
+    private Timestamp date;
     private List<Ingredient> ingredients;
 
-    public Recipe(int id, String name, String directions, String description, String type, List<Ingredient> ingredients) {
+    public Recipe(int id, String name, String directions, String description, String type, float totalMass, Timestamp date, List<Ingredient> ingredients) {
         this.id = id;
         this.name = name;
         this.directions = directions;
         this.description = description;
         this.type = type;
+        this.totalMass = totalMass;
+        this.date = date;
         this.ingredients = ingredients;
+    }
+
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+
+    public float getTotalMass() {
+        return totalMass;
+    }
+
+    public void setTotalMass(float totalMass) {
+        this.totalMass = totalMass;
     }
 
     public int getId() {
@@ -80,31 +101,63 @@ public class Recipe {
     public float getCalories() {
         float sum = 0;
         for (Ingredient i : ingredients) {
-            sum += i.getCalories();
+            sum += i.getTotalCalories();
         }
-        return sum;
+        return sum / totalMass;
     }
 
     public float getCarbohydrate() {
         float sum = 0;
         for (Ingredient i : ingredients) {
-            sum += i.getCarbohydrate();
+            sum += i.getTotalCarbohydrate();
         }
-        return sum;
+        return sum / totalMass;
     }
 
     public float getFat() {
         float sum = 0;
         for (Ingredient i : ingredients) {
-            sum += i.getFat();
+            sum += i.getTotalFat();
         }
-        return sum;
+        return sum / totalMass;
     }
 
     public float getProtein() {
         float sum = 0;
         for (Ingredient i : ingredients) {
-            sum += i.getProtein();
+            sum += i.getTotalProtein();
+        }
+        return sum;
+    }
+    
+        public float getTotalCalories() {
+        float sum = 0;
+        for (Ingredient i : ingredients) {
+            sum += i.getTotalCalories();
+        }
+        return sum;
+    }
+
+    public float getTotalCarbohydrate() {
+        float sum = 0;
+        for (Ingredient i : ingredients) {
+            sum += i.getTotalCarbohydrate();
+        }
+        return sum;
+    }
+
+    public float geTotaltFat() {
+        float sum = 0;
+        for (Ingredient i : ingredients) {
+            sum += i.getTotalFat();
+        }
+        return sum;
+    }
+
+    public float getTotalProtein() {
+        float sum = 0;
+        for (Ingredient i : ingredients) {
+            sum += i.getTotalProtein();
         }
         return sum;
     }

@@ -14,15 +14,13 @@ public class MealComponent {
     private int id;
     private int mealId;
     private float mass;
-    private ItemInfo item;
-    private NutritionalInfo nutritionalInfo;
+    private Foodstuff foodstuff;
 
-    public MealComponent(int id, int mealId, float mass, ItemInfo item, NutritionalInfo nutritionalInfo) {
+    public MealComponent(int id, int mealId, float mass, Foodstuff foodstuff) {
         this.id = id;
         this.mealId = mealId;
         this.mass = mass;
-        this.item = item;
-        this.nutritionalInfo = nutritionalInfo;
+        this.foodstuff = foodstuff;
     }
 
     public int getId() {
@@ -33,6 +31,14 @@ public class MealComponent {
         this.id = id;
     }
 
+    public int getMealId() {
+        return mealId;
+    }
+
+    public void setMealId(int mealId) {
+        this.mealId = mealId;
+    }
+
     public float getMass() {
         return mass;
     }
@@ -41,36 +47,13 @@ public class MealComponent {
         this.mass = mass;
     }
 
-    public void setItem(ItemInfo item) {
-        this.item = item;
+    public Foodstuff getFoodstuff() {
+        return foodstuff;
     }
 
-    public ItemInfo getItem() {
-        return item;
+    public void setFoodstuff(Foodstuff foodstuff) {
+        this.foodstuff = foodstuff;
     }
 
-    public NutritionalInfo getNutritionalInfo() {
-        return nutritionalInfo;
-    }
-
-    public void setNutritionalInfo(NutritionalInfo nutritionalInfo) {
-        this.nutritionalInfo = nutritionalInfo;
-    }
-    
-    public int getItemId() {
-        return item.getId();
-    }
-    
-    public int getMealId() {
-        return mealId;
-    }
-
-    public void setMealId(int mealId) {
-        this.mealId = mealId;
-    }
-    
-    public String getName() {
-        return getItem().getName();
-    }
     
 }

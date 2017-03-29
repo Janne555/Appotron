@@ -12,21 +12,33 @@ package storables;
 public class Ingredient {
 
     private int id;
+    private int globalReferenceId;
     private int recipeId;
-    private float amount;
-    private String unit;
-    private ItemInfo itemInfo;
-    private float unitsPerGram;
-    private NutritionalInfo nutritionalInfo;
+    private float mass;
+    private Foodstuff foodstuff;
 
-    public Ingredient(int id, int recipeId, float amount, String unit, ItemInfo itemInfo, float unitsPerGram, NutritionalInfo nutritionalInfo) {
+    public Ingredient(int id, int globalReferenceId, int recipeId, float mass, Foodstuff foodstuff) {
         this.id = id;
+        this.globalReferenceId = globalReferenceId;
         this.recipeId = recipeId;
-        this.amount = amount;
-        this.unit = unit;
-        this.itemInfo = itemInfo;
-        this.nutritionalInfo = nutritionalInfo;
-        this.unitsPerGram = unitsPerGram;
+        this.mass = mass;
+        this.foodstuff = foodstuff;
+    }
+
+    public float getTotalCalories() {
+        return getFoodstuff().getCalories() * getMass();
+    }
+
+    public float getTotalCarbohydrate() {
+        return getFoodstuff().getCarbohydrate() * getMass();
+    }
+
+    public float getTotalFat() {
+        return getFoodstuff().getFat() * getMass();
+    }
+
+    public float getTotalProtein() {
+        return getFoodstuff().getProtein() * getMass();
     }
 
     public int getId() {
@@ -37,6 +49,14 @@ public class Ingredient {
         this.id = id;
     }
 
+    public int getGlobalReferenceId() {
+        return globalReferenceId;
+    }
+
+    public void setGlobalReferenceId(int globalReferenceId) {
+        this.globalReferenceId = globalReferenceId;
+    }
+
     public int getRecipeId() {
         return recipeId;
     }
@@ -45,67 +65,20 @@ public class Ingredient {
         this.recipeId = recipeId;
     }
 
-    public float getAmount() {
-        return amount;
-    }
-
-    public void setAmount(float amount) {
-        this.amount = amount;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public ItemInfo getItemInfo() {
-        return itemInfo;
-    }
-
-    public void setItemInfo(ItemInfo itemInfo) {
-        this.itemInfo = itemInfo;
-    }
-
-    public int getItemInfoId() {
-        return this.getItemInfo().getId();
-    }
-
-    public void setUnitsPerGram(float unitsPerGram) {
-        this.unitsPerGram = unitsPerGram;
-    }
-
-    public float getUnitsPerGram() {
-        return unitsPerGram;
-    }
-
     public float getMass() {
-        return getUnitsPerGram() * getAmount();
+        return mass;
     }
 
-    public void setNutritionalInfo(NutritionalInfo nutritionalInfo) {
-        this.nutritionalInfo = nutritionalInfo;
+    public void setMass(float mass) {
+        this.mass = mass;
     }
 
-    public NutritionalInfo getNutritionalInfo() {
-        return nutritionalInfo;
+    public Foodstuff getFoodstuff() {
+        return foodstuff;
     }
 
-    public float getCalories() {
-        return nutritionalInfo.getCalories() / 100 * unitsPerGram * amount;
+    public void setFoodstuff(Foodstuff foodstuff) {
+        this.foodstuff = foodstuff;
     }
 
-    public float getCarbohydrate() {
-        return nutritionalInfo.getCarbohydrate() / 100 * unitsPerGram * amount;
-    }
-
-    public float getFat() {
-        return nutritionalInfo.getFat() / 100 * unitsPerGram * amount;
-    }
-    
-    public float getProtein() {
-        return nutritionalInfo.getProtein() / 100 * unitsPerGram * amount;
-    }
 }

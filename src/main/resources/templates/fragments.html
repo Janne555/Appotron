@@ -4,7 +4,7 @@
 
     <body>
     <div th:fragment="head">
-        <title>Inventor</title>
+        <title>Appotron</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css" />
@@ -17,17 +17,13 @@
         <div class="w3-dropdown-hover w3-mobile">
             <button class="w3-button w3-teal">Add</button>
             <div class="w3-dropdown-content w3-white w3-card-4">
-                <a href="/additem?type=item">Item</a>
-                <a href="/additem?type=foodstuff">Foodstuff</a>
-                <a href="/additem?type=book">Book</a>
+                <a href="/addfoodstuff">Foodstuff</a>
                 <a href="/addmeal">Meal</a>
                 <a href="/addrecipe">Recipe</a>
              </div>
         </div>
-        <a class="w3-bar-item w3-button w3-mobile" href="/search/all?type=foodstuff">Pantry</a>
-        <a class="w3-bar-item w3-button w3-mobile" href="/search/all?type=book">Library</a>
-        <a class="w3-bar-item w3-button w3-mobile" href="/search/all?type=item">Warehouse</a>
-        <a class="w3-bar-item w3-button w3-mobile" href="/search/all?type=recipe">Cook Book</a>
+        <a class="w3-bar-item w3-button w3-mobile" href="/pantry">Pantry</a>
+        <a class="w3-bar-item w3-button w3-mobile" href="/cookbook">Cook Book</a>
         <a class="w3-bar-item w3-button w3-mobile" th:href="@{~/profile/{username} (username=${user.username})}" th:text="${user.username}" th:if="${user}" />
         <a class="w3-bar-item w3-button w3-mobile" href="/login" th:if="${not user}">Login</a>
         <a class="w3-bar-item w3-button w3-mobile" href="/logout" th:if="${user}">Logout</a>

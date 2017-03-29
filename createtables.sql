@@ -1,134 +1,103 @@
-CREATE TABLE ItemInfo (
+CREATE TABLE globalreference (
 	id serial NOT NULL,
-	type varchar(255) NOT NULL,
 	name varchar(255) NOT NULL,
 	identifier varchar(255) NOT NULL,
-	CONSTRAINT ItemInfo_pk PRIMARY KEY (id),
-	CONSTRAINT ItemInfo_unique UNIQUE(name, identifier)
+	type varchar(255) NOT NULL,
+	CONSTRAINT globalreference_pk PRIMARY KEY (id),
+	CONSTRAINT globalreference_unique UNIQUE(name, identifier)
 ) WITH (
   OIDS=FALSE
 );
 
 
 
-CREATE TABLE Item (
+CREATE TABLE bookmeta (
 	id serial NOT NULL,
-	iteminfo_id integer NOT NULL,
+	globalreference_id bigint NOT NULL,
+	author varchar(255) NOT NULL,
+	publisher varchar(255) NOT NULL,
+	genre varchar(255) NOT NULL,
+	publishingyear int NOT NULL,
+	CONSTRAINT bookmeta_pk PRIMARY KEY (id),
+	CONSTRAINT bookmeta_unique UNIQUE(globalreference_id)
+) WITH (
+  OIDS=FALSE
+);
+
+
+
+CREATE TABLE foodstuffmeta (
+	id serial NOT NULL,
+	globalreference_id bigint NOT NULL,
+	producer varchar(255) NOT NULL,
+	calories DECIMAL NOT NULL,
+	carbohydrate DECIMAL NOT NULL,
+	fat DECIMAL NOT NULL,
+	protein DECIMAL NOT NULL,
+	CONSTRAINT foodstuffmeta_pk PRIMARY KEY (id),
+	CONSTRAINT foodstuffmeta_pk_unique UNIQUE(globalreference_id)
+) WITH (
+  OIDS=FALSE
+);
+
+
+
+CREATE TABLE item (
+	id serial NOT NULL,
+	globalreference_id bigint NOT NULL,
 	location varchar(255) NOT NULL,
 	date TIMESTAMP NOT NULL,
 	expiration TIMESTAMP,
-	deleted BOOLEAN NOT NULL DEFAULT 'false',
-	CONSTRAINT Item_pk PRIMARY KEY (id)
+	CONSTRAINT item_pk PRIMARY KEY (id)
 ) WITH (
   OIDS=FALSE
 );
 
 
 
-CREATE TABLE NutritionalInfo (
-	iteminfo_id integer NOT NULL,
-	energy FLOAT NOT NULL,
-	carbohydrate FLOAT NOT NULL,
-	fat FLOAT NOT NULL,
-	protein FLOAT NOT NULL,
-	CONSTRAINT NutritionalInfo_unique UNIQUE(iteminfo_id)
-) WITH (
-  OIDS=FALSE
-);
-
-
-
-CREATE TABLE ItemInfoTag (
-	id serial NOT NULL,
-	iteminfo_id integer NOT NULL,
-	key varchar(255) NOT NULL,
-	value varchar(255) NOT NULL,
-	CONSTRAINT ItemInfoTag_pk PRIMARY KEY (id),
-	CONSTRAINT ItemInfoTag_unique UNIQUE(iteminfo_id, key, value)
-) WITH (
-  OIDS=FALSE
-);
-
-
-
-CREATE TABLE ListItem (
-	id serial NOT NULL,
-	iteminfo_id integer NOT NULL,
-	shoppinglist_id integer NOT NULL,
-	amount integer NOT NULL,
-	CONSTRAINT ListItem_pk PRIMARY KEY(id)
-) WITH (
-  OIDS=FALSE
-);
-
-
-
-CREATE TABLE ShoppingList (
-	id serial NOT NULL,
+CREATE TABLE person (
+	identifier varchar(255) NOT NULL,
 	name varchar(255) NOT NULL,
-	date TIMESTAMP NOT NULL,
-	deleted BOOLEAN NOT NULL DEFAULT 'false',
-	CONSTRAINT ShoppingList_pk PRIMARY KEY (id)
-) WITH (
-  OIDS=FALSE
-);
-
-
-
-CREATE TABLE ItemSpecificTag (
-	id serial NOT NULL,
-	item_id integer NOT NULL,
-	key varchar(255) NOT NULL,
-	value varchar(255) NOT NULL,
-	CONSTRAINT ItemSpecificTag_pk PRIMARY KEY (id),
-	CONSTRAINT ItemSpecificTag_unique UNIQUE(item_id, key, value)
-) WITH (
-  OIDS=FALSE
-);
-
-
-
-CREATE TABLE Loan (
-	users_id varchar(255) NOT NULL,
-	item_id integer NOT NULL,
-	date TIMESTAMP NOT NULL,
-	returnDate TIMESTAMP,
-	isreturned BOOLEAN NOT NULL DEFAULT 'false',
-	deleted BOOLEAN NOT NULL DEFAULT 'false'
-) WITH (
-  OIDS=FALSE
-);
-
-
-
-CREATE TABLE Users (
-	usersid varchar(255) NOT NULL,
-	name varchar(255) NOT NULL UNIQUE,
-	email varchar(255) UNIQUE,
+	email varchar(255),
 	password varchar(255) NOT NULL,
-	apikey varchar(255) UNIQUE,
+	apikey varchar(255),
 	date TIMESTAMP NOT NULL,
-	deleted BOOLEAN NOT NULL DEFAULT 'false',
-	CONSTRAINT Users_pk PRIMARY KEY (usersid)
+	deleted BOOLEAN NOT NULL,
+	CONSTRAINT person_pk PRIMARY KEY (identifier),
+	CONSTRAINT person_unique UNIQUE(name)
 ) WITH (
   OIDS=FALSE
 );
 
 
 
-CREATE TABLE SessionControl (
+CREATE TABLE permission (
+	id serial NOT NULL,
+	person_identifier varchar(255) NOT NULL,
+	item_id bigint NOT NULL,
+	canedit BOOLEAN NOT NULL,
+	candelete BOOLEAN NOT NULL,
+	CONSTRAINT permission_pk PRIMARY KEY (id),
+	CONSTRAINT permission_unique UNIQUE(person_identifier, item_id)
+) WITH (
+  OIDS=FALSE
+);
+
+
+
+CREATE TABLE sessioncontrol (
 	sessionid varchar(255) NOT NULL,
-	users_id varchar(255) NOT NULL,
+	person_identifier varchar(255) NOT NULL,
 	date TIMESTAMP NOT NULL,
-	CONSTRAINT SessionControl_pk PRIMARY KEY (sessionid)
+	CONSTRAINT sessioncontrol_pk PRIMARY KEY (sessionid)
 ) WITH (
   OIDS=FALSE
 );
 
 
 
-CREATE TABLE BugReport (
-	users_id varchar(255) NOT NULL,
+CREATE TABLE bugreport (
+	person_identifier varchar(255) NOT NULL,
 	subject varchar(255) NOT NULL,
 	description TEXT NOT NULL,
 	date TIMESTAMP NOT NULL
@@ -137,113 +106,77 @@ CREATE TABLE BugReport (
 );
 
 
-CREATE TABLE Meal (
+
+CREATE TABLE meal (
 	id serial NOT NULL,
 	date TIMESTAMP NOT NULL,
-	deleted BOOLEAN NOT NULL DEFAULT 'false',
-	users_id varchar(255) NOT NULL,
-	CONSTRAINT Meal_pk PRIMARY KEY (id)
+	deleted BOOLEAN NOT NULL,
+	person_identifier varchar NOT NULL,
+	CONSTRAINT meal_pk PRIMARY KEY (id)
 ) WITH (
   OIDS=FALSE
 );
 
-CREATE TABLE MealComponent (
+
+
+CREATE TABLE mealcomponent (
 	id serial NOT NULL,
-	meal_id integer NOT NULL,
-	iteminfo_id integer NOT NULL,
+	meal_id bigint NOT NULL,
+	globalreference_id bigint NOT NULL,
 	mass DECIMAL NOT NULL,
-	CONSTRAINT MealComponent_pk PRIMARY KEY (id)
+	CONSTRAINT mealcomponent_pk PRIMARY KEY (id)
 ) WITH (
   OIDS=FALSE
 );
 
 
-
-CREATE TABLE AccessControl (
-	item_id integer NOT NULL,
-	users_id varchar(255) NOT NULL,
-	level integer NOT NULL,
-	CONSTRAINT AccessControl_constraint UNIQUE(item_id, users_id)
-) WITH (
-  OIDS=FALSE
-);
-
-CREATE TABLE Recipe (
+CREATE TABLE recipe (
 	id serial NOT NULL,
 	name varchar(255) NOT NULL,
 	directions TEXT NOT NULL,
 	description TEXT NOT NULL,
 	type varchar(255) NOT NULL,
-	deleted BOOLEAN NOT NULL DEFAULT 'false',
-	CONSTRAINT Recipe_pk PRIMARY KEY (id)
+	totalmass DECIMAL NOT NULL,
+	date TIMESTAMP NOT NULL,
+	deleted BOOLEAN NOT NULL,
+	CONSTRAINT recipe_pk PRIMARY KEY (id)
 ) WITH (
   OIDS=FALSE
 );
 
 
-
-CREATE TABLE Ingredient (
+CREATE TABLE ingredient (
 	id serial NOT NULL,
-	iteminfo_id integer NOT NULL,
-	recipe_id integer NOT NULL,
-	amount FLOAT NOT NULL,
-	unit varchar(255) NOT NULL,
-	CONSTRAINT Ingredient_pk PRIMARY KEY (id),
-	CONSTRAINT Ingredient_unique UNIQUE(iteminfo_id, recipe_id)
+	globalreference_id bigint NOT NULL,
+	recipe_id bigint NOT NULL,
+	mass DECIMAL NOT NULL,
+	CONSTRAINT ingredient_pk PRIMARY KEY (id),
+	CONSTRAINT ingredient_unique UNIQUE(recipe_id, globalreference_id)
 ) WITH (
   OIDS=FALSE
 );
 
 
-CREATE TABLE Conversions (
-	id serial NOT NULL,
-	iteminfo_id integer NOT NULL,
-	unit varchar(255) NOT NULL,
-	asgrams DECIMAL NOT NULL,
-	unitpergram DECIMAL NOT NULL,
-	gramperunit DECIMAL NOT NULL,
-	CONSTRAINT Conversions_pk PRIMARY KEY (id)
-) WITH (
-  OIDS=FALSE
-);
+ALTER TABLE bookmeta ADD CONSTRAINT bookmeta_fk0 FOREIGN KEY (globalreference_id) REFERENCES globalreference(id);
 
+ALTER TABLE foodstuffmeta ADD CONSTRAINT foodstuffmeta_fk0 FOREIGN KEY (globalreference_id) REFERENCES globalreference(id);
 
+ALTER TABLE item ADD CONSTRAINT item_fk0 FOREIGN KEY (globalreference_id) REFERENCES globalreference(id);
 
-ALTER TABLE Item ADD CONSTRAINT Item_fk0 FOREIGN KEY (iteminfo_id) REFERENCES ItemInfo(id);
+ALTER TABLE permission ADD CONSTRAINT permission_fk0 FOREIGN KEY (person_identifier) REFERENCES person(identifier);
 
-ALTER TABLE NutritionalInfo ADD CONSTRAINT NutritionalInfo_fk0 FOREIGN KEY (iteminfo_id) REFERENCES ItemInfo(id);
+ALTER TABLE permission ADD CONSTRAINT permission_fk1 FOREIGN KEY (item_id) REFERENCES item(id);
 
-ALTER TABLE ItemInfoTag ADD CONSTRAINT ItemInfoTag_fk0 FOREIGN KEY (iteminfo_id) REFERENCES ItemInfo(id);
+ALTER TABLE sessioncontrol ADD CONSTRAINT sessioncontrol_fk0 FOREIGN KEY (person_identifier) REFERENCES person(identifier);
 
-ALTER TABLE ListItem ADD CONSTRAINT ListItem_fk0 FOREIGN KEY (iteminfo_id) REFERENCES ItemInfo(id);
+ALTER TABLE bugreport ADD CONSTRAINT bugreport_fk0 FOREIGN KEY (person_identifier) REFERENCES person(identifier);
 
-ALTER TABLE ListItem ADD CONSTRAINT ListItem_fk1 FOREIGN KEY (shoppinglist_id) REFERENCES ShoppingList(id);
+ALTER TABLE meal ADD CONSTRAINT meal_fk0 FOREIGN KEY (person_identifier) REFERENCES person(identifier);
 
+ALTER TABLE mealcomponent ADD CONSTRAINT mealcomponent_fk0 FOREIGN KEY (meal_id) REFERENCES meal(id);
 
-ALTER TABLE ItemSpecificTag ADD CONSTRAINT ItemSpecificTag_fk0 FOREIGN KEY (item_id) REFERENCES Item(id);
+ALTER TABLE mealcomponent ADD CONSTRAINT mealcomponent_fk1 FOREIGN KEY (globalreference_id) REFERENCES globalreference(id);
 
-ALTER TABLE Loan ADD CONSTRAINT Loan_fk0 FOREIGN KEY (users_id) REFERENCES Users(usersid);
+ALTER TABLE ingredient ADD CONSTRAINT ingredient_fk0 FOREIGN KEY (globalreference_id) REFERENCES globalreference(id);
 
-ALTER TABLE Loan ADD CONSTRAINT Loan_fk1 FOREIGN KEY (item_id) REFERENCES Item(id);
-
-
-ALTER TABLE SessionControl ADD CONSTRAINT SessionControl_fk0 FOREIGN KEY (users_id) REFERENCES Users(usersid);
-
-ALTER TABLE BugReport ADD CONSTRAINT BugReport_fk0 FOREIGN KEY (users_id) REFERENCES Users(usersid);
-
-ALTER TABLE Meal ADD CONSTRAINT Meal_fk0 FOREIGN KEY (users_id) REFERENCES Users(usersid);
-
-ALTER TABLE MealComponent ADD CONSTRAINT MealComponent_fk0 FOREIGN KEY (meal_id) REFERENCES Meal(id);
-
-ALTER TABLE MealComponent ADD CONSTRAINT MealComponent_fk1 FOREIGN KEY (iteminfo_id) REFERENCES ItemInfo(id);
-
-ALTER TABLE AccessControl ADD CONSTRAINT AccessControl_fk0 FOREIGN KEY (item_id) REFERENCES Item(id);
-
-ALTER TABLE AccessControl ADD CONSTRAINT AccessControl_fk1 FOREIGN KEY (users_id) REFERENCES Users(usersid);
-
-
-ALTER TABLE Ingredient ADD CONSTRAINT Ingredient_fk0 FOREIGN KEY (iteminfo_id) REFERENCES ItemInfo(id);
-
-ALTER TABLE Ingredient ADD CONSTRAINT Ingredient_fk1 FOREIGN KEY (recipe_id) REFERENCES Recipe(id);
-
-ALTER TABLE Conversions ADD CONSTRAINT Conversions_fk0 FOREIGN KEY (iteminfo_id) REFERENCES ItemInfo(id);
+ALTER TABLE ingredient ADD CONSTRAINT ingredient_fk1 FOREIGN KEY (recipe_id) REFERENCES recipe(id);

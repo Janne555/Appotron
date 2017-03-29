@@ -12,8 +12,7 @@ import java.util.List;
  *
  * @author Janne
  */
-public class Meal implements SearchResult {
-
+public class Meal {
     private int id;
     private User user;
     private Timestamp date;
@@ -62,55 +61,42 @@ public class Meal implements SearchResult {
         this.components = components;
     }
 
-    public float getEnergy() {
+    public float getTotalCalories() {
         float sum = 0;
         for (MealComponent i : components) {
-            if (i.getNutritionalInfo() == null) {
-                continue;
-            }
-            sum += i.getMass() / 100 * i.getNutritionalInfo().getCalories();
+            sum += i.getMass() * i.getFoodstuff().getCalories();
         }
 
         return sum;
     }
 
-    public float getCarbohydrate() {
+    public float getTotalCarbohydrate() {
         float sum = 0;
         for (MealComponent i : components) {
-            if (i.getNutritionalInfo() == null) {
-                continue;
-            }
-            sum += i.getMass() / 100 * i.getNutritionalInfo().getCarbohydrate();
+            sum += i.getMass() * i.getFoodstuff().getCarbohydrate();
         }
 
         return sum;
     }
 
-    public float getFat() {
+    public float getTotalFat() {
         float sum = 0;
         for (MealComponent i : components) {
-            if (i.getNutritionalInfo() == null) {
-                continue;
-            }
-            sum += i.getMass() / 100 * i.getNutritionalInfo().getFat();
+            sum += i.getMass() * i.getFoodstuff().getFat();
         }
 
         return sum;
     }
 
-    public float getProtein() {
+    public float getTotalProtein() {
         float sum = 0;
         for (MealComponent i : components) {
-            if (i.getNutritionalInfo() == null) {
-                continue;
-            }
-            sum += i.getMass() / 100 * i.getNutritionalInfo().getProtein();
+            sum += i.getMass() * i.getFoodstuff().getProtein();
         }
 
         return sum;
     }
 
-    @Override
     public String getName() {
         return "Meal: " + getDate().toLocalDateTime().getDayOfMonth() + "."
                 + getDate().toLocalDateTime().getMonthValue() + "."
@@ -119,12 +105,10 @@ public class Meal implements SearchResult {
                 + getDate().toLocalDateTime().getMinute();
     }
 
-    @Override
     public String getLocation() {
         return "";
     }
 
-    @Override
     public String getType() {
         return "meal";
     }

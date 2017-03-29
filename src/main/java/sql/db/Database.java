@@ -13,9 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import storables.Item;
-import storables.User;
 
 /**
  *
@@ -34,18 +31,6 @@ public class Database {
         this.password = password;
     }
     
-    public boolean canSelect(User user, Item item) throws SQLException {
-        String sql = "SELECT * FROM Item as i, AccessControl as a, Users as u WHERE i.id = a.item_id AND u.usersid = a.users_id AND u.usersid = ? AND i.id = ?";
-        List<String> queryAndCollect = queryAndCollect(sql, rs -> {
-            return rs.getString(1);
-        }, user.getId(), item.getId());
-        
-        if (!queryAndCollect.isEmpty()) {
-            return true;
-        }
-        return false;
-    }
-
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(address, username, password);
     }

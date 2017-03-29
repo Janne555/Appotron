@@ -21,10 +21,10 @@
     			<th>Expires</th>
     			<th>Location</th>
     		</tr>
-	        <tr th:each="item: ${items}">
-	            <td th:text="${item.name}">first</td>
-	            <td th:text="${item.expires}">0</td>
-	            <td th:text="${item.location}">asd</td>
+	        <tr th:each="foodstuff: ${foodstuffs}">
+	            <td th:text="${foodstuff.name}">first</td>
+	            <td th:text="${foodstuff.expires}">0</td>
+	            <td th:text="${foodstuff.location}">asd</td>
 	        </tr>
     	</table>
         </div>

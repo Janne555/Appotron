@@ -16,31 +16,27 @@ import storables.Ingredient;
  */
 public class IngredientDao {
     private Database db;
-    private ItemInfoDao infoDao;
-    private NutritionalInfoDao nutDao;
+    private FoodstuffDao foodDao;
 
     public IngredientDao(Database db) {
         this.db = db;
-        this.infoDao = new ItemInfoDao(db);
-        this.nutDao = new NutritionalInfoDao(db);
+        this.foodDao = new FoodstuffDao(db);
     }
     
     public Ingredient store(Ingredient ingredient) throws SQLException {
-        int update = db.update("INSERT INTO Ingredient(iteminfo_id, recipe_id, amount, unit) VALUES(?,?,?,?)", true,
-                ingredient.getItemInfoId(), ingredient.getRecipeId(), ingredient.getAmount(), ingredient.getUnit());
+        int update = db.update("INSERT INTO ingredient(globalreference_id, recipe_id, mass) VALUES(?,?,?)", true,
+                ingredient.getGlobalReferenceId(), ingredient.getRecipeId(), ingredient.getMass());
         ingredient.setId(update);
         return ingredient;
     }
     
     public List<Ingredient> findAllByRecipeId(int recipeId) throws SQLException {
-        return db.queryAndCollect("SELECT * FROM Ingredient as i, Conversions as c WHERE i.recipe_id = ? AND i.iteminfo_id = c.iteminfo_id", rs -> {
-            return new Ingredient(rs.getInt("i.id"),
-                    rs.getInt("i.recipe_id"),
-                    rs.getFloat("i.amount"),
-                    rs.getString("i.unit"),
-                    infoDao.findOne(rs.getInt("i.iteminfo_id")),
-                    rs.getFloat("c.unitspergram"),
-                    nutDao.findOneByItemInfoId(rs.getInt("i.iteminfo_id")));
+        return db.queryAndCollect("SELECT * FROM ingredient WHERE ingredient.recipe_id = ?", rs -> {
+            return new Ingredient(rs.getInt("id"),
+                    rs.getInt("globalreference_id"), 
+                    rs.getInt("recipe_id"), 
+                    rs.getFloat("mass"), 
+                    foodDao.findOne(rs.getInt("i.globalreference_id")));
         }, recipeId);
     }
 }
