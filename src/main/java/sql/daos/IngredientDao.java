@@ -36,7 +36,7 @@ public class IngredientDao {
                     rs.getInt("globalreference_id"), 
                     rs.getInt("recipe_id"), 
                     rs.getFloat("mass"), 
-                    foodDao.findOne(rs.getInt("i.globalreference_id")));
+                    foodDao.findOne(rs.getInt("globalreference_id")));
         }, recipeId);
     }
 }

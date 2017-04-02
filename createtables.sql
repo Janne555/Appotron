@@ -48,6 +48,7 @@ CREATE TABLE item (
 	location varchar(255) NOT NULL,
 	date TIMESTAMP NOT NULL,
 	expiration TIMESTAMP,
+        deleted BOOLEAN NOT NULL DEFAULT 'false',
 	CONSTRAINT item_pk PRIMARY KEY (id)
 ) WITH (
   OIDS=FALSE

@@ -203,52 +203,51 @@
                 <!-- If recipe show this -->
                 <div th:if="${recipe}">
                     <div class="w3-margin">
-                        <h3>Type</h3>
-                        <p class="w3-margin" th:text="${item.type}" />
+                        <h3>Name</h3>
+                        <p class="w3-margin" th:text="${recipe.name}" />
                     </div>
                     <div class="w3-margin">
                         <h3>Description</h3>
-                        <p class="w3-margin" th:text="${item.description}" />
+                        <p class="w3-margin" th:text="${recipe.description}" />
                     </div>
                     <div class="w3-margin">
                         <h3>Ingredients</h3>
                         <table class="w3-table-all">
-                            <tr th:each="ingredient : ${item.ingredients}">
-                                <td th:text="${ingredient.amount}"></td>
-                                <td th:text="${ingredient.unit}"></td>
-                                <td th:text="${ingredient.itemInfo.name}"></td>
+                            <tr th:each="ingredient : ${recipe.ingredients}">
+                                <td th:text="${ingredient.foodstuff.name}"></td>
+                                <td th:text="${ingredient.mass}"></td>
                             </tr>
                         </table>
                     </div>
                     <div class="w3-margin">
                         <h3>Directions</h3>
-                        <p class="w3-margin" th:text="${item.directions}" />
+                        <p class="w3-margin" th:text="${recipe.directions}" />
                     </div>
                     <div class="w3-row-padding">
                         <div class="w3-half">
-                            <div class="w3-panel w3-blue w3-round">
-                                <p>Energy</p>
-                                <p th:text="${item.calories}">joujou</p>
+                            <div class="w3-panel w3-blue w3-card-8 w3-round">
+                                <p>Calories</p>
+                                <p th:text="${calories}">joujou</p>
                             </div>
                         </div>
                         <div class="w3-half">
-                            <div class="w3-panel w3-blue w3-round">
+                            <div class="w3-panel w3-blue w3-card-8 w3-round">
                                 <p>Carbohydrate</p>
-                                <p th:text="${item.carbohydrate}" />
+                                <p th:text="${carbohydrate}" />
                             </div>
                         </div>
                     </div>
                     <div class="w3-row-padding">
                         <div class="w3-half">
-                            <div class="w3-panel w3-blue w3-round">
+                            <div class="w3-panel w3-blue w3-card-8 w3-round">
                                 <p>Protein</p>
-                                <p th:text="${item.protein}" />
+                                <p th:text="${protein}" />
                             </div>
                         </div>
                         <div class="w3-half">
-                            <div class="w3-panel w3-blue w3-round">
+                            <div class="w3-panel w3-blue w3-card-8 w3-round">
                                 <p>Fat</p>
-                                <p th:text="${item.fat}" />
+                                <p th:text="${fat}" />
                             </div>
                         </div>
                     </div>
@@ -259,14 +258,14 @@
                     <div class="w3-row-padding">
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-round">
-                                <p>Energy</p>
-                                <p th:text="${item.calories}">joujou</p>
+                                <p>Calories</p>
+                                <p th:text="${meal.totalCalories}">joujou</p>
                             </div>
                         </div>
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-round">
                                 <p>Carbohydrate</p>
-                                <p th:text="${item.carbohydrate}" />
+                                <p th:text="${meal.totalCarbohydrate}" />
                             </div>
                         </div>
                     </div>
@@ -274,18 +273,18 @@
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-round">
                                 <p>Protein</p>
-                                <p th:text="${item.protein}" />
+                                <p th:text="${meal.totalFat}" />
                             </div>
                         </div>
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-round">
                                 <p>Fat</p>
-                                <p th:text="${item.fat}" />
+                                <p th:text="${meal.totalProtein}" />
                             </div>
                         </div>
                     </div><br />
                     <div class="w3-container w3-margin">
-                        <ul class="w3-ul w3-hoverable" th:each="component : ${item.components}">
+                        <ul class="w3-ul w3-hoverable" th:each="component : ${meal.components}">
                             <li><p><span th:text="${component.name}" />: <span class="w3-right-align" th:text="${component.mass}" />g</p></li>
                         </ul>
                     </div>
@@ -293,7 +292,7 @@
 
                 <div class="w3-row-padding">
                     <div class="w3-third">
-                        <a class="w3-button w3-teal w3-block">Delete</a> <br />
+                        <a class="w3-button w3-teal w3-block" th:href="@{~/delete{type}?id={id} (type=${type}, id=${id})}">Delete</a> <br />
                     </div>
                     <div class="w3-third" th:unelss="${isMeal}">
                         <a class="w3-button w3-teal w3-block" href="#">Edit</a> <br />

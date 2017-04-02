@@ -13,6 +13,7 @@ import storables.Meal;
 import storables.User;
 
 public class MealDao {
+
     private Database db;
     private MealComponentDao mecDao;
 
@@ -49,14 +50,27 @@ public class MealDao {
         }, user.getId(), from, to);
     }
 
+    public List<Meal> findTodays(User user) throws SQLException {
+        return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND person_identifier = ? AND date > CURRENT_DATE AND date < CURRENT_DATE + interval '1 day' ORDER BY date DESC", rs -> {
+            return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
+        }, user.getId());
+    }
+
     public Meal findOne(User user, int id) throws SQLException {
         List<Meal> queryAndCollect = db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND person_identifier = ? AND id = ?", rs -> {
             return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
         }, user.getId(), id);
-        
-        if (queryAndCollect.isEmpty()) return null;
-        
+
+        if (queryAndCollect.isEmpty()) {
+            return null;
+        }
+
         return queryAndCollect.get(0);
     }
-    
+
+    public void delete(User user, int id) throws SQLException {
+        mecDao.deleteAllByMealId(id);
+        db.update("DELETE FROM meal WHERE id = ? AND person_identifier = ?", false, id, user.getId());
+    }
+
 }

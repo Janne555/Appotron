@@ -6,6 +6,8 @@
 package storables;
 
 import java.sql.Timestamp;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
@@ -113,7 +115,7 @@ public class Meal {
         return "meal";
     }
     
-    public String getTime() {
-        return this.getDate().toLocalDateTime().toLocalTime().toString();
+    public LocalTime getTime() {
+        return date.toLocalDateTime().toLocalTime().truncatedTo(ChronoUnit.MINUTES);
     }
 }

@@ -6,9 +6,9 @@
     <head>
         <script>
             /*<![CDATA[*/
-            $(document).on("keypress", "form", function(event) { 
-                return event.keyCode != 13;
-            });
+            // $(document).on("keypress", "form", function(event) { 
+            //     return event.keyCode != 13;
+            // });
 
             $(document).ready(function(){
                 $("#scanbutton").click(function(){
@@ -34,8 +34,9 @@
                             var response = JSON.parse(xhr.responseText);
                             for (i in response) {
                                 var name = response[i].name;
-                                var identifier = response[i].id;
-                                var result = "<li id='" + identifier + "' class='w3-list-item' data-identifier='" + identifier + "' data-itemname='" + name + "' onClick='chooseThis(this)'>" + name + ", " + identifier +"</li>";
+                                var id = response[i].globalReferenceId;
+                                var identifier = response[i].identifier;
+                                var result = "<li id='" + id + "' class='w3-list-item' data-id='" + id + "' data-itemname='" + name + "' onClick='chooseThis(this)'>" + name + ", " + identifier +"</li>";
                                 $("#searchresults").append(result);
                             }
                             boolean = !boolean;
@@ -48,14 +49,17 @@
             
             function chooseThis(something) {
                 var itemname = something.dataset.itemname;
-                var identifier = something.dataset.identifier;
-                var row = "<tr id='row" + identifier + "'><td>" + itemname + "<input name='ingredients' value='" + identifier + "' hidden='true' /> </td><td><input class='w3-input' required='true' name='amountfor:" + identifier + "' type='number' min='0' step='0.1' /></td><td><select class='w3-input' name='unitfor:" + identifier + "' required='true' ><option value='g'>g</option><option value='dl'>dl</option><option value='l'>l</option><option value='pcs'>pcs</option></select><td><button class='w3-button' onClick='removeThis(" + '"row' + identifier + '"' + ")' type='button'>Remove</button></tr>";
-                $("#selectionstable").append(row);
+                var id = something.dataset.id;
+                var row = "<tr id='row" + id + "'><td>" + itemname + "<input name='ingredients' value='" + id + "' hidden='true' /> </td><td><input class='w3-input' required='true' name='amountfor:" + id + "' type='number' min='0' step='0.1' placeholder='amount in grams' /></td><td><button class='w3-button' onClick='removeThis(" + '"row' + id + '"' + ")' type='button' >Remove</button></td></tr>";
+                if(!$("#row" + id).length) {
+                    $("#selectionstable").append(row);
+                }
             }
 
             function removeThis(identifier) {
                 $("#" + identifier).remove();
             }
+
             /*]]>*/
 
         </script>
@@ -72,10 +76,10 @@
         <div class="w3-container">
             <h3>Search for Ingredients</h3>
             <div class="w3-container w3-cell" style="width: 90%">
-                <input class="w3-input" type="text" name="searchfield" id="searchfield" />
+                <input class="w3-input" type="text" name="searchfield" id="searchfield" onkeydown="if (event.keyCode == 13) document.getElementById('searchbutton').click()" />
             </div>
             <div class="w3-container w3-cell">   
-                <button class="w3-button" id="searchbutton" >Search</button>
+                <button class="w3-button" id="searchbutton">Search</button>
             </div>
             <br />
             <div>
@@ -90,7 +94,6 @@
                 <tr>
                     <th>Name</th>
                     <th>Amount</th>
-                    <th>Unit</th>
                 </tr>
             </table>
             <br />

@@ -55,12 +55,12 @@ public class FoodstuffDao {
             foodstuff.setId(foodstuffMetaIdList.get(0));
         }
 
-        int update = db.update("INSERT INTO Item(globalreference_id, location, date, expiration) VALUES(?,?,?,?)", true,
-                foodstuff.getGlobalReferenceId(), foodstuff.getLocation(), foodstuff.getDate(), foodstuff.getExpiration());
+        int update = db.update("INSERT INTO Item(globalreference_id, location, date, expiration, deleted) VALUES(?,?,?,?,?)", true,
+                foodstuff.getGlobalReferenceId(), foodstuff.getLocation(), foodstuff.getDate(), foodstuff.getExpiration(), false);
         foodstuff.setId(update);
-        
+
         perDao.store(new Permission(0, user.getId(), foodstuff.getId(), true, true));
-        
+
         return foodstuff;
     }
 
@@ -93,6 +93,7 @@ public class FoodstuffDao {
                 + "WHERE g.id = i.globalreference_id "
                 + "AND f.globalreference_id = g.id "
                 + "AND p.item_id = i.id "
+                + "AND i.deleted = 'false' "
                 + "AND p.person_identifier = ?) as mainquery "
                 + "WHERE mainquery.document @@ to_tsquery(?)";
 
@@ -161,7 +162,7 @@ public class FoodstuffDao {
 
         return items;
     }
-    
+
     public List<Foodstuff> findAll(User user) throws SQLException {
         return db.queryAndCollect("SELECT g.name as name, "
                 + "g.identifier as identifier, "
@@ -181,6 +182,7 @@ public class FoodstuffDao {
                 + "WHERE g.id = i.globalreference_id "
                 + "AND f.globalreference_id = g.id "
                 + "AND p.item_id = i.id "
+                + "AND i.deleted = 'false' "
                 + "AND p.person_identifier = ? ", rs -> {
                     return new Foodstuff(rs.getString("name"),
                             rs.getString("identifier"),
@@ -217,6 +219,7 @@ public class FoodstuffDao {
                 + "WHERE g.id = i.globalreference_id "
                 + "AND f.globalreference_id = g.id "
                 + "AND p.item_id = i.id "
+                + "AND i.deleted = 'false'"
                 + "AND p.person_identifier = ? AND i.id = ?", rs -> {
                     return new Foodstuff(rs.getString("name"),
                             rs.getString("identifier"),
@@ -279,6 +282,7 @@ public class FoodstuffDao {
         return db.queryAndCollect("SELECT DISTINCT ON (location) location "
                 + "FROM item as i, permission as p "
                 + "WHERE p.item_id = i.id "
+                + "AND i.deleted = 'false' "
                 + "AND p.person_identifier = ? ", rs -> {
                     return rs.getString("location");
                 }, user.getId());
@@ -303,6 +307,7 @@ public class FoodstuffDao {
                 + "WHERE g.id = i.globalreference_id "
                 + "AND f.globalreference_id = g.id "
                 + "AND p.item_id = i.id "
+                + "AND i.deleted = 'false' "
                 + "AND p.person_identifier = ? "
                 + "ORDER BY i.expiration ASC LIMIT ?", rs -> {
                     return new Foodstuff(rs.getString("name"),
@@ -319,5 +324,28 @@ public class FoodstuffDao {
                             rs.getTimestamp("expiration"),
                             rs.getTimestamp("date"));
                 }, user.getId(), limit);
+    }
+
+    public void delete(User user, Foodstuff foodstuff) throws SQLException {
+        if (db.canDelete(user.getId(), foodstuff.getId())) {
+            db.update("UPDATE item SET deleted = 'true' WHERE item.id = ?", false, foodstuff.getId());
+        } else {
+            throw new SecurityException("action is not authorized");
+        }
+    }
+
+    public void edit(User user, Foodstuff foodstuff) throws SQLException {
+        if (db.canEdit(user.getId(), foodstuff.getId())) {
+            db.update("UPDATE globalreference SET name = ?, identifier = ?, type = ? WHERE item.id = ?", false,
+                    foodstuff.getName(), foodstuff.getIdentifier(), "foodstuff", foodstuff.getId());
+            
+            db.update("UPDATE foodstuffmeta SET producer = ?, calories = ?, carbohydrate = ?, fat = ?, protein = ? WHERE id = ?", false,
+                    foodstuff.getProducer(), foodstuff.getCalories(), foodstuff.getCarbohydrate(), foodstuff.getFat(), foodstuff.getProtein(), foodstuff.getFoodstuffMetaId());
+            
+            db.update("UPDATE item SET location = ?, expiration = ? WHERE id = ?", false,
+                    foodstuff.getLocation(), foodstuff.getExpiration(), foodstuff.getId());
+        } else {
+            throw new SecurityException("action is not authorized");
+        }
     }
 }

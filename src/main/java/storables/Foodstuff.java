@@ -172,7 +172,7 @@ public class Foodstuff {
             return "In " + until + " days";
         }
     }
-    
+
     @Override
     public String toString() {
         return "NAME: " + getName() + ", "
@@ -186,4 +186,19 @@ public class Foodstuff {
                 + "PROTEIN: " + getProtein();
     }
 
+    public float getRelativeCalories() {
+        return this.getCalories() * 100;
+    }
+
+    public float getRelativeCarbohydrate() {
+        return this.getCarbohydrate() * 100;
+    }
+
+    public float getRelativeFat() {
+        return this.getFat() * 100;
+    }
+
+    public float getRelativeProtein() {
+        return this.getProtein() * 100;
+    }
 }

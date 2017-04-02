@@ -55,5 +55,7 @@ public class MealComponent {
         this.foodstuff = foodstuff;
     }
 
-    
+    public String getName() {
+        return getFoodstuff().getName();
+    }
 }

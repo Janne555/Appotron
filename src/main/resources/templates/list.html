@@ -98,7 +98,7 @@
                     <th>Description</th>
                     <th>Calories</th>
                 </tr>
-                <tr class="clickable-row" th:each="item : ${recipes}" th:attr="data-href=@{~/view?id={id}&#38;type=recipe (id=${item.id})}">
+                <tr class="clickable-row" th:each="item : ${recipes}" th:attr="data-href=@{~/viewrecipe?id={id} (id=${item.id})}">
                     <td th:text="${item.name}"></td>
                     <td th:text="${item.type}"></td>
                     <td th:text="${item.description}"></td>

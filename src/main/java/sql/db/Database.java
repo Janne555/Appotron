@@ -30,11 +30,10 @@ public class Database {
         this.username = username;
         this.password = password;
     }
-    
+
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(address, username, password);
     }
-    
 
     public int update(String sql, boolean returnId, Object... params) throws SQLException {
         int id = 0;
@@ -50,7 +49,7 @@ public class Database {
             }
             ps.close();
         }
-        
+
         return id;
     }
 
@@ -82,5 +81,17 @@ public class Database {
             rs.close();
         }
         return rows;
+    }
+
+    public boolean canEdit(String personIdentifier, int itemId) throws SQLException {
+        return !queryAndCollect("SELECT * FROM item, permission WHERE item.id = permission.item_id AND permission.canedit = 'true' AND permission.person_identifier = ? AND item.id = ?", rs -> {
+            return rs.getString(1);
+        }, personIdentifier, itemId).isEmpty();
+    }
+
+    public boolean canDelete(String personIdentifier, int itemId) throws SQLException {
+        return !queryAndCollect("SELECT * FROM item, permission WHERE item.id = permission.item_id AND permission.candelete = 'true' AND permission.person_identifier = ? AND item.id = ?", rs -> {
+            return rs.getString(1);
+        }, personIdentifier, itemId).isEmpty();
     }
 }

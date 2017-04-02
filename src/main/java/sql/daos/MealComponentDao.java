@@ -38,4 +38,8 @@ public class MealComponentDao {
         },mealId);
         return queryAndCollect;
     }
+    
+    public void deleteAllByMealId(int mealId) throws SQLException {
+        db.update("DELETE FROM mealcomponent WHERE meal_id = ?", false, mealId);
+    }
 }
