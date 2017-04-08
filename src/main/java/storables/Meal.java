@@ -6,6 +6,7 @@
 package storables;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  * @author Janne
  */
 public class Meal {
+
     private int id;
     private User user;
     private Timestamp date;
@@ -77,7 +79,6 @@ public class Meal {
         for (MealComponent i : components) {
             sum += i.getMass() * i.getFoodstuff().getCarbohydrate();
         }
-
         return sum;
     }
 
@@ -86,7 +87,6 @@ public class Meal {
         for (MealComponent i : components) {
             sum += i.getMass() * i.getFoodstuff().getFat();
         }
-
         return sum;
     }
 
@@ -95,16 +95,53 @@ public class Meal {
         for (MealComponent i : components) {
             sum += i.getMass() * i.getFoodstuff().getProtein();
         }
-
         return sum;
     }
 
+    public int getTotalCaloriesRounded() {
+        float sum = 0;
+        for (MealComponent i : components) {
+            sum += i.getMass() * i.getFoodstuff().getCalories();
+        }
+        return Math.round(sum);
+    }
+
+    public int getTotalCarbohydrateRounded() {
+        float sum = 0;
+        for (MealComponent i : components) {
+            sum += i.getMass() * i.getFoodstuff().getCarbohydrate();
+        }
+        return Math.round(sum);
+    }
+
+    public int getTotalFatRounded() {
+        float sum = 0;
+        for (MealComponent i : components) {
+            sum += i.getMass() * i.getFoodstuff().getFat();
+        }
+        return Math.round(sum);
+    }
+
+    public int getTotalProteinRounded() {
+        float sum = 0;
+        for (MealComponent i : components) {
+            sum += i.getMass() * i.getFoodstuff().getProtein();
+        }
+        return Math.round(sum);
+    }
+
     public String getName() {
-        return "Meal: " + getDate().toLocalDateTime().getDayOfMonth() + "."
+        String string = "Meal: " + getDate().toLocalDateTime().getDayOfMonth() + "."
                 + getDate().toLocalDateTime().getMonthValue() + "."
                 + getDate().toLocalDateTime().getYear() + " "
-                + getDate().toLocalDateTime().getHour() + ":"
-                + getDate().toLocalDateTime().getMinute();
+                + getDate().toLocalDateTime().getHour() + ":";
+        int minute = getDate().toLocalDateTime().getMinute();
+        if (minute < 10) {
+            string += "0" + minute;
+        } else {
+            string += minute;
+        }
+        return string;
     }
 
     public String getLocation() {
@@ -114,8 +151,16 @@ public class Meal {
     public String getType() {
         return "meal";
     }
+
+    public LocalDateTime getTime() {
+        return date.toLocalDateTime().truncatedTo(ChronoUnit.MINUTES);
+    }
     
-    public LocalTime getTime() {
-        return date.toLocalDateTime().toLocalTime().truncatedTo(ChronoUnit.MINUTES);
+    public float getMass() {
+        float mass = 0;
+        for (MealComponent c : getComponents()) {
+            mass += c.getMass();
+        }
+        return mass;
     }
 }

@@ -32,6 +32,11 @@ public class Recipe {
         this.totalMass = totalMass;
         this.date = date;
         this.ingredients = ingredients;
+        if (totalMass <= 0 && ingredients != null) {
+            for (Ingredient i : ingredients) {
+                this.totalMass += i.getMass();
+            }
+        }
     }
 
     public Timestamp getDate() {
@@ -98,42 +103,10 @@ public class Recipe {
         this.ingredients = ingredients;
     }
 
-    public float getCalories() {
+    public float getTotalCalories() {
         float sum = 0;
         for (Ingredient i : ingredients) {
-            sum += i.getTotalCalories();
-        }
-        return sum / totalMass;
-    }
-
-    public float getCarbohydrate() {
-        float sum = 0;
-        for (Ingredient i : ingredients) {
-            sum += i.getTotalCarbohydrate();
-        }
-        return sum / totalMass;
-    }
-
-    public float getFat() {
-        float sum = 0;
-        for (Ingredient i : ingredients) {
-            sum += i.getTotalFat();
-        }
-        return sum / totalMass;
-    }
-
-    public float getProtein() {
-        float sum = 0;
-        for (Ingredient i : ingredients) {
-            sum += i.getTotalProtein();
-        }
-        return sum;
-    }
-    
-        public float getTotalCalories() {
-        float sum = 0;
-        for (Ingredient i : ingredients) {
-            sum += i.getTotalCalories();
+            sum += i.getCalories();
         }
         return sum;
     }
@@ -141,15 +114,15 @@ public class Recipe {
     public float getTotalCarbohydrate() {
         float sum = 0;
         for (Ingredient i : ingredients) {
-            sum += i.getTotalCarbohydrate();
+            sum += i.getCarbohydrate();
         }
         return sum;
     }
 
-    public float geTotaltFat() {
+    public float getTotalFat() {
         float sum = 0;
         for (Ingredient i : ingredients) {
-            sum += i.getTotalFat();
+            sum += i.getFat();
         }
         return sum;
     }
@@ -157,9 +130,25 @@ public class Recipe {
     public float getTotalProtein() {
         float sum = 0;
         for (Ingredient i : ingredients) {
-            sum += i.getTotalProtein();
+            sum += i.getProtein();
         }
         return sum;
+    }
+
+    public float getCalories() {
+        return getTotalCalories() / getTotalMass();
+    }
+
+    public float getCarbohydrate() {
+        return getTotalCarbohydrate() / getTotalMass();
+    }
+
+    public float getFat() {
+        return getTotalFat() / getTotalMass();
+    }
+
+    public float getProtein() {
+        return getTotalProtein() / getTotalMass();
     }
 
 }

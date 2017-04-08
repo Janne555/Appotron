@@ -86,7 +86,7 @@
                 <button class="w3-button" id="searchbutton" >Search</button>
             </div>
             <br />
-            <div>
+            <div style="max-height: 150px; overflow-y: scroll;">
                 <ul class="w3-ul w3-hoverable" id="searchresults"></ul>
             </div>
         </div>
@@ -102,6 +102,11 @@
                     <th>Name</th>
                     <th>Mass</th>
                     <th></th>
+                </tr>
+                <tr th:each="selection : ${selections}" th:id="|row${selection.globalReferenceId}|">
+                    <td><span th:text="${selection.name}" /><input name='ingredients' th:value="${selection.globalReferenceId}" hidden='true' /></td>
+                    <td><input class='w3-input' required='true' th:name="|amountfor:${selection.globalReferenceId}|" type='number' min='0' step='0.1' placeholder='amount in grams' /></td>
+                    <td><button class='w3-button' th:onClick="|removeThis('row${selection.globalReferenceId}')|" type='button' >Remove</button></td>
                 </tr>
             </table>
             <br />

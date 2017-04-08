@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,8 @@ import sql.daos.*;
 import sql.db.Database;
 import static util.JsonUtil.json;
 import util.PasswordUtil;
+import util.Container;
+import util.DateCaloriesStyle;
 
 /**
  *
@@ -295,6 +298,18 @@ public class WebMethods {
             HashMap map = new HashMap<>();
             User user = (User) req.session().attribute("user");
             map.put("user", user);
+            String[] ids = req.queryParamsValues("id");
+            if (ids != null) {
+                List<Foodstuff> selections = new ArrayList<>();
+                for (String s : ids) {
+                    try {
+                        int id = Integer.parseInt(s);
+                        selections.add(foodDao.findOne(id));
+                    } catch (NumberFormatException e) {
+                    }
+                }
+                map.put("selections", selections);
+            }
 
             return new ModelAndView(map, "addmeal");
         }, new ThymeleafTemplateEngine());
@@ -313,46 +328,157 @@ public class WebMethods {
             User user = (User) req.session().attribute("user");
             map.put("user", user);
 
-            List<Meal> findAll = null;
-            String today = req.queryParams("today");
-            String from = req.queryParams("from");
-            String to = req.queryParams("to");
+            String fromStr = req.queryParams("from");
+            String toStr = req.queryParams("to");
+            String pageStr = req.queryParams("page");
 
-            if (today.equals("true")) {
-                Timestamp beginning = Timestamp.valueOf(LocalDateTime.now().withHour(0).withMinute(0).withSecond(0));
-                Timestamp end = Timestamp.valueOf(LocalDateTime.now().withHour(23).withMinute(59).withSecond(59));
-                findAll = meDao.findAll(user, beginning, end);
-            } else if (from != null && to != null) {
+            if (fromStr != null || toStr != null) {
+                int offset = 0;
+                int page = 1;
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                LocalDate fromDate = LocalDate.parse(from, formatter);
-                LocalDate toDate = LocalDate.parse(to, formatter);
-                Timestamp fromTimestamp = Timestamp.valueOf(fromDate.atStartOfDay());
-                Timestamp toTimestamp = Timestamp.valueOf(toDate.atTime(23, 59, 59));
-                findAll = meDao.findAll(user, fromTimestamp, toTimestamp);
-            } else {
-                findAll = meDao.findAll(user);
+                LocalDate fromDate = LocalDate.parse(fromStr, formatter);
+                Timestamp from = Timestamp.valueOf(fromDate.atStartOfDay());
+
+                LocalDate toDate = LocalDate.parse(toStr, formatter);
+                Timestamp to = Timestamp.valueOf(toDate.atTime(23, 59, 59));
+
+                try {
+                    page = Integer.parseInt(pageStr);
+                } catch (NumberFormatException e) {
+                }
+
+                offset = page * 10 - 10;
+
+                float count = meDao.count(user, from, to);
+                int pageCount = (int) Math.ceil(count / 10.0);
+                for (int i = 0; i < count; i = i + 10) {
+
+                }
+                List<Meal> meals = meDao.findAll(user, from, to, offset, 10);
+
+                //pagination
+                map.put("currentPage", page);
+                if (pageCount == 0) {
+                    map.put("lastPage", 1);
+                } else {
+                    map.put("lastPage", pageCount);
+                }
+
+                if (page > 1) {
+                    map.put("prevPage", page - 1);
+                } else {
+                    map.put("prevPage", 1);
+                }
+
+                if (page < pageCount) {
+                    map.put("nextPage", page + 1);
+                } else {
+                    map.put("nextPage", page);
+                }
+
+                String type = req.queryParams("type");
+                if (type != null && type.equals("today")) {
+                    map.put("columnchart", false);
+                    map.put("title", "Today's Statistics");
+                    map.put("subtitle", "Today's Meals");
+                } else if (type != null && type.equals("week")) {
+                    map.put("columnchart", true);
+                    map.put("title", "Weekly Statistics");
+                    map.put("subtitle", "Meals for the Past Week");
+                } else {
+                    map.put("columnchart", true);
+                    map.put("title", "Statistics for period from: " + fromStr + " to " + toStr);
+                    map.put("subtitle", "Results");
+                }
+
+                float calories = 0;
+                float protein = 0;
+                float fat = 0;
+                float carbs = 0;
+
+                List<Container> dailyTotals = meDao.dailyTotals(user, from, to);
+                for (Container c : dailyTotals) {
+                    calories += c.getCalories();
+                    protein += c.getProtein();
+                    fat += c.getFat();
+                    carbs += c.getCarbohydrate();
+                    c.round();
+                }
+
+                map.put("dailyaverages", dailyTotals);
+
+                map.put("calories", Math.round(calories / dailyTotals.size()));
+                map.put("protein", Math.round(protein / dailyTotals.size()));
+                map.put("carbs", Math.round(carbs / dailyTotals.size()));
+                map.put("fat", Math.round(fat / dailyTotals.size()));
+
+                map.put("fromStr", fromStr);
+                map.put("toStr", toStr);
+
+                map.put("results", true);
+                map.put("meals", meals);
             }
-
-            map.put("meals", findAll);
-            float calories = 0;
-            float protein = 0;
-            float carbs = 0;
-            float fat = 0;
-
-            for (Meal m : findAll) {
-                calories += m.getTotalCalories();
-                protein += m.getTotalProtein();
-                carbs += m.getTotalCarbohydrate();
-                fat += m.getTotalFat();
-            }
-
-            map.put("calories", calories + " kcal");
-            map.put("protein", protein + " g");
-            map.put("carbs", carbs + " g");
-            map.put("fat", fat + " g");
 
             return new ModelAndView(map, "mealdiary");
         }, new ThymeleafTemplateEngine());
+
+        get("/mealdiarytoday", (req, res) -> {
+            LocalDate beginning = LocalDate.now();
+            String beginningString = beginning.getYear() + "-";
+            if (beginning.getMonthValue() < 10) {
+                beginningString += "0";
+            }
+            beginningString += beginning.getMonthValue() + "-";
+            if (beginning.getDayOfMonth() < 10) {
+                beginningString += "0";
+            }
+            beginningString += beginning.getDayOfMonth();
+
+            LocalDate end = LocalDate.now();
+            String endString = end.getYear() + "-";
+            if (end.getMonthValue() < 10) {
+                endString += "0";
+            }
+            endString += end.getMonthValue() + "-";
+            if (end.getDayOfMonth() < 10) {
+                endString += "0";
+            }
+            endString += end.getDayOfMonth();
+
+            res.redirect("/mealdiary?from=" + beginningString + "&to=" + endString + "&type=today");
+
+            return "";
+
+        });
+
+        get("/mealdiaryweek", (req, res) -> {
+            LocalDate beginning = LocalDate.now().minusDays(6);
+            String beginningString = beginning.getYear() + "-";
+            if (beginning.getMonthValue() < 10) {
+                beginningString += "0";
+            }
+            beginningString += beginning.getMonthValue() + "-";
+            if (beginning.getDayOfMonth() < 10) {
+                beginningString += "0";
+            }
+            beginningString += beginning.getDayOfMonth();
+
+            LocalDate end = LocalDate.now();
+            String endString = end.getYear() + "-";
+            if (end.getMonthValue() < 10) {
+                endString += "0";
+            }
+            endString += end.getMonthValue() + "-";
+            if (end.getDayOfMonth() < 10) {
+                endString += "0";
+            }
+            endString += end.getDayOfMonth();
+
+            res.redirect("/mealdiary?from=" + beginningString + "&to=" + endString + "&type=week");
+
+            return "";
+
+        });
 
         post("/addmeal.post", (req, res) -> {
             User user = (User) req.session().attribute("user");
@@ -402,19 +528,23 @@ public class WebMethods {
             HashMap map = new HashMap<>();
             User user = (User) req.session().attribute("user");
             map.put("user", user);
-
             Object[] searchTerms = req.queryParams("query").split(" ");
             List<Foodstuff> foodstuffResult = foodDao.search(user, searchTerms);
-            List<Recipe> recipesResult = recDao.search(searchTerms);
+            List<Foodstuff> globalResults = foodDao.searchGlobal(searchTerms);
 
+//            List<Recipe> recipesResult = recDao.search(searchTerms);
             if (!foodstuffResult.isEmpty()) {
                 map.put("foodstuffs", foodstuffResult);
             }
 
-            if (!recipesResult.isEmpty()) {
-                map.put("recipes", recipesResult);
+            if (!globalResults.isEmpty()) {
+                map.put("globalresults", globalResults);
             }
 
+//            if (!recipesResult.isEmpty()) {
+//                map.put("recipes", recipesResult);
+//            }
+            map.put("search", true);
             return new ModelAndView(map, "list");
         }, new ThymeleafTemplateEngine());
     }
@@ -440,10 +570,10 @@ public class WebMethods {
                 halt();
             }
 
-            map.put("calories", Math.round(foodstuff.getCalories() * 100) + " kcal");
-            map.put("carbohydrate", Math.round(foodstuff.getCarbohydrate() * 100) + " g/100g");
-            map.put("fat", Math.round(foodstuff.getFat() * 100) + " g/100g");
-            map.put("protein", Math.round(foodstuff.getProtein() * 100) + " g/100g");
+            map.put("calories", Math.round(foodstuff.getCalories() * 100));
+            map.put("carbohydrate", Math.round(foodstuff.getCarbohydrate() * 100));
+            map.put("fat", Math.round(foodstuff.getFat() * 100));
+            map.put("protein", Math.round(foodstuff.getProtein() * 100));
             map.put("foodstuff", foodstuff);
             map.put("title", foodstuff.getName());
             map.put("type", "foodstuff");
@@ -472,10 +602,10 @@ public class WebMethods {
                 halt();
             }
 
-            map.put("calories", Math.round(recipe.getCalories() * 100) + " kcal");
-            map.put("carbohydrate", Math.round(recipe.getCarbohydrate() * 100) + " g/100g");
-            map.put("fat", Math.round(recipe.getFat() * 100) + " g/100g");
-            map.put("protein", Math.round(recipe.getProtein() * 100) + " g/100g");
+            map.put("calories", Math.round(recipe.getTotalFat() * 100));
+            map.put("carbohydrate", Math.round(recipe.getCarbohydrate() * 100));
+            map.put("fat", Math.round(recipe.getFat() * 100));
+            map.put("protein", Math.round(recipe.getProtein() * 100));
             map.put("recipe", recipe);
             map.put("title", recipe.getName());
             map.put("type", "recipe");
@@ -501,7 +631,7 @@ public class WebMethods {
                 res.redirect("/");
                 halt();
             }
-            
+
             map.put("meal", meal);
             map.put("title", meal.getName());
             map.put("type", "meal");
@@ -518,14 +648,22 @@ public class WebMethods {
             map.put("user", user);
 
             map.put("foodstuffs", foodDao.getExpiring(user, 5));
+
             List<Meal> findTodays = meDao.findTodays(user);
             float totalCalories = 0;
             for (Meal meal : findTodays) {
                 totalCalories += meal.getTotalCalories();
             }
             map.put("calories", totalCalories);
-            
-            
+
+            Meal latest = findTodays.get(findTodays.size() - 1);
+            long until = latest.getDate().toLocalDateTime().until(LocalDateTime.now(), ChronoUnit.MINUTES);
+            long hours = (until - (until % 60)) / 60;
+            long minutes = until % 60;
+            map.put("sincelastmeal", true);
+            map.put("sincelastmealhours", hours);
+            map.put("sincelastmealminutes", minutes);
+
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
 
@@ -533,8 +671,7 @@ public class WebMethods {
             User user = (User) req.session().attribute("user");
             return foodDao.getExpiring(user, 5);
         }, json());
-        
-        
+
     }
 
     private void editRoutes() {
@@ -640,7 +777,7 @@ public class WebMethods {
             for (String s : req.queryParamsValues("ingredients")) {
                 int id = Integer.parseInt(s);
                 float mass = Float.parseFloat(req.queryParams("amountfor:" + s));
-                Ingredient ingredient = new Ingredient(0, id, recipe.getId(), mass, foodDao.findOne(id));
+                Ingredient ingredient = new Ingredient(0, id, recipe.getId(), mass, 0, 0, 0, 0, foodDao.findOne(id));
                 ingDao.store(ingredient);
             }
             res.redirect("/viewrecipe?id=" + recipe.getId());
@@ -665,9 +802,27 @@ public class WebMethods {
             Meal meal = meDao.findOne(user, id);
 
             meDao.delete(user, id);
+            res.redirect("/");
+            return "";
+        });
 
-            return new ModelAndView(map, "delete");
-        }, new ThymeleafTemplateEngine());
+        get("/deletefoodstuff", (req, res) -> {
+            HashMap map = new HashMap<>();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+            int id = 0;
+
+            try {
+                id = Integer.parseInt(req.queryParams("id"));
+            } catch (NumberFormatException e) {
+                res.redirect("/");
+                halt();
+            }
+
+            foodDao.delete(user, id);
+            res.redirect("/");
+            return "";
+        });
     }
 
 }

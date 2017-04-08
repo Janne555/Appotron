@@ -74,6 +74,7 @@ public class FoodstuffDao {
         String sql = "SELECT DISTINCT ON (id) * FROM (SELECT "
                 + "g.identifier as identifier, "
                 + "g.type as type, "
+                + "g.name as name, "
                 + "f.producer as producer, "
                 + "f.calories as calories, "
                 + "f.carbohydrate as carbohydrate, "
@@ -309,6 +310,7 @@ public class FoodstuffDao {
                 + "AND p.item_id = i.id "
                 + "AND i.deleted = 'false' "
                 + "AND p.person_identifier = ? "
+                + "AND i.expiration > CURRENT_DATE "
                 + "ORDER BY i.expiration ASC LIMIT ?", rs -> {
                     return new Foodstuff(rs.getString("name"),
                             rs.getString("identifier"),
@@ -326,9 +328,9 @@ public class FoodstuffDao {
                 }, user.getId(), limit);
     }
 
-    public void delete(User user, Foodstuff foodstuff) throws SQLException {
-        if (db.canDelete(user.getId(), foodstuff.getId())) {
-            db.update("UPDATE item SET deleted = 'true' WHERE item.id = ?", false, foodstuff.getId());
+    public void delete(User user, int id) throws SQLException {
+        if (db.canDelete(user.getId(), id)) {
+            db.update("UPDATE item SET deleted = 'true' WHERE item.id = ?", false, id);
         } else {
             throw new SecurityException("action is not authorized");
         }
@@ -338,14 +340,24 @@ public class FoodstuffDao {
         if (db.canEdit(user.getId(), foodstuff.getId())) {
             db.update("UPDATE globalreference SET name = ?, identifier = ?, type = ? WHERE item.id = ?", false,
                     foodstuff.getName(), foodstuff.getIdentifier(), "foodstuff", foodstuff.getId());
-            
+
             db.update("UPDATE foodstuffmeta SET producer = ?, calories = ?, carbohydrate = ?, fat = ?, protein = ? WHERE id = ?", false,
                     foodstuff.getProducer(), foodstuff.getCalories(), foodstuff.getCarbohydrate(), foodstuff.getFat(), foodstuff.getProtein(), foodstuff.getFoodstuffMetaId());
-            
+
             db.update("UPDATE item SET location = ?, expiration = ? WHERE id = ?", false,
                     foodstuff.getLocation(), foodstuff.getExpiration(), foodstuff.getId());
         } else {
             throw new SecurityException("action is not authorized");
         }
     }
+
+    public List<Foodstuff> mostPopular(User user, int limit) throws SQLException {
+        String sql = "select count(g.id) as instances, g.id as globalreference_id from mealcomponent m, globalreference g, meal e, person p where p.identifier = e.person_identifier AND e.id = m.meal_id AND m.globalreference_id = g.id AND p.identifier = ? group by g.id order by instances desc limit ?;";
+
+        List<Foodstuff> queryAndCollect = db.queryAndCollect("SELECT * FROM MealComponent WHERE meal_id = ?", rs -> {
+            return findOne(rs.getInt("globalreference_id"));
+        }, user.getId(), limit);
+        return queryAndCollect;
+    }
+
 }

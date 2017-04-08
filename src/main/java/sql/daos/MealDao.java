@@ -11,6 +11,7 @@ import java.util.List;
 import sql.db.Database;
 import storables.Meal;
 import storables.User;
+import util.Container;
 
 public class MealDao {
 
@@ -45,13 +46,27 @@ public class MealDao {
     }
 
     public List<Meal> findAll(User user, Timestamp from, Timestamp to) throws SQLException {
-        return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND person_identifier = ? AND date > ? AND date < ? ORDER BY date DESC", rs -> {
+        return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND person_identifier = ? AND date >= ? AND date <= ? ORDER BY date DESC", rs -> {
             return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
         }, user.getId(), from, to);
     }
 
+    public int count(User user, Timestamp from, Timestamp to) throws SQLException {
+        List<Integer> queryAndCollect = db.queryAndCollect("SELECT COUNT(id) AS meals_number FROM Meal WHERE deleted = 'false' AND person_identifier = ? AND date >= ? AND date <= ?", rs -> {
+            return rs.getInt("meals_number");
+        }, user.getId(), from, to);
+        
+        return queryAndCollect.get(0);
+    }
+
+    public List<Meal> findAll(User user, Timestamp from, Timestamp to, int offset, int limit) throws SQLException {
+        return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND person_identifier = ? AND date >= ? AND date <= ? ORDER BY date DESC OFFSET ? LIMIT ?", rs -> {
+            return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
+        }, user.getId(), from, to, offset, limit);
+    }
+
     public List<Meal> findTodays(User user) throws SQLException {
-        return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND person_identifier = ? AND date > CURRENT_DATE AND date < CURRENT_DATE + interval '1 day' ORDER BY date DESC", rs -> {
+        return db.queryAndCollect("SELECT * FROM Meal WHERE deleted = 'false' AND person_identifier = ? AND date >= CURRENT_DATE AND date <= CURRENT_DATE + interval '1 day' ORDER BY date DESC", rs -> {
             return new Meal(rs.getInt("id"), user, rs.getTimestamp("date"), mecDao.findByMealId(rs.getInt("id")));
         }, user.getId());
     }
@@ -72,5 +87,12 @@ public class MealDao {
         mecDao.deleteAllByMealId(id);
         db.update("DELETE FROM meal WHERE id = ? AND person_identifier = ?", false, id, user.getId());
     }
-
+    
+    public List<Container> dailyTotals(User user, Timestamp from, Timestamp to) throws SQLException {
+        String sql = "SELECT SUM(totalcalories) as totalcalories, SUM(totalcarbohydrate) as totalcarbohydrate, SUM(totalfat) as totalfat, SUM(totalprotein) as totalprotein, DATE_TRUNC('day', meal.date) as truncdate FROM (select *, (mc.mass * fm.calories) as totalCalories, (mc.mass * fm.carbohydrate) as totalCarbohydrate, (mc.mass * fm.protein) as totalProtein, (mc.mass * fm.fat) as totalFat from mealcomponent mc, foodstuffmeta fm WHERE mc.globalreference_id = fm.globalreference_id) as foo, person, meal WHERE meal.id = meal_id AND meal.person_identifier = person.identifier AND person.identifier = ? AND meal.date >= ? AND meal.date <= ? GROUP BY truncdate ORDER BY truncdate ASC";
+        
+        return db.queryAndCollect(sql, rs -> {
+            return new Container(rs.getTimestamp("truncdate").toLocalDateTime().toLocalDate(), rs.getFloat("totalcarbohydrate"), rs.getFloat("totalfat"), rs.getFloat("totalprotein"), rs.getFloat("totalcalories"));
+        }, user.getId(), from, to);
+    }
 }

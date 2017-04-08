@@ -6,6 +6,7 @@
 package inventorsql;
 
 import client.WebMethods;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,15 +18,27 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import sql.daos.BugReportDao;
+import sql.daos.FoodstuffDao;
+import sql.daos.IngredientDao;
+import sql.daos.MealComponentDao;
+import sql.daos.MealDao;
+import sql.daos.RecipeDao;
+import sql.daos.SessionControlDao;
 import sql.daos.UserDao;
 import sql.db.Database;
 import sql.db.Testdata;
+import storables.*;
+import storables.MealComponent;
 import storables.User;
 import util.PasswordUtil;
 import util.Type;
@@ -54,6 +67,8 @@ public class Main {
             input = new FileInputStream("application.configuration");
 
             System.getProperties().load(input);
+
+            input.close();
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,50 +106,96 @@ public class Main {
 
         if (System.getProperties().getProperty("standalone").equals("true")) {
             for (String s : makeTables) {
-                System.out.println(s);
                 database.update(s, false);
             }
             UserDao udao = new UserDao(database);
             udao.store(new User("jannetar", "janne", PasswordUtil.hashPassword("salis"), null, null));
         }
 
-//        database.update("INSERT INTO Users(id, name, password, date, deleted) VALUES(?,?,?,?,?)", "jannetar", "janne", "salis", new Timestamp(System.currentTimeMillis()), false);
-//        database.update("INSERT INTO Users(id, name, password, date, deleted) VALUES(?,?,?,?,?)", "salakaveri", "kaveri", "salis", new Timestamp(System.currentTimeMillis()), false);
-//
-//        database.update("INSERT INTO ItemInfo(type, name, identifier) VALUES(?,?,?)", "item", "tavara", "tavarainen");
-//        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 1, "muoto", "littana");
-//        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 1, "arvo", "turha");
-//        database.update("INSERT INTO Item(iteminfo_id, location, date, deleted) VALUES(?,?,?,?)", 1, "kaappi", new Timestamp(System.currentTimeMillis()), false);
-//        database.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", 1, "arvio", "mahtava");
-//        database.update("INSERT INTO AccessControl VALUES(?,?,?)", 1, "jannetar", 1);
-//
-//        database.update("INSERT INTO ItemInfo(type, name, identifier) VALUES(?,?,?)", "item", "salainen tavara", "salatar");
-//        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 2, "muoto", "kulmikas");
-//        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 2, "arvo", "mittaamattoman kallis");
-//        database.update("INSERT INTO Item(iteminfo_id, location, date, deleted) VALUES(?,?,?,?)", 2, "kaappi", new Timestamp(System.currentTimeMillis()), false);
-//        database.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", 2, "arvosana", "huono");
-//        database.update("INSERT INTO AccessControl VALUES(?,?,?)", 2, "salakaveri", 1);
-//
-//        database.update("INSERT INTO ItemInfo(type, name, identifier) VALUES(?,?,?)", "item", "duplikaatti", "duplikoiva");
-//        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 3, "muoto", "taiteellinen");
-//        database.update("INSERT INTO ItemInfoTag(iteminfo_id, key, value) VALUES(?,?,?)", 3, "arvo", "semikallis");
-//        database.update("INSERT INTO Item(iteminfo_id, location, date, deleted) VALUES(?,?,?,?)", 3, "kaappi", new Timestamp(System.currentTimeMillis()), false);
-//        database.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", 3, "kunto", "rikki");
-//        database.update("INSERT INTO AccessControl VALUES(?,?,?)", 3, "salakaveri", 1);
-//
-//        database.update("INSERT INTO Item(iteminfo_id, location, date, deleted) VALUES(?,?,?,?)", 3, "kaappi", new Timestamp(System.currentTimeMillis()), false);
-//        database.update("INSERT INTO ItemSpecificTag(item_id, key, value) VALUES(?,?,?)", 4, "kunto", "ehyt");
-//        database.update("INSERT INTO AccessControl VALUES(?,?,?)", 4, "jannetar", 1);
-//        User user = new User("jannetar", "janne", "salis", null, null, null, null);
-//        ItemDao itemDao = new ItemDao(database);
+        if (System.getProperties().getProperty("insert_fineli_data").equals("true")) {
+            BufferedReader names = new BufferedReader(new FileReader("foodname_FI.csv"));
+            String line;
+            HashMap<Integer, Foodstuff> map = new HashMap<>();
+            while ((line = names.readLine()) != null) {
+                String[] split = line.split(";");
+                int id = Integer.parseInt(split[0]);
+                String name = split[1];
+                name = name.replace("%ae%", "ä");
+                name = name.replace("%oe%", "ö");
+                Foodstuff foodstuff = new Foodstuff(name, "FINELI", "FINELI", null, 0, 0, 0, 0, 0, 0, 0, null, null);
+                map.put(id, foodstuff);
+            }
+
+            BufferedReader values = new BufferedReader(new FileReader("component_value.csv"));
+            while ((line = values.readLine()) != null) {
+                String[] split = line.split(";");
+                if (split[2].isEmpty()) {
+                    continue;
+                }
+                int id = Integer.parseInt(split[0]);
+                Foodstuff get = map.remove(id);
+                NumberFormat format = NumberFormat.getInstance(Locale.FRANCE);
+                Number number = format.parse(split[2]);
+                float floatValue = number.floatValue();
+                switch (split[1]) {
+                    case "ENERC":
+                        get.setCalories((float) (floatValue * 0.239005736 / 100));
+                        break;
+
+                    case "CHOAVL":
+                        get.setCarbohydrate(floatValue / 100);
+                        break;
+
+                    case "FAT":
+                        get.setFat(floatValue / 100);
+                        break;
+
+                    case "PROT":
+                        get.setProtein(floatValue / 100);
+                        break;
+                }
+                map.put(id, get);
+            }
+            float counter = 0;
+            float length = map.size();
+            int previous = 0;
+            System.out.println("Inserting fineli data");
+            for (Foodstuff foo : map.values()) {
+                try {
+                    int update = database.update("INSERT INTO globalreference(name, identifier, type) VALUES(?,?,?)", true, foo.getName(), foo.getIdentifier(), "foodstuff");
+                    foo.setGlobalReferenceId(update);
+                    database.update("INSERT INTO foodstuffmeta(globalreference_id, producer, calories, carbohydrate, fat, protein) VALUES(?,?,?,?,?,?)", false,
+                            foo.getGlobalReferenceId(), foo.getProducer(), foo.getCalories(), foo.getCarbohydrate(), foo.getFat(), foo.getProtein());
+                } catch (Exception e) {
+
+                }
+                int percentage = (int) (counter / length * 100);
+                if (percentage > previous) {
+                    System.out.println(percentage + "%");
+                    previous = percentage;
+                }
+                counter++;
+            }
+
+        }
+        
+//        UserDao userDao = new UserDao(database);
+//        MealDao mealDao = new MealDao(database);
+//        MealComponentDao mealComponentDao = new MealComponentDao(database);
+//        SessionControlDao sessionControlDao = new SessionControlDao(database);
+//        BugReportDao bugReportDao = new BugReportDao(database);
+//        RecipeDao recipeDao = new RecipeDao(database);
+//        IngredientDao ingredientDao = new IngredientDao(database);
+//        FoodstuffDao foodstuffDao = new FoodstuffDao(database);
 //        
-//        for (Item it : itemDao.search(user, "kaappi", "littana")) {
-//            System.out.println(it);
+//        for (int i = 1; i < 34; i++) {
+//            Foodstuff food = foodstuffDao.findOne(i);
+//            Meal meal = new Meal(0, userDao.findByName("janne"), new Timestamp(System.currentTimeMillis()), null);
+//            meal = mealDao.store(meal);
+//            MealComponent mealComponent = new MealComponent(0, meal.getId(), i * 10, food);
+//            mealComponentDao.store(mealComponent);
 //        }
-//        List<Item> search = itemDao.search(user, "poyta");
-//        for (Item it : search) {
-//            System.out.println(it);
-//        }
+        
         new WebMethods(database);
     }
 }

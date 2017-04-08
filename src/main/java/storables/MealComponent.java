@@ -5,12 +5,12 @@
  */
 package storables;
 
-
 /**
  *
  * @author Janne
  */
 public class MealComponent {
+
     private int id;
     private int mealId;
     private float mass;
@@ -57,5 +57,21 @@ public class MealComponent {
 
     public String getName() {
         return getFoodstuff().getName();
+    }
+
+    public int getTotalCaloriesRounded() {
+        return Math.round(getMass() * getFoodstuff().getCalories());
+    }
+
+    public int getTotalCarbohydrateRounded() {
+        return Math.round(getMass() * getFoodstuff().getCarbohydrate());
+    }
+
+    public int getTotalFatRounded() {
+        return Math.round(getMass() * getFoodstuff().getFat());
+    }
+
+    public int getTotalProteinRounded() {
+        return Math.round(getMass() * getFoodstuff().getProtein());
     }
 }

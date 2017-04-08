@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 import sql.db.Database;
 import storables.MealComponent;
+import storables.User;
 
 public class MealComponentDao {
 
@@ -28,17 +29,17 @@ public class MealComponentDao {
         mealComponent.setId(update);
         return mealComponent;
     }
-    
+
     public List<MealComponent> findByMealId(int mealId) throws SQLException {
         List<MealComponent> queryAndCollect = db.queryAndCollect("SELECT * FROM MealComponent WHERE meal_id = ?", rs -> {
             return new MealComponent(rs.getInt("id"),
                     rs.getInt("meal_id"),
                     rs.getFloat("mass"),
                     foodDao.findOne(rs.getInt("globalreference_id")));
-        },mealId);
+        }, mealId);
         return queryAndCollect;
     }
-    
+
     public void deleteAllByMealId(int mealId) throws SQLException {
         db.update("DELETE FROM mealcomponent WHERE meal_id = ?", false, mealId);
     }

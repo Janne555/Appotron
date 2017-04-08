@@ -43,6 +43,16 @@
         </div>
         </div>
     </div>
+        <div class="w3-card-4" th:if="${sincelastmeal}">
+        <div class="w3-container w3-green">
+            <h2>Since Last Meal</h2>
+        </div>
+        <div class="w3-row-padding">
+        <div class="w3-panel w3-blue w3-card-8 w3-round">
+        <h3><span th:text="|${sincelastmealhours} hours and ${sincelastmealminutes} minutes|"></span></h3>
+        </div>
+        </div>
+    </div>
     <div class="w3-card-4 w3-margin" th:if="${listitems}">
     	<div class="w3-container w3-green">
             <h2>Shopping List</h2>

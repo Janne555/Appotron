@@ -43,7 +43,7 @@
         </div>
         <div class="w3-responsive" th:if="${foodstuffs}">
             <div class="w3-container w3-green" th:if="${search}">
-                <h3>Foodstuffs</h3>
+                <h3>Personal Foodstuffs</h3>
             </div>
             <table class="w3-table-all w3-hoverable">
                 <tr>
@@ -61,6 +61,23 @@
                     <td th:text="${foodstuff.identifier}"></td>
                     <td th:text="${foodstuff.date}"></td>
                     <td th:text="${foodstuff.expiration}"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="w3-responsive" th:if="${globalresults}">
+            <div class="w3-container w3-green" th:if="${search}">
+                <h3>Reference Database Foodstuffs</h3>
+            </div>
+            <table class="w3-table-all w3-hoverable">
+                <tr>
+                    <th>Name</th>
+                    <th>Producer</th>
+                    <th>Serial Number</th>
+                </tr>
+                <tr class="clickable-row" th:each="foodstuff : ${globalresults}" th:attr="data-href=@{~/viewglobalfoodstuff?id={id} (id=${foodstuff.id})}">
+                    <td th:text="${foodstuff.name}"></td>
+                    <td th:text="${foodstuff.producer}"></td>
+                    <td th:text="${foodstuff.identifier}"></td>
                 </tr>
             </table>
         </div>

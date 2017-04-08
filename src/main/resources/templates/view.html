@@ -136,13 +136,13 @@
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-card-8 w3-round">
                                 <p>Calories</p>
-                                <p th:text="${calories}">joujou</p>
+                                <p th:text="|${calories} kcal/100g|">joujou</p>
                             </div>
                         </div>
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-card-8 w3-round">
                                 <p>Carbohydrate</p>
-                                <p th:text="${carbohydrate}" />
+                                <p th:text="|${carbohydrate} g/100g|" />
                             </div>
                         </div>
                     </div>
@@ -150,13 +150,13 @@
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-card-8 w3-round">
                                 <p>Protein</p>
-                                <p th:text="${protein}" />
+                                <p th:text="|${protein} g/100g|" />
                             </div>
                         </div>
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-card-8 w3-round">
                                 <p>Fat</p>
-                                <p th:text="${fat}" />
+                                <p th:text="|${fat} g/100g|" />
                             </div>
                         </div>
                     </div>
@@ -227,13 +227,13 @@
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-card-8 w3-round">
                                 <p>Calories</p>
-                                <p th:text="${calories}">joujou</p>
+                                <p th:text="|${calories} kcal/100g|">joujou</p>
                             </div>
                         </div>
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-card-8 w3-round">
                                 <p>Carbohydrate</p>
-                                <p th:text="${carbohydrate}" />
+                                <p th:text="|${carbohydrate} g/100g|" />
                             </div>
                         </div>
                     </div>
@@ -241,13 +241,13 @@
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-card-8 w3-round">
                                 <p>Protein</p>
-                                <p th:text="${protein}" />
+                                <p th:text="|${protein} g/100g|" />
                             </div>
                         </div>
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-card-8 w3-round">
                                 <p>Fat</p>
-                                <p th:text="${fat}" />
+                                <p th:text="|${fat} g/100g|" />
                             </div>
                         </div>
                     </div>
@@ -259,13 +259,13 @@
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-round">
                                 <p>Calories</p>
-                                <p th:text="${meal.totalCalories}">joujou</p>
+                                <p th:text="${meal.totalCaloriesRounded}">joujou</p>
                             </div>
                         </div>
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-round">
                                 <p>Carbohydrate</p>
-                                <p th:text="${meal.totalCarbohydrate}" />
+                                <p th:text="${meal.totalCarbohydrateRounded}" />
                             </div>
                         </div>
                     </div>
@@ -273,13 +273,13 @@
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-round">
                                 <p>Protein</p>
-                                <p th:text="${meal.totalFat}" />
+                                <p th:text="${meal.totalFatRounded}" />
                             </div>
                         </div>
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-round">
                                 <p>Fat</p>
-                                <p th:text="${meal.totalProtein}" />
+                                <p th:text="${meal.totalProteinRounded}" />
                             </div>
                         </div>
                     </div><br />

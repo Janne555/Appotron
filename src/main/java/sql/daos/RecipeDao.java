@@ -38,15 +38,12 @@ public class RecipeDao {
     }
 
     public List<Recipe> search(Object[] searchWords) throws SQLException {
-        String sql = "SELECT r.*, "
-                + "to_tsvector(r.name) || "
-                + "to_tsvector(r.type) AS document "
-                + "FROM recipe AS r JOIN ingredient AS g ON g.recipe_id = r.id WHERE deleted = 'false' "
-                + "AND document @@ to_tsquery(?)";
+        String sql = "SELECT DISTINCT ON (id) * FROM (SELECT r.id as id, r.name as name, r.directions as directions, r.description as description, r.type as type, r.totalmass as totalmass, r.date as date, to_tsvector(r.name) || to_tsvector(r.type) || to_tsvector(g.name) AS document FROM recipe AS r JOIN (SELECT name, ingredient.recipe_id AS recipe_id FROM ingredient, globalreference WHERE ingredient.globalreference_id = globalreference.id) AS g ON g.recipe_id = r.id WHERE r.deleted = 'false') as mainquery WHERE mainquery.document @@ to_tsquery(?)";
 
-        for (int i = 0; i < searchWords.length; i++) {
-            sql += " AND document @@ to_tsquery(?)";
+        for (int i = 1; i < searchWords.length; i++) {
+            sql += " AND mainquery.document @@ to_tsquery(?)";
         }
+
         return db.queryAndCollect(sql, rs -> {
             return new Recipe(rs.getInt("id"),
                     rs.getString("name"),
