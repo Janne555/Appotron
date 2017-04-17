@@ -278,6 +278,29 @@ public class FoodstuffDao {
 
         return queryAndCollect.get(0);
     }
+    
+        public Foodstuff findOne(String name, String identifier) throws SQLException {
+        List<Foodstuff> queryAndCollect = db.queryAndCollect("SELECT g.name as name, g.identifier as identifier, g.type as type, f.producer as producer, f.calories as calories, f.carbohydrate as carbohydrate, f.fat as fat, f.protein as protein, g.id as globalreferenceid, f.id as foodstuffmetaid FROM globalreference as g, foodstuffmeta as f WHERE f.globalreference_id = g.id AND g.name = ? AND g.identifier = ?", rs -> {
+                    return new Foodstuff(rs.getString("name"),
+                            rs.getString("identifier"),
+                            rs.getString("producer"),
+                            null,
+                            rs.getFloat("calories"),
+                            rs.getFloat("carbohydrate"),
+                            rs.getFloat("fat"),
+                            rs.getFloat("protein"),
+                            rs.getInt("globalreferenceid"),
+                            rs.getInt("foodstuffmetaid"),
+                            0,
+                            null,
+                            null);
+                }, name, identifier);
+        if (queryAndCollect.isEmpty()) {
+            return null;
+        }
+
+        return queryAndCollect.get(0);
+    }
 
     public List<String> getLocations(User user) throws SQLException {
         return db.queryAndCollect("SELECT DISTINCT ON (location) location "

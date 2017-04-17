@@ -223,6 +223,10 @@
                         <h3>Directions</h3>
                         <p class="w3-margin" th:text="${recipe.directions}" />
                     </div>
+                    <div class="w3-margin">
+                        <h3>Finished mass</h3>
+                        <p class="w3-margin" th:text="${recipe.totalMass}" />
+                    </div>
                     <div class="w3-row-padding">
                         <div class="w3-half">
                             <div class="w3-panel w3-blue w3-card-8 w3-round">
@@ -294,11 +298,11 @@
                     <div class="w3-third">
                         <a class="w3-button w3-teal w3-block" th:href="@{~/delete{type}?id={id} (type=${type}, id=${id})}">Delete</a> <br />
                     </div>
-                    <div class="w3-third" th:unelss="${isMeal}">
-                        <a class="w3-button w3-teal w3-block" href="#">Edit</a> <br />
-                    </div>
                     <div class="w3-third">
-                        <a class="w3-button w3-teal w3-block">Borrow</a> <br />
+                        <a class="w3-button w3-teal w3-block" th:href="@{~/edit{type}?id={id} (type=${type}, id=${id})}">Edit</a> <br />
+                    </div>
+                    <div class="w3-third" th:if="${notfoodstuffyet}">
+                        <a class="w3-button w3-teal w3-block" th:href="@{~/inserttofoodstuff?id={id} (id=${id})}">To Pantry</a> <br />
                     </div>
                 </div>
             </div>

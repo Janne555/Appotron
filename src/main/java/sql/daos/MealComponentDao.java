@@ -43,4 +43,11 @@ public class MealComponentDao {
     public void deleteAllByMealId(int mealId) throws SQLException {
         db.update("DELETE FROM mealcomponent WHERE meal_id = ?", false, mealId);
     }
+
+    public void delete(User user, int mealComponentId) throws SQLException {
+        if (db.canDeleteComponent(user.getId(), mealComponentId)) {
+            db.update("DELETE FROM mealcomponent WHERE mealcomponent.id = ?", false, mealComponentId);
+        }
+    }
+    
 }

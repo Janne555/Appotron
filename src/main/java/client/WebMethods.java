@@ -199,6 +199,31 @@ public class WebMethods {
             res.redirect("/");
             return "ok";
         });
+
+        get("/inserttofoodstuff", (req, res) -> {
+            HashMap map = new HashMap<>();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+
+            String idStr = req.queryParams("id");
+
+            if (idStr != null) {
+                try {
+                    int id = Integer.parseInt(idStr);
+                    Recipe recipe = recDao.findOne(id);
+                    if (recipe != null) {
+                        Foodstuff foodstuff = new Foodstuff(recipe.getName(), recipe.getIdentifier(), "USER", "COOK BOOK", recipe.getCalories(), recipe.getCarbohydrate(), recipe.getFat(), recipe.getProtein(), 0, 0, 0, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+                        foodDao.store(foodstuff, user);
+                    }
+
+                } catch (NumberFormatException e) {
+                    res.redirect("/fail?msg=" + e);
+                    halt();
+                }
+            }
+            res.redirect("/");
+            return "";
+        });
     }
 
     private void userRoutes() {
@@ -311,6 +336,7 @@ public class WebMethods {
                 map.put("selections", selections);
             }
 
+            map.put("action", "/addmeal.post");
             return new ModelAndView(map, "addmeal");
         }, new ThymeleafTemplateEngine());
 
@@ -600,16 +626,21 @@ public class WebMethods {
             if (recipe == null) {
                 res.redirect("/");
                 halt();
-            }
+            } else {
+                Foodstuff findOne = foodDao.findOne(recipe.getName(), recipe.getIdentifier());
+                if (findOne == null) {
+                    map.put("notfoodstuffyet", true);
+                }
 
-            map.put("calories", Math.round(recipe.getTotalFat() * 100));
-            map.put("carbohydrate", Math.round(recipe.getCarbohydrate() * 100));
-            map.put("fat", Math.round(recipe.getFat() * 100));
-            map.put("protein", Math.round(recipe.getProtein() * 100));
-            map.put("recipe", recipe);
-            map.put("title", recipe.getName());
-            map.put("type", "recipe");
-            map.put("id", recipe.getId());
+                map.put("calories", Math.round(recipe.getCalories() * 100));
+                map.put("carbohydrate", Math.round(recipe.getCarbohydrate() * 100));
+                map.put("fat", Math.round(recipe.getFat() * 100));
+                map.put("protein", Math.round(recipe.getProtein() * 100));
+                map.put("recipe", recipe);
+                map.put("title", recipe.getName());
+                map.put("type", "recipe");
+                map.put("id", recipe.getId());
+            }
 
             return new ModelAndView(map, "view");
         }, new ThymeleafTemplateEngine());
@@ -649,20 +680,22 @@ public class WebMethods {
 
             map.put("foodstuffs", foodDao.getExpiring(user, 5));
 
-            List<Meal> findTodays = meDao.findTodays(user);
-            float totalCalories = 0;
-            for (Meal meal : findTodays) {
-                totalCalories += meal.getTotalCalories();
+            List<Container> dailyTotals = meDao.dailyTotals(user, Timestamp.valueOf(LocalDate.now().atStartOfDay()), Timestamp.valueOf(LocalDate.now().atTime(23, 59, 59)));
+            float calories = 0;
+            if (!dailyTotals.isEmpty()) {
+                calories = dailyTotals.get(0).getCalories();
             }
-            map.put("calories", totalCalories);
+            map.put("calories", Math.round(calories));
 
-            Meal latest = findTodays.get(findTodays.size() - 1);
-            long until = latest.getDate().toLocalDateTime().until(LocalDateTime.now(), ChronoUnit.MINUTES);
-            long hours = (until - (until % 60)) / 60;
-            long minutes = until % 60;
-            map.put("sincelastmeal", true);
-            map.put("sincelastmealhours", hours);
-            map.put("sincelastmealminutes", minutes);
+            Meal latest = meDao.findLatest(user);
+            if (latest != null) {
+                long until = latest.getDate().toLocalDateTime().until(LocalDateTime.now(), ChronoUnit.MINUTES);
+                long hours = (until - (until % 60)) / 60;
+                long minutes = until % 60;
+                map.put("sincelastmeal", true);
+                map.put("sincelastmealhours", hours);
+                map.put("sincelastmealminutes", minutes);
+            }
 
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
@@ -675,7 +708,7 @@ public class WebMethods {
     }
 
     private void editRoutes() {
-        get("/editfoodstuff", (req, res) -> {
+        get("/edititem", (req, res) -> {
             HashMap map = new HashMap<>();
             User user = (User) req.session().attribute("user");
             map.put("user", user);
@@ -743,6 +776,77 @@ public class WebMethods {
             res.redirect("/");
             return "";
         });
+
+        get("/editmeal", (req, res) -> {
+            HashMap map = new HashMap<>();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+
+            //find id string for the meal to be edited and check whether it's null
+            String idStr = req.queryParams("id");
+            if (idStr != null) {
+                try {
+                    int id = Integer.parseInt(idStr);
+                    Meal meal = meDao.findOne(user, id);
+                    //check to see if a meal was found using given id
+                    if (meal != null) {
+                        map.put("meal", meal);
+                        map.put("action", "/editmeal.post");
+                    } else {
+                        res.redirect("/");
+                        halt();
+                    }
+
+                } catch (NumberFormatException e) {
+                    res.redirect("/");
+                    halt();
+                }
+            }
+            return new ModelAndView(map, "addmeal");
+        }, new ThymeleafTemplateEngine());
+
+        post("/editmeal.post", (req, res) -> {
+            User user = (User) req.session().attribute("user");
+
+            String mealIdStr = req.queryParams("mealid");
+            String dateTimeStr = req.queryParams("datetime");
+            Meal newMeal = new Meal(0, user, null, new ArrayList<>());
+
+            if (mealIdStr != null && dateTimeStr != null) {
+                try {
+                    int id = Integer.parseInt(mealIdStr);
+                    newMeal.setId(id);
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                    LocalDateTime time = LocalDateTime.parse(dateTimeStr, formatter);
+                    Timestamp dateTime = Timestamp.valueOf(time);
+                    newMeal.setDate(dateTime);
+
+                    for (String s : req.queryParamsValues("ingredients")) {
+                        int globalReferenceId = Integer.parseInt(s);
+                        //if this component was generated from a database entry it should have a component id
+                        String componentIdStr = req.queryParams("globrefid:" + s);
+                        String massStr = req.queryParams("amountfor:" + s);
+                        float mass = 0;
+                        if (massStr != null) {
+                            mass = Float.parseFloat(massStr);
+                        }
+                        int componentId = 0;
+                        if (componentIdStr != null) {
+                            componentId = Integer.parseInt(componentIdStr);
+                        }
+                        MealComponent component = new MealComponent(componentId, id, mass, globalReferenceId);
+                        newMeal.getComponents().add(component);
+                    }
+
+                    meDao.update(user, newMeal);
+                } catch (NumberFormatException e) {
+
+                }
+            }
+
+            return "";
+        });
     }
 
     private void recipeRoutes() {
@@ -751,7 +855,9 @@ public class WebMethods {
             User user = (User) req.session().attribute("user");
             map.put("user", user);
 
-            return new ModelAndView(map, "addrecipe");
+            map.put("addrecipe", true);
+            map.put("action", "/addrecipe.post");
+            return new ModelAndView(map, "addmeal");
         }, new ThymeleafTemplateEngine());
 
         post("/addrecipe.post", (req, res) -> {

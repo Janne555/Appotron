@@ -94,4 +94,16 @@ public class Database {
             return rs.getString(1);
         }, personIdentifier, itemId).isEmpty();
     }
+
+    public boolean canDeleteComponent(String personIdentifier, int mealComponentId) throws SQLException {
+        return !queryAndCollect("SELECT * FROM mealcomponent c, meal m WHERE c.meal_id = m.id AND m.person_identifier = ? AND  c.id = ?", rs -> {
+            return rs.getString(1);
+        }, personIdentifier, mealComponentId).isEmpty();
+    }
+
+    public boolean canEditMeal(String personIdentifier, int mealId) throws SQLException {
+        return !queryAndCollect("SELECT * FROM meal m WHERE m.person_identifier = ? AND  m.id = ?", rs -> {
+            return rs.getString(1);
+        }, personIdentifier, mealId).isEmpty();
+    }
 }

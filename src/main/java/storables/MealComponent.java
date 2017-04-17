@@ -23,6 +23,13 @@ public class MealComponent {
         this.foodstuff = foodstuff;
     }
 
+    public MealComponent(int id, int mealId, float mass, int globalReferenceId) {
+        this.id = id;
+        this.mealId = mealId;
+        this.mass = mass;
+        this.foodstuff = new Foodstuff(null, null, null, null, 0, 0, 0, 0, globalReferenceId, 0, 0, null, null);
+    }
+
     public int getId() {
         return id;
     }
@@ -73,5 +80,9 @@ public class MealComponent {
 
     public int getTotalProteinRounded() {
         return Math.round(getMass() * getFoodstuff().getProtein());
+    }
+
+    public int getGlobalReferenceId() {
+        return getFoodstuff().getGlobalReferenceId();
     }
 }

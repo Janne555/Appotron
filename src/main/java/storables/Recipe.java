@@ -139,6 +139,10 @@ public class Recipe {
         return getTotalCalories() / getTotalMass();
     }
 
+    public float getCaloriesRelative() {
+        return getTotalCalories() / getTotalMass() * 100;
+    }
+
     public float getCarbohydrate() {
         return getTotalCarbohydrate() / getTotalMass();
     }
@@ -149,6 +153,14 @@ public class Recipe {
 
     public float getProtein() {
         return getTotalProtein() / getTotalMass();
+    }
+
+    public String getIdentifier() {
+        String identifier = "recipe" + id;
+        for (Ingredient i : ingredients) {
+            identifier += "-" + i.getGlobalReferenceId();
+        }
+        return identifier;
     }
 
 }
