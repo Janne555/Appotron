@@ -337,6 +337,7 @@ public class WebMethods {
             }
             
             map.put("action", "/addmeal.post");
+            map.put("title", "Add Meal");
             return new ModelAndView(map, "addmeal");
         }, new ThymeleafTemplateEngine());
 
