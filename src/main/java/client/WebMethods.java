@@ -255,7 +255,8 @@ public class WebMethods {
             }
 
             req.session(true).attribute("user", user);
-            SessionControl sessionControl = new SessionControl(null, user.getId(), new Timestamp(System.currentTimeMillis()));
+            //creates session with 6 hours or 3600000 millis validity
+            SessionControl sessionControl = new SessionControl(null, user.getId(), new Timestamp(System.currentTimeMillis() + 3600000));
 
             sessionControl.genSessionId();
             secDao.store(sessionControl);
