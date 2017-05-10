@@ -163,4 +163,24 @@ public class Meal {
         }
         return mass;
     }
+    
+    public String getDateCode() {
+        LocalDateTime dateTime = date.toLocalDateTime();
+        String string = "" + dateTime.getYear() + "-";
+        
+        String month = "" + dateTime.getMonthValue();
+        if (month.length() == 1) month = "0" + month; 
+        
+        String day = "" + dateTime.getDayOfMonth();
+        if (day.length() == 1) day = "0" + day;
+        
+        String hour = "" + dateTime.getHour();
+        if (hour.length() == 1) hour = "0" + hour;
+        
+        String minute = "" + dateTime.getMinute();
+        if (minute.length() == 1) minute = "0" + minute;
+        
+        string += month + "-" + day + "T" + hour + ":" + minute;
+        return string;
+    }
 }

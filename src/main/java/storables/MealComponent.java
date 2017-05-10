@@ -85,4 +85,11 @@ public class MealComponent {
     public int getGlobalReferenceId() {
         return getFoodstuff().getGlobalReferenceId();
     }
+    
+    @Override
+    public String toString() {
+        return "ID:" + getId() + ";"
+                + "NAME:" + getFoodstuff().getName() + ";"
+                + "MASS:" + getMass();
+    }
 }

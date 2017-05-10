@@ -49,5 +49,11 @@ public class MealComponentDao {
             db.update("DELETE FROM mealcomponent WHERE mealcomponent.id = ?", false, mealComponentId);
         }
     }
-    
+
+    public void update(User user, MealComponent c) throws SQLException {
+        if (db.canEditMeal(user.getId(), c.getMealId())) {
+            db.update("UPDATE mealcomponent SET mass = ? WHERE mealcomponent.id = ?", false, c.getMass(), c.getId());
+        }
+    }
+
 }

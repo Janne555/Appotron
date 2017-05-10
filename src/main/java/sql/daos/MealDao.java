@@ -111,11 +111,12 @@ public class MealDao {
 
     public void update(User user, Meal newMeal) throws SQLException {
         if (db.canEditMeal(user.getId(), newMeal.getId())) {
-            db.update("UPDATE meal SET date = ?", false, newMeal.getDate());
+            db.update("UPDATE meal SET date = ? WHERE id = ?", false, newMeal.getDate(), newMeal.getId());
             findOne(user, newMeal.getId()).getComponents();
             for (MealComponent c : newMeal.getComponents()) {
                 if (c.getId() != 0) {
-                    mecDao.update(c);
+                    System.out.println(c);
+                    mecDao.update(user, c);
                 }
             }
         }

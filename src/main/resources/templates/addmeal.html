@@ -49,7 +49,7 @@
                 var id = something.dataset.id;
                 var row = "<tr id='row" + id + "'><td>" + itemname + "<input name='ingredients' value='" + id + "' hidden='true' /> </td><td><input class='w3-input' required='true' name='amountfor:" + id + "' type='number' min='0' step='0.1' placeholder='amount in grams' /></td><td><button class='w3-button' onClick='removeThis(" + '"row' + id + '"' + ")' type='button' >Remove</button></td></tr>";
                 if (!$("#row" + id).length) {
-                    $("#selectionstable").append(row);
+                    $("#th01").after(row);
                 }
             }
 
@@ -92,14 +92,14 @@
                     <form class="w3-container" th:action="${action}" method="post">
                         <div class="w3-responsive" th:unless="${meal}">
                             <table id="selectionstable" class="w3-table-all">
-                                <tr>
+                                <tr id="th01">
                                     <th>Name</th>
                                     <th>Mass</th>
                                     <th></th>
                                 </tr>
                                 <tr th:each="selection : ${selections}" th:id="|row${selection.globalReferenceId}|">
                                     <td><span th:text="${selection.name}" /><input name='ingredients' th:value="${selection.globalReferenceId}" hidden='true' /></td>
-                                    <td><input class='w3-input' required='true' th:name="|amountfor:${selection.globalReferenceId}|" type='number' min='0' step='0.1' placeholder='amount in grams' th:value="${selection.mass}" /><input hidden="true" type="text" name="|mealcomponentid:${selection.id}|" /></td>
+                                    <td><input class='w3-input' required='true' th:name="|amountfor:${selection.globalReferenceId}|" type='number' min='0' step='0.1' placeholder='amount in grams'/><input hidden="true" type="text" name="|mealcomponentid:${selection.id}|" /></td>
                                     <td><button class='w3-button' th:onClick="|removeThis('row${selection.globalReferenceId}')|" type='button' >Remove</button></td>
                                 </tr>
                             </table>

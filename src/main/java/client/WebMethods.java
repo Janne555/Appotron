@@ -335,7 +335,7 @@ public class WebMethods {
                 }
                 map.put("selections", selections);
             }
-
+            
             map.put("action", "/addmeal.post");
             return new ModelAndView(map, "addmeal");
         }, new ThymeleafTemplateEngine());
@@ -663,6 +663,15 @@ public class WebMethods {
                 halt();
             }
 
+            String url = "/addmeal?";
+            List<MealComponent> components;
+            if ((components = meal.getComponents()) != null) {
+                for (MealComponent c : meal.getComponents()) {
+                    url += "&id=" + c.getGlobalReferenceId();
+                }
+            }
+            
+            map.put("url", url);
             map.put("meal", meal);
             map.put("title", meal.getName());
             map.put("type", "meal");
@@ -792,6 +801,7 @@ public class WebMethods {
                     if (meal != null) {
                         map.put("meal", meal);
                         map.put("action", "/editmeal.post");
+                        map.put("date", meal.getTime());
                     } else {
                         res.redirect("/");
                         halt();
@@ -816,9 +826,8 @@ public class WebMethods {
                 try {
                     int id = Integer.parseInt(mealIdStr);
                     newMeal.setId(id);
-
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                    LocalDateTime time = LocalDateTime.parse(dateTimeStr, formatter);
+                    LocalDateTime time = LocalDateTime.parse(dateTimeStr.replace("T", " "), formatter);
                     Timestamp dateTime = Timestamp.valueOf(time);
                     newMeal.setDate(dateTime);
 
@@ -840,11 +849,12 @@ public class WebMethods {
                     }
 
                     meDao.update(user, newMeal);
+                    res.redirect("/viewmeal?id=" + newMeal.getId());
                 } catch (NumberFormatException e) {
 
                 }
             }
-
+            
             return "";
         });
     }

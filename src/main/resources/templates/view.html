@@ -304,6 +304,9 @@
                     <div class="w3-third" th:if="${notfoodstuffyet}">
                         <a class="w3-button w3-teal w3-block" th:href="@{~/inserttofoodstuff?id={id} (id=${id})}">To Pantry</a> <br />
                     </div>
+                    <div class="w3-third" th:if="${meal}">
+                        <a class="w3-button w3-teal w3-block" th:href="${url}">Add New</a> <br />
+                    </div>
                 </div>
             </div>
         </div>
