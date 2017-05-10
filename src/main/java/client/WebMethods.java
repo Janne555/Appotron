@@ -345,7 +345,7 @@ public class WebMethods {
 
             Object[] split = req.queryParams("param").split(" ");
 
-            List<Foodstuff> list = foodDao.searchGlobal(split);
+            List<Foodstuff> list = foodDao.searchGlobal(true, split);
             return list;
         }, json());
 

@@ -163,6 +163,34 @@ public class FoodstuffDao {
 
         return items;
     }
+    
+    public List<Foodstuff> searchGlobal(boolean sortPopular, Object... searchWords) throws SQLException {
+        String sql = "SELECT * FROM (SELECT c.uses as uses, g.identifier as identifier, g.type as type, g.name as name, f.producer as producer, f.calories as calories, f.carbohydrate as carbohydrate, f.fat as fat, f.protein as protein, g.id as globalreferenceid, f.id as foodstuffmetaid, to_tsvector(g.identifier) || to_tsvector(g.type) || to_tsvector(f.producer) || to_tsvector(g.name) as document FROM globalreference as g, foodstuffmeta as f LEFT JOIN (SELECT count(c.globalreference_id) as uses, c.globalreference_id as gid FROM mealcomponent c GROUP BY c.globalreference_id) as c ON f.globalreference_id = c.gid WHERE f.globalreference_id = g.id) as mainquery WHERE mainquery.document @@ to_tsquery(?)";
+
+        for (int i = 0; i < searchWords.length - 1; i++) {
+            sql += " AND mainquery.document @@ to_tsquery(?)";
+        }
+        
+        sql += " ORDER BY mainquery.uses DESC NULLS LAST";
+
+        List<Foodstuff> items = db.queryAndCollect(sql, rs -> {
+            return new Foodstuff(rs.getString("name"),
+                    rs.getString("identifier"),
+                    rs.getString("producer"),
+                    null,
+                    rs.getFloat("calories"),
+                    rs.getFloat("carbohydrate"),
+                    rs.getFloat("fat"),
+                    rs.getFloat("protein"),
+                    rs.getInt("globalreferenceid"),
+                    rs.getInt("foodstuffmetaid"),
+                    0,
+                    null,
+                    null);
+        }, searchWords);
+
+        return items;
+    }
 
     public List<Foodstuff> findAll(User user) throws SQLException {
         return db.queryAndCollect("SELECT g.name as name, "
@@ -279,7 +307,7 @@ public class FoodstuffDao {
         return queryAndCollect.get(0);
     }
     
-        public Foodstuff findOne(String name, String identifier) throws SQLException {
+    public Foodstuff findOne(String name, String identifier) throws SQLException {
         List<Foodstuff> queryAndCollect = db.queryAndCollect("SELECT g.name as name, g.identifier as identifier, g.type as type, f.producer as producer, f.calories as calories, f.carbohydrate as carbohydrate, f.fat as fat, f.protein as protein, g.id as globalreferenceid, f.id as foodstuffmetaid FROM globalreference as g, foodstuffmeta as f WHERE f.globalreference_id = g.id AND g.name = ? AND g.identifier = ?", rs -> {
                     return new Foodstuff(rs.getString("name"),
                             rs.getString("identifier"),
