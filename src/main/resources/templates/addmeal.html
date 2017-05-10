@@ -33,7 +33,8 @@
                             for (i in response) {
                                 var name = response[i].name;
                                 var identifier = response[i].globalReferenceId;
-                                var result = "<li id='" + identifier + "' class='w3-list-item' data-id='" + identifier + "' data-itemname='" + name + "' onClick='chooseThis(this)'>" + name + ", " + identifier + "</li>";
+                                var producer = response[i].producer;
+                                var result = "<li id='" + identifier + "' class='w3-list-item' data-id='" + identifier + "' data-itemname='" + name + "' onClick='chooseThis(this)'>" + name + ", " + identifier + ", " + producer + "</li>";
                                 $("#searchresults").append(result);
                             }
                             boolean = !boolean;
