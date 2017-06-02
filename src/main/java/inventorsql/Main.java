@@ -81,7 +81,7 @@ public class Main {
                 System.getProperties().getProperty("postgre_user"),
                 System.getProperties().getProperty("postgre_password"));
 
-        if (System.getProperties().getProperty("standalone").equals("true")) {
+        if (System.getProperties().getProperty("formatDatabase").equals("true")) {
             String[] strings = {"globalreference",
                 "foodstuffmeta",
                 "bookmeta",
@@ -104,98 +104,19 @@ public class Main {
             }
         }
 
-        if (System.getProperties().getProperty("standalone").equals("true")) {
-            for (String s : makeTables) {
+        for (String s : makeTables) {
+            try {
                 database.update(s, false);
+            } catch (SQLException e) {
+                System.out.println("Update command \"" + s + "\" failed");
             }
+        }
+
+        if (System.getProperties().getProperty("insertDefaultUser").equals("true")) {
             UserDao udao = new UserDao(database);
-            udao.store(new User("jannetar", "janne", PasswordUtil.hashPassword("salis"), null, null));
+            udao.store(new User(System.getProperties().getProperty("defaultUserIdentifier"), System.getProperties().getProperty("defaultUserName"), PasswordUtil.hashPassword(System.getProperties().getProperty("defaultUserPassword")), null, null));
         }
 
-        if (System.getProperties().getProperty("insert_fineli_data").equals("true")) {
-            BufferedReader names = new BufferedReader(new FileReader("foodname_FI.csv"));
-            String line;
-            HashMap<Integer, Foodstuff> map = new HashMap<>();
-            while ((line = names.readLine()) != null) {
-                String[] split = line.split(";");
-                int id = Integer.parseInt(split[0]);
-                String name = split[1];
-                name = name.replace("%ae%", "ä");
-                name = name.replace("%oe%", "ö");
-                Foodstuff foodstuff = new Foodstuff(name, "FINELI", "FINELI", null, 0, 0, 0, 0, 0, 0, 0, null, null);
-                map.put(id, foodstuff);
-            }
-
-            BufferedReader values = new BufferedReader(new FileReader("component_value.csv"));
-            while ((line = values.readLine()) != null) {
-                String[] split = line.split(";");
-                if (split[2].isEmpty()) {
-                    continue;
-                }
-                int id = Integer.parseInt(split[0]);
-                Foodstuff get = map.remove(id);
-                NumberFormat format = NumberFormat.getInstance(Locale.FRANCE);
-                Number number = format.parse(split[2]);
-                float floatValue = number.floatValue();
-                switch (split[1]) {
-                    case "ENERC":
-                        get.setCalories((float) (floatValue * 0.239005736 / 100));
-                        break;
-
-                    case "CHOAVL":
-                        get.setCarbohydrate(floatValue / 100);
-                        break;
-
-                    case "FAT":
-                        get.setFat(floatValue / 100);
-                        break;
-
-                    case "PROT":
-                        get.setProtein(floatValue / 100);
-                        break;
-                }
-                map.put(id, get);
-            }
-            float counter = 0;
-            float length = map.size();
-            int previous = 0;
-            System.out.println("Inserting fineli data");
-            for (Foodstuff foo : map.values()) {
-                try {
-                    int update = database.update("INSERT INTO globalreference(name, identifier, type) VALUES(?,?,?)", true, foo.getName(), foo.getIdentifier(), "foodstuff");
-                    foo.setGlobalReferenceId(update);
-                    database.update("INSERT INTO foodstuffmeta(globalreference_id, producer, calories, carbohydrate, fat, protein) VALUES(?,?,?,?,?,?)", false,
-                            foo.getGlobalReferenceId(), foo.getProducer(), foo.getCalories(), foo.getCarbohydrate(), foo.getFat(), foo.getProtein());
-                } catch (Exception e) {
-
-                }
-                int percentage = (int) (counter / length * 100);
-                if (percentage > previous) {
-                    System.out.println(percentage + "%");
-                    previous = percentage;
-                }
-                counter++;
-            }
-
-        }
-        
-//        UserDao userDao = new UserDao(database);
-//        MealDao mealDao = new MealDao(database);
-//        MealComponentDao mealComponentDao = new MealComponentDao(database);
-//        SessionControlDao sessionControlDao = new SessionControlDao(database);
-//        BugReportDao bugReportDao = new BugReportDao(database);
-//        RecipeDao recipeDao = new RecipeDao(database);
-//        IngredientDao ingredientDao = new IngredientDao(database);
-//        FoodstuffDao foodstuffDao = new FoodstuffDao(database);
-//        
-//        for (int i = 1; i < 34; i++) {
-//            Foodstuff food = foodstuffDao.findOne(i);
-//            Meal meal = new Meal(0, userDao.findByName("janne"), new Timestamp(System.currentTimeMillis()), null);
-//            meal = mealDao.store(meal);
-//            MealComponent mealComponent = new MealComponent(0, meal.getId(), i * 10, food);
-//            mealComponentDao.store(mealComponent);
-//        }
-        
         new WebMethods(database);
     }
 }

@@ -5,6 +5,14 @@
  */
 package client;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -13,9 +21,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jdk.nashorn.internal.parser.JSONParser;
 import spark.ModelAndView;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
@@ -67,6 +77,7 @@ public class WebMethods {
         editRoutes();
         recipeRoutes();
         deleteRoutes();
+        toolRoutes();
 
         /**
          * filter for all requests
@@ -336,7 +347,7 @@ public class WebMethods {
                 }
                 map.put("selections", selections);
             }
-            
+
             map.put("action", "/addmeal.post");
             map.put("title", "Add Meal");
             return new ModelAndView(map, "addmeal");
@@ -672,7 +683,7 @@ public class WebMethods {
                     url += "&id=" + c.getGlobalReferenceId();
                 }
             }
-            
+
             map.put("url", url);
             map.put("meal", meal);
             map.put("title", meal.getName());
@@ -856,7 +867,7 @@ public class WebMethods {
 
                 }
             }
-            
+
             return "";
         });
     }
@@ -938,6 +949,47 @@ public class WebMethods {
             }
 
             foodDao.delete(user, id);
+            res.redirect("/");
+            return "";
+        });
+    }
+
+    private void toolRoutes() {
+        get("/foodstuffdump", (req, res) -> {
+            List<Foodstuff> list = foodDao.globalDump();
+            return list;
+        }, json());
+
+        get("/uploadfoodstuffdatabase", (req, res) -> {
+            HashMap map = new HashMap<>();
+            User user = (User) req.session().attribute("user");
+            map.put("user", user);
+
+            return new ModelAndView(map, "addfoodstuffdatabase");
+        }, new ThymeleafTemplateEngine());
+
+        post("/addfoodstuffdatabase.post", (req, res) -> {
+            try {
+                String input = req.queryParams("input");
+                JsonArray jsonArray = new JsonParser().parse(input).getAsJsonArray();
+                Iterator<JsonElement> iterator = jsonArray.iterator();
+                while (iterator.hasNext()) {
+                    JsonObject next = iterator.next().getAsJsonObject();
+                    String name = next.get("name").getAsString();
+                    String identifier = next.get("identifier").getAsString();
+                    String producer = next.get("producer").getAsString();
+                    float calories = next.get("calories").getAsFloat();
+                    float carbohydrate = next.get("carbohydrate").getAsFloat();
+                    float fat = next.get("fat").getAsFloat();
+                    float protein = next.get("protein").getAsFloat();
+
+                    Foodstuff foodstuff = new Foodstuff(name, identifier, producer, null, calories, carbohydrate, fat, protein, 0, 0, 0, null, null);
+                    
+                    foodDao.storeGlobal(foodstuff);
+                }
+            } catch (JsonSyntaxException e) {
+
+            }
             res.redirect("/");
             return "";
         });
