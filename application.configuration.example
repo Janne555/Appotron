@@ -1,4 +1,4 @@
-postgre_address=jdbc:postgresql://localhost:5432/appotron
+postgre_address=jdbc:postgresql:[postgresql address]
 postgre_user=[user]
 postgre_password=[password]
 formatDatabase=false
